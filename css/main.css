@@ -1,0 +1,48 @@
+body {
+  background: #92CE9A;
+  font-family: Calibri, Tahoma, sans-serif;
+  overflow: auto;
+}
+
+a {
+  color: darkgreen;
+}
+
+.home {
+  text-align: center;
+}
+
+.logo, .row {
+  margin-bottom: 20px;
+}
+
+#tlkio {
+  background: white;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2);
+  margin: 0 auto 20px;
+  max-width: 800px;
+  height: 480px;
+  width: 80%;
+}
+
+button {
+  background: transparent;
+  border: 1px solid darkgreen;
+  border-radius: 4px;
+  height: 50px;
+  padding: 0 10px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+button:not(:disabled):hover {
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+}
+button:disabled {
+  border-color: #666;
+}
+
+footer {
+  font-size: 12px;
+  margin-bottom: 20px;
+}
