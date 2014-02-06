@@ -21,13 +21,13 @@ input { display: block; }
 	box-shadow: -2px 0 2px rgba(0,0,0,0.3);
 	height: 100%;
 	position: fixed;
-	top: 0; right: 0;
-	//transform: translateX(350px);
+	top: 0; right: -400px;
+	transform: translateX(0px);
 	transition: transform 0.4s;
 	width: 400px;
 	z-index: 1;
 
-	//&.active { transform: translateX(0); }
+	&.active { transform: translateX(-100%); }
 }
 
 .overlay {
@@ -53,6 +53,7 @@ input { display: block; }
 		background: white;
 		border-radius: 3px;
 		box-shadow: 0 2px 2px -1px rgba(0,0,0,0.2);
+		max-width: 100%;
 		padding: 20px;
 		text-align: center;
 		transform: translateY(-2000px);

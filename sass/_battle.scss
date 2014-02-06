@@ -5,7 +5,7 @@
 ---------------------------*/
 
 .game {
-	background: green;
+	background: #3D9970;
 	position: absolute;
 	top: 0; left: 0;
 	height: 100%;
@@ -22,5 +22,38 @@
 	.field {
 		background: white;
 		height: 70%;
+		overflow: hidden;
+
+		aside { height: 100%; width: 50%; }
+
+		aside:first-child {
+			border-right: 2px solid #CCC;
+			float: left;
+
+			li:nth-child(3) { transform: translateX(10px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(-10px) scale(0.9); }
+		}
+
+		aside:last-child {
+			border-left: 2px solid #CCC;
+			float: right;
+
+			li:nth-child(3) { transform: translateX(-10px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(10px) scale(0.9); }
+		}
+	}
+
+	.formation {
+		height: 100%;
+		margin: 0 auto;
+		min-width: 120px;
+		width: 50%;
+
+		li {
+			border: 2px solid #AAA;
+			border-radius: 50%;
+			height: 20%;
+			transform: scale(0.9);
+		}
 	}
 }
