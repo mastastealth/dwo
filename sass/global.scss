@@ -65,6 +65,18 @@ input { display: block; }
 	animation: spin 1s infinite linear;
 }
 
+.card {
+	background: white;
+	border: 1px darkgreen solid;
+	float: left;
+	margin-right: 5px;
+	min-height: 50px;
+	min-width: 50px;
+
+	&:before { content: attr(id); display: block; }
+	&:after { content: attr(data-type); }
+}
+
 @keyframes spin {
 	from { transform: rotate(0deg); }
 	to { transform: rotate(360deg); }

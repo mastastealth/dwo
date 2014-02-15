@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	onMessage = function(conn) {
 		conn.on('data', function(msg) {
 			console.log(msg);
+			if (msg[0] === 'testCard') { testCard(msg[1]) }
 		});
 	};
 });

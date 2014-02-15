@@ -24,17 +24,33 @@ function playInit(conn, deck) {
 		'supply' : 0
 	}
 
-	var hasheddeck = [];
-	var deck = ['infantry', 'recon', 'apc'];
+	var hasheddeck = {};
+	var odeck = '';
+	var deck = [
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0}
+	];
+
 	deck = shuffle(deck);
 
+	// Go through deck, hash, send
 	for (var i=0;i<deck.length;i++) {
-		deck[i] += '_'+Math.random().toString(36).substr(2, 9);
-		hasheddeck.push( md5(deck[i]) );
+		// ID the cards
+		var salt = Math.random().toString(36).substr(2, 9);
+		deck[i].id += '_'+salt;
+		// Hash em
+		var hash = md5(deck[i]);
+		deck[i].hash = hash;
 
+		// Send hash to opponent
+		hasheddeck[hash] = 1;
+
+		// Once done with deck, send fully hashed deck
 		if (i===deck.length-1) {
 			console.log('Sending hashed deck')
-			conn.send( hasheddeck );
+			conn.send( ['odeck', hasheddeck] );
+			drawCard(3);
 		}
 	}
 
@@ -61,13 +77,40 @@ function playInit(conn, deck) {
 	}
 
 	// Play a card
-	function playCard() {
-		alert('card played');
+	function playCard(c) {
+		var salt = card.getAttribute('id');
+		var type = card.getAttribute('data-type');
+		console.log('Card played');
+	}
+
+	function testCard(card) {
+		// Test a card against the hashed deck list
+		// Return true if it exists
 	}
 
 	// Draw a card 
-	function drawCard() {
+	function drawCard(n) {
+		n = typeof n !== 'undefined' ? n : 1;
 
+		// Add to UI
+		for (var i=0;i<n;i++) {
+			// Play card from our deck
+			var wannaplay = deck.pop();
+			// Check against opponent to make sure it's legit
+			conn.send( ['testCard', wannaplay] );
+		}
+	}
+
+	// Actually draw a real card
+	function drawCardConfirmed(card) {
+		// DOM Stuff
+		var card = document.querySelector('.hand').appendChild( document.createElement('div') )
+		card.classList.add('card');
+		card.setAttribute('id', salt);
+		card.setAttribute('data-type',type);
+		card.addEventListener('click', function() {
+			playCard(card);
+		});
 	}
 
 	// Discard a card
