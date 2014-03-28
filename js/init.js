@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			m.innerHTML = '';
 		}
 
-		// Create
+		// Create Game
 		if ( buoy.hasClass(this, 'create') ) {
 			buoy.addClass(game,'active');
 			overlayOn();
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				cancelConn();
 			});
 		}
-		// Join
+		// Join Game
 		else if ( buoy.hasClass(this, 'join') && validDeck() ) {
 			buoy.addClass(game,'active');
 			overlayOn();
@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			document.querySelector('.overlay input').addEventListener('keypress', function(e) {
 				if (!e) e = window.event;
 					var keyCode = e.keyCode || e.which;
+					// If pressing enter
 					if (keyCode == '13'){
 						var room = this.value.replace(/\s+/g, '');
 						conn = peer.connect( 'dwo'+room, { reliable: true } );
@@ -105,7 +106,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	onMessage = function(conn) {
 		conn.on('data', function(msg) {
 			console.log(msg);
-			if (msg[0] === 'testCard') { testCard(msg[1]) }
+			if (msg.func === 'testCard') { testCard(msg.card, msg.who) }
+			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
 		});
 	};
 });

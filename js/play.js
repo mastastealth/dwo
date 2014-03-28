@@ -1,5 +1,10 @@
+var conn;
+var opponentDeck;
+
 // Starts off the game and all the other functions
-function playInit(conn, deck) {
+function playInit(connection, deck) {
+	conn = connection;
+
 	// Define all the cards
 	var card = {
 		'infantry' : 0,
@@ -24,8 +29,7 @@ function playInit(conn, deck) {
 		'supply' : 0
 	}
 
-	var hasheddeck = {};
-	var odeck = '';
+	var hashedDeck = {};
 	var deck = [
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
 		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
@@ -36,21 +40,23 @@ function playInit(conn, deck) {
 
 	// Go through deck, hash, send
 	for (var i=0;i<deck.length;i++) {
+
 		// ID the cards
 		var salt = Math.random().toString(36).substr(2, 9);
-		deck[i].id += '_'+salt;
+		deck[i].id = deck[i].type+'_'+salt;
+
 		// Hash em
-		var hash = md5(deck[i]);
+		var hash = md5(deck[i].id);
 		deck[i].hash = hash;
 
-		// Send hash to opponent
-		hasheddeck[hash] = 1;
+		// Add hashed card to array
+		hashedDeck[hash] = 1;
 
-		// Once done with deck, send fully hashed deck
+		// Once done hashing deck, send to opponent
 		if (i===deck.length-1) {
 			console.log('Sending hashed deck')
-			conn.send( ['odeck', hasheddeck] );
-			drawCard(3);
+			conn.send( { 'func':'odeck', 'deck': hashedDeck } );
+			drawCard(deck,3);
 		}
 	}
 
@@ -75,51 +81,62 @@ function playInit(conn, deck) {
 
 		return array;
 	}
+}
 
-	// Play a card
-	function playCard(c) {
-		var salt = card.getAttribute('id');
-		var type = card.getAttribute('data-type');
-		console.log('Card played');
-	}
+// Play a card
+function playCard(c) {
+	var salt = card.getAttribute('id');
+	var type = card.getAttribute('data-type');
+	console.log('Card played');
+}
 
-	function testCard(card) {
-		// Test a card against the hashed deck list
-		// Return true if it exists
-	}
+function testCard(card) {
+	// Test a card against the hashed deck list
+	// Return true if it exists
+	if (opponentDeck[card.hash]) console.log('Drew: '+card.id);
+}
 
-	// Draw a card 
-	function drawCard(n) {
-		n = typeof n !== 'undefined' ? n : 1;
+// Draw a card 
+function drawCard(deck,n,origin) {
+	console.log('Drawing from: ',deck)
 
-		// Add to UI
-		for (var i=0;i<n;i++) {
-			// Play card from our deck
-			var wannaplay = deck.pop();
-			// Check against opponent to make sure it's legit
-			conn.send( ['testCard', wannaplay] );
+	n = typeof n !== 'undefined' ? n : 1;
+
+	// Add to UI
+	for (var i=0;i<n;i++) {
+		// Play card from our deck
+		var wannaplay = deck.pop();
+		console.log('Want to play: ',wannaplay);
+
+		// Check against opponent to make sure it's legit
+		if (origin != 'origin') {
+			conn.send({ 
+				'func': 'testCard', 
+				'card' : wannaplay,
+				'who' : 'origin'
+			});
 		}
 	}
+}
 
-	// Actually draw a real card
-	function drawCardConfirmed(card) {
-		// DOM Stuff
-		var card = document.querySelector('.hand').appendChild( document.createElement('div') )
-		card.classList.add('card');
-		card.setAttribute('id', salt);
-		card.setAttribute('data-type',type);
-		card.addEventListener('click', function() {
-			playCard(card);
-		});
-	}
+// Actually draw a real card
+function drawCardConfirmed(card) {
+	// DOM Stuff
+	var card = document.querySelector('.hand').appendChild( document.createElement('div') )
+	card.classList.add('card');
+	card.setAttribute('id', salt);
+	card.setAttribute('data-type',type);
+	card.addEventListener('click', function() {
+		playCard(card);
+	});
+}
 
-	// Discard a card
-	function discardCard() {
+// Discard a card
+function discardCard() {
 
-	}
+}
 
-	// Zoom on card
-	function zoomCard() {
+// Zoom on card
+function zoomCard() {
 
-	}
 }
