@@ -84,16 +84,32 @@ function playInit(connection, deck) {
 }
 
 // Play a card
-function playCard(c) {
+function playCard(card) {
+	var card = document.getElementById(card.id);
 	var salt = card.getAttribute('id');
 	var type = card.getAttribute('data-type');
 	console.log('Card played');
 }
 
-function testCard(card) {
+function testCard(card,action) {
 	// Test a card against the hashed deck list
 	// Return true if it exists
-	if (opponentDeck[card.hash]) console.log('Drew: '+card.id);
+	if (opponentDeck[card.hash]) {
+		if (action === 'draw') {
+			conn.send({ 
+				'func': 'drawCardConfirmed', 
+				'card' : card,
+				'who' : 'origin'
+			});
+		}
+		else if (action === 'play') {
+			conn.send({ 
+				'func': 'playCard', 
+				'card' : card,
+				'who' : 'origin'
+			});
+		}
+	}
 }
 
 // Draw a card 
@@ -104,16 +120,17 @@ function drawCard(deck,n,origin) {
 
 	// Add to UI
 	for (var i=0;i<n;i++) {
+
 		// Play card from our deck
 		var wannaplay = deck.pop();
-		console.log('Want to play: ',wannaplay);
 
 		// Check against opponent to make sure it's legit
 		if (origin != 'origin') {
 			conn.send({ 
-				'func': 'testCard', 
-				'card' : wannaplay,
-				'who' : 'origin'
+				'func'  : 'testCard', 
+				'card'  : wannaplay,
+				'who'   : 'origin',
+				'action': 'draw'
 			});
 		}
 	}
@@ -121,13 +138,21 @@ function drawCard(deck,n,origin) {
 
 // Actually draw a real card
 function drawCardConfirmed(card) {
+
 	// DOM Stuff
-	var card = document.querySelector('.hand').appendChild( document.createElement('div') )
-	card.classList.add('card');
-	card.setAttribute('id', salt);
-	card.setAttribute('data-type',type);
-	card.addEventListener('click', function() {
-		playCard(card);
+	var newcard = document.querySelector('.hand').appendChild( document.createElement('div') )
+	newcard.classList.add('card');
+	newcard.setAttribute('id', card.id);
+	newcard.setAttribute('data-type',card.type);
+
+	newcard.addEventListener('click', function() {
+		console.log('Testing Card ',card);
+		conn.send({ 
+			'func'  : 'testCard', 
+			'card'  : card,
+			'who'   : 'origin',
+			'action': 'play'
+		});
 	});
 }
 

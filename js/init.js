@@ -106,8 +106,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	onMessage = function(conn) {
 		conn.on('data', function(msg) {
 			console.log(msg);
-			if (msg.func === 'testCard') { testCard(msg.card, msg.who) }
+			if (msg.func === 'testCard') { testCard(msg.card, msg.action, msg.who) }
 			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
+			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
+			else if (msg.func === 'playCard') { playCard(msg.card) }
 		});
 	};
 });
