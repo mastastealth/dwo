@@ -1,6 +1,7 @@
 var conn;
 var opponentDeck;
 var playerDeck;
+var myTurn;
 
 // Define all the cards
 var cardType = {
@@ -69,30 +70,40 @@ function playInit(connection, deck) {
 		{'type': 'supply', 'id' : 0, 'hash' : 0}
 	];
 
-	deck = shuffle(deck);
+	playerDeck = shuffle(deck);
 
 	// Go through deck, hash, send
 	var count = 8;
-	for (var i=0;i<deck.length;i++) {
+	for (var i=0;i<playerDeck.length;i++) {
 
 		// ID the cards
 		var salt = Math.random().toString(36).substr(2, 9);
-		deck[i].id = deck[i].type+'_'+salt;
+		playerDeck[i].id = playerDeck[i].type+'_'+salt;
 
 		// Hash em
-		var hash = md5(deck[i].id);
-		deck[i].hash = hash;
+		var hash = md5(playerDeck[i].id);
+		playerDeck[i].hash = hash;
 
 		// Add hashed card to array
 		hashedDeck[hash] = 1;
 
 		// Once done hashing deck, send to opponent
-		if (i===deck.length-1) {
+		if (i===playerDeck.length-1) {
 			console.log('Sending hashed deck')
 			conn.send( { 'func':'odeck', 'deck': hashedDeck } );
-			drawCard(deck,count);
+			drawCard(playerDeck,count);
 		}
 	}
+
+	// UI Stuff
+	var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') )
+	endTurn.innerHTML = "End Turn";
+	endTurn.addEventListener('click', function() {
+		if (myTurn = true){
+			conn.send( { 'func':'yourTurn' } );
+			myTurn = false;
+		}
+	});
 
 	// Shuffle array (deck)
 	function shuffle(array) {
@@ -142,12 +153,16 @@ function playCard(card,who) {
 		} else {
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').textContent);
 			document.querySelector('.'+who+' .sup').innerHTML = currentSup+3;
-			drawCard(deck,1);
+			if (who === 'player') drawCard(playerDeck,1);
 		}
 	}
 
 	console.log('Card played');
 }
+
+// =================================
+// -------- CARD FUNCTIONS ---------
+// =================================
 
 function testCard(card,action) {
 	// Test a card against the hashed deck list
@@ -174,7 +189,7 @@ function testCard(card,action) {
 
 // Draw a card 
 function drawCard(deck,n,origin) {
-	console.log('Drawing from: ',deck)
+	//console.log('Drawing from: ',deck)
 
 	n = typeof n !== 'undefined' ? n : 1;
 
@@ -207,12 +222,14 @@ function drawCardConfirmed(card) {
 
 	newcard.addEventListener('click', function() {
 		//console.log('Testing Card ',card);
-		conn.send({ 
-			'func'  : 'testCard', 
-			'card'  : card,
-			'who'   : 'origin',
-			'action': 'play'
-		});
+		if (myTurn) {
+			conn.send({ 
+				'func'  : 'testCard', 
+				'card'  : card,
+				'who'   : 'origin',
+				'action': 'play'
+			});
+		}
 	});
 }
 

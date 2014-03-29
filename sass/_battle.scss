@@ -72,4 +72,13 @@
 			transform: scale(0.9);
 		}
 	}
+
+	.hand {
+		position: relative;
+
+		button {
+			position: absolute;
+			top: -60px; left: 10px;
+		}
+	}
 }

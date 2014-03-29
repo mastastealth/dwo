@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					buoy.removeClass(m.parentNode,'active');
 					onMessage(c);
 					playInit(c,deck);
+					myTurn = false;
 				});
 			});
 
@@ -82,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							buoy.removeClass(m.parentNode,'active');
 							onMessage(conn);
 							playInit(conn,deck);
+							myTurn = true;
 						});
 					return false;
 				}
@@ -100,6 +102,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 
 	validDeck = function(deck) {
+		// If there are 25 supplies
+		// whatever units, co's, combos
+		// then you're good to go
 		return true;
 	}
 
@@ -110,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
 			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
 			else if (msg.func === 'playCard') { playCard(msg.card, msg.who) }
+			else if (msg.func === 'yourTurn') { myTurn = true }
 		});
 	};
 });
