@@ -7,38 +7,67 @@ function playInit(connection, deck) {
 
 	// Define all the cards
 	var card = {
-		'infantry' : 0,
-		'recon' : 0,
-		'apc' : 0,
-		'aa' : 0,
-		'tank' : 0,
-		'htank' : 0,
-		'arty' : 0,
-		'harty' : 0,
-		'drone' : 0,
-		'helo' : 0,
-		'a2g' : 0,
-		'jet' : 0,
-		'bomber' : 0,
-		'hbomber' : 0,
-		'urban' : 0,
-		'tundra' : 0,
-		'cloudy' : 0,
-		'desert' : 0,
-		'forest' : 0,
-		'supply' : 0
+		'unit' : {
+			'infantry' : { 'atk': 1, 'def': 1, 'sup': 0 },
+			'recon' : { 'atk': 1, 'def': 2, 'sup': 1 },
+			'apc' : { 'atk': 1, 'def': 2, 'sup': 1 },
+			'aa' : { 'atk': 1, 'def': 2, 'sup': 1 },
+			'tank' : { 'atk': 2, 'def': 2, 'sup': 2 },
+			'htank' : { 'atk': 4, 'def': 5, 'sup': 5 },
+			'arty' : { 'atk': 3, 'def': 1, 'sup': 3 },
+			'harty' : { 'atk': 5, 'def': 3, 'sup': 5 },
+			'drone' : { 'atk': 1, 'def': 1, 'sup': 1 },
+			'helo' : { 'atk': 2, 'def': 2, 'sup': 2 },
+			'a2g' : { 'atk': 2, 'def': 4, 'sup': 3 },
+			'jet' : { 'atk': 0, 'def': 4, 'sup': 3 },
+			'bomber' : { 'atk': 0, 'def': 3, 'sup': 4 },
+			'hbomber' : { 'atk': 1, 'def': 4, 'sup': 5 }
+		},
+		'co' : {
+			'urban' : 0,
+			'tundra' : 0,
+			'cloudy' : 0,
+			'desert' : 0,
+			'forest' : 0
+		},		
+		'supply' : 3
 	}
 
 	var hashedDeck = {};
 	var deck = [
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
 		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
-		{'type': 'apc', 'id' : 0, 'hash' : 0}
+		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0}
 	];
 
 	deck = shuffle(deck);
 
 	// Go through deck, hash, send
+	var count = 8;
 	for (var i=0;i<deck.length;i++) {
 
 		// ID the cards
@@ -56,7 +85,7 @@ function playInit(connection, deck) {
 		if (i===deck.length-1) {
 			console.log('Sending hashed deck')
 			conn.send( { 'func':'odeck', 'deck': hashedDeck } );
-			drawCard(deck,3);
+			drawCard(deck,count);
 		}
 	}
 
@@ -146,7 +175,7 @@ function drawCardConfirmed(card) {
 	newcard.setAttribute('data-type',card.type);
 
 	newcard.addEventListener('click', function() {
-		console.log('Testing Card ',card);
+		//console.log('Testing Card ',card);
 		conn.send({ 
 			'func'  : 'testCard', 
 			'card'  : card,

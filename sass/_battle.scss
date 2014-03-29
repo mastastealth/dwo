@@ -24,7 +24,11 @@
 		height: 70%;
 		overflow: hidden;
 
-		aside { height: 100%; width: 50%; }
+		aside { 
+			height: 100%;
+			position: relative;
+			width: 50%; 
+		}
 
 		aside:first-child {
 			border-right: 2px solid #CCC;
@@ -40,6 +44,18 @@
 
 			li:nth-child(3) { transform: translateX(-10px) scale(0.9); }
 			li:first-child, li:last-child { transform: translateX(10px) scale(0.9); }
+		}
+
+		h1 {
+			background: rgba(0,0,0,0.1);
+			line-height: 40px;
+			position: absolute;
+			top: 0; left: 0;
+			text-align: center;
+			width: 100%;
+
+			.atk { color: red; }
+			.def { color: blue; }
 		}
 	}
 

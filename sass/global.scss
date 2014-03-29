@@ -65,13 +65,19 @@ input { display: block; }
 	animation: spin 1s infinite linear;
 }
 
+.hand {
+	text-align: center;
+}
+
 .card {
 	background: white;
 	border: 1px darkgreen solid;
-	float: left;
+	cursor: pointer;
+	display: inline-block;
+	//float: left;
 	margin-right: 5px;
-	min-height: 50px;
-	min-width: 50px;
+	min-height: 150px;
+	min-width: 150px;
 
 	&:before { content: attr(id); display: block; }
 	&:after { content: attr(data-type); }
