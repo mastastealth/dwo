@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			if (msg.func === 'testCard') { testCard(msg.card, msg.action, msg.who) }
 			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
 			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
-			else if (msg.func === 'playCard') { playCard(msg.card) }
+			else if (msg.func === 'playCard') { playCard(msg.card, msg.who) }
 		});
 	};
 });
