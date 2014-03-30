@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
 			else if (msg.func === 'playCard') { playCard(msg.card, msg.who) }
 			else if (msg.func === 'yourTurn') { myTurn = true }
+			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who) }
 		});
 	};
 });

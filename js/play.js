@@ -96,10 +96,16 @@ function playInit(connection, deck) {
 	}
 
 	// UI Stuff
+
+	// End Turn
 	var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') )
 	endTurn.innerHTML = "End Turn";
 	endTurn.addEventListener('click', function() {
 		if (myTurn = true){
+			if (document.querySelectorAll('.card').length<8) {
+				drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+			} else { drawCard(playerDeck,1); }
+
 			conn.send( { 'func':'yourTurn' } );
 			myTurn = false;
 		}
@@ -138,30 +144,60 @@ function playCard(card,who) {
 	// Remove card from hand
 	if (who === 'player') cardEl.remove();
 
-
 	if ( properCards === md5(cardType) ) {
-		// Add card to field
+		// Add card to field if a unit
 		if (cardType.unit[card.type]) {
-			var newUnit = document.querySelector('.'+who).appendChild( document.createElement('div') );
-			buoy.addClass(newUnit,'unit');
-			newUnit.setAttribute('data-type', card.type);
+			var newUnit;
+			// If only one unit, place in center of formation
+			if (document.querySelectorAll('.'+who+' .unit').length === 0) {
+				newUnit = document.querySelector('.'+who+' li:nth-child(3)').appendChild( document.createElement('div') );
+				unitCard(newUnit,card,who);
+			} 
+			// If more than one unit, choose position
+			else {
+				//disableCards();
+				// only choose if actually the player
+				if (who === 'player'){
+					var firstUnit = document.querySelectorAll('.'+who+' .unit')[0];
+					var lastUnit = document.querySelectorAll('.'+who+' .unit')[document.querySelectorAll('.'+who+' .unit').length-1];
 
-			newUnit.setAttribute('data-atk', cardType.unit[card.type].atk );
-			currentAtk = parseInt(document.querySelector('.'+who+' .atk').textContent);
-			document.querySelector('.'+who+' .atk').innerHTML = currentAtk+parseInt(newUnit.getAttribute('data-atk'));
+					if (firstUnit.parentNode.previousElementSibling) {
+						buoy.addClass(firstUnit.parentNode.previousElementSibling, 'add');
+						buoy.addClass(firstUnit.parentNode.previousElementSibling, 'prev');
+					}
+					if (lastUnit.parentNode.nextElementSibling) {
+						buoy.addClass(lastUnit.parentNode.nextElementSibling, 'add');
+						buoy.addClass(lastUnit.parentNode.nextElementSibling, 'next');
+					}
+					
+					[].forEach.call(document.querySelectorAll('li.add'), function(el) {
+		  				el.addEventListener('click', function() {
+		  					if (buoy.hasClass(el,'add') && el.children.length === 0) {
+		  						if (firstUnit.parentNode.previousElementSibling) buoy.removeClass(firstUnit.parentNode.previousElementSibling, 'add');
+								if (lastUnit.parentNode.nextElementSibling) buoy.removeClass(lastUnit.parentNode.nextElementSibling, 'add');
 
-			newUnit.setAttribute('data-def', cardType.unit[card.type].def );
-			currentDef = parseInt(document.querySelector('.'+who+' .def').textContent);
-			document.querySelector('.'+who+' .def').innerHTML = currentDef+parseInt(newUnit.getAttribute('data-def'));
+		  						newUnit = el.appendChild( document.createElement('div') );
+								unitCard(newUnit,card,who);
 
-			newUnit.setAttribute('data-sup', cardType.unit[card.type].sup );
+								if (buoy.hasClass(el,'prev')) conn.send( { 'func':'unitPos', 'pos' : 'prev', 'card' : card, 'who' : who } );
+								if (buoy.hasClass(el,'next')) conn.send( { 'func':'unitPos', 'pos' : 'next', 'card' : card, 'who' : who } );
 
-			function unitSprite() {
-				// Change image based off card.type
+								if (firstUnit.parentNode.previousElementSibling) buoy.removeClass(firstUnit.parentNode.previousElementSibling, 'prev');
+								if (lastUnit.parentNode.nextElementSibling) buoy.removeClass(lastUnit.parentNode.nextElementSibling, 'next');
+		  					}
+		  				});
+		  			});
+				} 
+				// Otherwise, place according to the player's choice
+				else {
+					// Nothing? Opponent sends position
+				}
 			}
+			
 		} else if (cardType.co[card.type]) {
 			// Whatevs
 		} else {
+			// If supplies, then just add to current supply count
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').textContent);
 			document.querySelector('.'+who+' .sup').innerHTML = currentSup+3;
 			if (who === 'player') drawCard(playerDeck,1);
@@ -274,4 +310,34 @@ function discardCard() {
 // Zoom on card
 function zoomCard() {
 
+}
+
+function unitCard(newUnit,card,who) {
+	// Add unit class and type
+	buoy.addClass(newUnit,'unit');
+	newUnit.setAttribute('data-type', card.type);
+	// Set attack
+	newUnit.setAttribute('data-atk', cardType.unit[card.type].atk );
+	currentAtk = parseInt(document.querySelector('.'+who+' .atk').textContent);
+	document.querySelector('.'+who+' .atk').innerHTML = currentAtk+parseInt(newUnit.getAttribute('data-atk'));
+	// Set defense
+	newUnit.setAttribute('data-def', cardType.unit[card.type].def );
+	currentDef = parseInt(document.querySelector('.'+who+' .def').textContent);
+	document.querySelector('.'+who+' .def').innerHTML = currentDef+parseInt(newUnit.getAttribute('data-def'));
+	// Set supply cost
+	newUnit.setAttribute('data-sup', cardType.unit[card.type].sup );
+}
+
+function placeUnit(pos, card, who) {
+	var newUnit;
+
+	if (pos === 'prev') {
+		var firstUnit = document.querySelectorAll('.opponent .unit')[0];
+		newUnit = firstUnit.parentNode.previousElementSibling.appendChild( document.createElement('div') );
+	} else {
+		var lastUnit = document.querySelectorAll('.opponent .unit')[document.querySelectorAll('.opponent .unit').length-1];
+		newUnit = lastUnit.parentNode.nextElementSibling.appendChild( document.createElement('div') );
+	}
+	
+	unitCard(newUnit, card, who);
 }
