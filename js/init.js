@@ -119,4 +119,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who) }
 		});
 	};
+
+	// Prepend function
+	Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 });
