@@ -6,20 +6,20 @@ var myTurn;
 // Define all the cards
 var cardType = {
 	'unit' : {
-		'infantry' : { 'atk': 1, 'def': 1, 'sup': 0 },
-		'recon' : { 'atk': 1, 'def': 2, 'sup': 1 },
-		'apc' : { 'atk': 1, 'def': 2, 'sup': 1 },
-		'aa' : { 'atk': 1, 'def': 2, 'sup': 1 },
-		'tank' : { 'atk': 2, 'def': 2, 'sup': 2 },
-		'htank' : { 'atk': 4, 'def': 5, 'sup': 5 },
-		'arty' : { 'atk': 3, 'def': 1, 'sup': 3 },
-		'harty' : { 'atk': 5, 'def': 3, 'sup': 5 },
-		'drone' : { 'atk': 1, 'def': 1, 'sup': 1 },
-		'helo' : { 'atk': 2, 'def': 2, 'sup': 2 },
-		'a2g' : { 'atk': 2, 'def': 4, 'sup': 3 },
-		'jet' : { 'atk': 0, 'def': 4, 'sup': 3 },
-		'bomber' : { 'atk': 0, 'def': 3, 'sup': 4 },
-		'hbomber' : { 'atk': 1, 'def': 4, 'sup': 5 }
+		'infantry' : { 'atk': 1, 'def': 1, 'sup': 0, 'trait' : ['grd', 'inf'] },
+		'recon' : { 'atk': 1, 'def': 2, 'sup': 1, 'trait' : ['grd', 'arm'] },
+		'apc' : { 'atk': 1, 'def': 2, 'sup': -1, 'trait' : ['grd', 'arm'] },
+		'aa' : { 'atk': 1, 'def': 2, 'sup': 1, 'trait' : ['grd', 'arm', 'aa'] },
+		'tank' : { 'atk': 2, 'def': 2, 'sup': 2, 'trait' : ['grd', 'arm'] },
+		'htank' : { 'atk': 4, 'def': 5, 'sup': 5, 'trait' : ['grd', 'arm'] },
+		'arty' : { 'atk': 3, 'def': 1, 'sup': 3, 'trait' : ['grd', 'arm', 'lr'] },
+		'harty' : { 'atk': 5, 'def': 3, 'sup': 5, 'trait' : ['grd', 'arm', 'lr'] },
+		'drone' : { 'atk': 1, 'def': 1, 'sup': 1, 'trait' : ['air', 'aa', 'as', 'inf'] },
+		'helo' : { 'atk': 2, 'def': 2, 'sup': 2, 'trait' : ['air', 'aa'] },
+		'a2g' : { 'atk': 2, 'def': 4, 'sup': 3, 'trait' : ['air', 'as'] },
+		'jet' : { 'atk': 0, 'def': 4, 'sup': 3, 'trait' : ['air', 'aa'] },
+		'bomber' : { 'atk': 0, 'def': 3, 'sup': 4, 'trait' : ['air', 'as'] },
+		'hbomber' : { 'atk': 1, 'def': 4, 'sup': 5, 'trait' : ['air', 'as'] }
 	},
 	'co' : {
 		'urban' : 0,
@@ -28,6 +28,20 @@ var cardType = {
 		'desert' : 0,
 		'forest' : 0
 	},		
+	'combo' : {
+		'at' : { 'atk' : 3, 'sup' : 1, 'canuse' : ['inf'] },
+		'sniper' : { 'canuse' : ['inf'] },
+		'medic' : { 'def' : 1, 'sup' : 0, 'canuse' : ['inf'] },
+		'reactive' : { 'def' : 2, 'sup' : 1, 'canuse' : ['arm']},
+		'aa' : { 'vs' : 'aa', 'atk' : 3, 'sup' : 1, 'canuse' : ['inf']  },
+		'support' : { 'sup' : -2, 'canuse' : ['inf'] },
+		'retreat' : { },
+		'shift' : { },
+		'reinforce' : { },
+		'frontline' : { 'atk' : 2, 'def' : -1, 'sup' : 0, 'canuse' : ['grd','grd'] },
+		'intel' : { 'sup': 3, 'canuse' : ['inf','air'] },
+		'fallback' : { 'def' : 2, 'atk' : -1, 'sup' : 0, 'canuse' : ['grd','grd'] }
+	},
 	'supply' : 3
 }
 
@@ -42,26 +56,21 @@ function playInit(connection, deck) {
 	var hashedDeck = {};
 	deck = [
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
 		{'type': 'apc', 'id' : 0, 'hash' : 0},
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
-		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
+		{'type': 'tank', 'id' : 0, 'hash' : 0},
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
-		{'type': 'apc', 'id' : 0, 'hash' : 0},
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
 		{'type': 'apc', 'id' : 0, 'hash' : 0},
-		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
-		{'type': 'apc', 'id' : 0, 'hash' : 0},
-		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
-		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
-		{'type': 'supply', 'id' : 0, 'hash' : 0},
-		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
-		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
-		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0},
 		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
 		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
@@ -151,11 +160,11 @@ function playCard(card,who) {
 			// If only one unit, place in center of formation
 			if (document.querySelectorAll('.'+who+' .unit').length === 0) {
 				newUnit = document.querySelector('.'+who+' li:nth-child(3)').appendChild( document.createElement('div') );
-				unitCard(newUnit,card,who);
+				unitCard(newUnit,card,who,card.id);
 			} 
 			// If more than one unit, choose position
 			else {
-				//disableCards();
+				//disableCards(); - TODO
 
 				// only choose if actually the player
 				if (who === 'player'){
@@ -211,8 +220,53 @@ function playCard(card,who) {
 				}
 			}
 			
-		} else if (cardType.co[card.type]) {
+		} 
+		// Add commander to field
+		else if (cardType.co[card.type]) {
 			// Whatevs
+		}
+		// Add combo to unit
+		else if (cardType.combo[card.type]) {
+			// Only do choosing if player
+			if (who === 'player') {
+				// First check if combo can be played anywhere
+				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(el) {
+					// Get each unit's traits
+					var traits = cardType.unit[el.getAttribute('data-type')].trait;
+
+					// For every trait
+					var comboMatch;
+					for (var i=0;i<traits.length;i++) {
+						console.log('Checking if '+traits[i]+' is part of '+cardType.combo[card.type].canuse);
+
+						// Check if unit trait matches what combo needs
+						if (cardType.combo[card.type].canuse.indexOf( traits[i] ) != -1) {
+							console.log('MATCH')
+							comboMatch = true;
+							break;
+						} else if (i===traits.length) { console.log('NO MATCH'); comboMatch = false; }
+					}
+
+					if (comboMatch) {
+						// Probably want to check for double/triple combo in future - TODO
+
+						// Make unit slot combo-attachable
+						buoy.addClass(el.parentNode,'active');
+						el.parentNode.addEventListener('click', function() {
+							if (buoy.hasClass(el.parentNode,'active')) {
+								// Attach combo to unit
+								console.log(el.getAttribute('id'));
+								comboCard(el.getAttribute('id'),card,who);
+								conn.send( { 'func':'comboPos', 'pos' : el.getAttribute('id'), 'card' : card, 'who' : 'opponent' } );
+
+								[].forEach.call(document.querySelectorAll('.'+who+' li.active'), function(el) {
+									buoy.removeClass(el,'active');
+								});
+							}
+						});
+					}
+				});
+			}
 		} else {
 			// If supplies, then just add to current supply count
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').textContent);
@@ -293,8 +347,11 @@ function drawCardConfirmed(card) {
 			var totalSup = parseInt(document.querySelector('.player .sup').textContent);
 			var currentSup = 0;
 			var neededSup;
+
 			if (cardType.unit[card.getAttribute('data-type')]) {
 				neededSup = cardType.unit[card.getAttribute('data-type')].sup;
+			} else if (cardType.combo[card.getAttribute('data-type')]) {
+				neededSup = cardType.combo[card.getAttribute('data-type')].sup;
 			} else { neededSup = 0 }
 
 			[].forEach.call(document.querySelectorAll('.player .unit'), function(el) {
@@ -329,9 +386,10 @@ function zoomCard() {
 
 }
 
-function unitCard(newUnit,card,who) {
+function unitCard(newUnit,card,who,id) {
 	// Add unit class and type
 	buoy.addClass(newUnit,'unit');
+	newUnit.setAttribute('id', id);
 	newUnit.setAttribute('data-type', card.type);
 	// Set attack
 	newUnit.setAttribute('data-atk', cardType.unit[card.type].atk );
@@ -344,6 +402,29 @@ function unitCard(newUnit,card,who) {
 	// Set supply cost
 	newUnit.setAttribute('data-sup', cardType.unit[card.type].sup );
 }
+
+function comboCard(unit,card,who) {
+	var slot = document.getElementById(unit).parentNode;
+	buoy.addClass(slot,'combo');
+
+	if (cardType.combo[card.type].atk) {
+		currentAtk = parseInt(document.querySelector('.'+who+' .atk').textContent);
+		slot.setAttribute('data-atk', cardType.combo[card.type].atk );
+		buoy.addClass(slot,'atk');
+		document.querySelector('.'+who+' .atk').innerHTML = currentAtk+parseInt(cardType.combo[card.type].atk);
+	}
+
+	if (cardType.combo[card.type].def) {
+		currentDef = parseInt(document.querySelector('.'+who+' .def').textContent);
+		slot.setAttribute('data-def', cardType.combo[card.type].def );
+		buoy.addClass(slot,'def');
+		document.querySelector('.'+who+' .def').innerHTML = currentDef+parseInt(cardType.combo[card.type].def);
+	}
+}
+
+// =================================
+// --------- UI FUNCTIONS ----------
+// =================================
 
 function placeUnit(pos, card, who) {
 	var newUnit;
@@ -358,6 +439,11 @@ function placeUnit(pos, card, who) {
 	
 	unitCard(newUnit, card, who);
 	smartShift('opponent');
+}
+
+function placeCombo(pos, card, who) {
+	var unit = document.getElementById(pos);	
+	comboCard(unit, card, who);
 }
 
 function smartShift(who) {

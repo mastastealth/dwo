@@ -80,6 +80,14 @@
 
 			&:empty { opacity: 0.1; }
 
+			&.active { border-color: green; }
+
+			&.combo { 
+				&.atk { box-shadow: 0 0 6px red; }
+				&.def { box-shadow: 0 0 6px blue; }
+				&.atk.def { box-shadow: 0 0 6px purple;  }
+			}
+
 			button {
 				background: green;
 				border-radius: 20px;
