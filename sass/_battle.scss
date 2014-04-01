@@ -80,7 +80,7 @@
 
 			&:empty { opacity: 0.1; }
 
-			&.active { border-color: green; }
+			&.active { border-color: green; cursor: pointer; }
 
 			&.combo { 
 				&.atk { box-shadow: 0 0 6px red; }
