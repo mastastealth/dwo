@@ -57,6 +57,22 @@
 			.atk { color: red; }
 			.def { color: blue; }
 		}
+
+		.commander {
+			background: linear-gradient(to right,red,blue);
+			height: 300px;
+			position: absolute;
+			bottom: 0;
+			width: 160px;
+		}
+			.player .commander {
+				left: 0;
+			}
+
+			.opponent .commander {
+				right: 0;
+				transform: rotateY(180deg);
+			}
 	}
 
 	.formation {
@@ -120,6 +136,10 @@
 		button {
 			position: absolute;
 			top: -60px; left: 10px;
+		}
+
+		.card {
+			&.disable { opacity: 0.5; pointer-events: none; }
 		}
 	}
 

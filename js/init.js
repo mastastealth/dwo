@@ -115,9 +115,9 @@ document.addEventListener('DOMContentLoaded', function(){
 			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
 			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
 			else if (msg.func === 'playCard') { playCard(msg.card, msg.who) }
-			else if (msg.func === 'yourTurn') { myTurn = true }
-			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who) }
-			else if (msg.func === 'comboPos') { placeCombo(msg.pos, msg.card, msg.who) }
+			else if (msg.func === 'yourTurn') { myTurn = true; buoy.removeClass(document.querySelector('.hand'),'disable'); }
+			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who, msg.id) }
+			else if (msg.func === 'comboPos') { comboCard(msg.pos, msg.card, msg.who) }
 		});
 	};
 
