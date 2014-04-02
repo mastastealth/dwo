@@ -144,11 +144,13 @@
 		button {
 			position: absolute;
 			top: -60px; left: 10px;
+
+			&.shuf { left: calc(50% - 110px); }
 		}
 
 		.card {
 			transition: all 0.3s;
-			
+
 			&.disable { opacity: 0.5; pointer-events: none; }
 			&:hover { transform: scale(1.5); z-index: 1; }
 		}

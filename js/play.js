@@ -106,7 +106,7 @@ function playInit(connection, deck) {
 	// UI Stuff
 
 	// End Turn
-	var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') )
+	var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') );
 	endTurn.innerHTML = "End Turn";
 	endTurn.addEventListener('click', function() {
 		if (myTurn = true){
@@ -120,27 +120,23 @@ function playInit(connection, deck) {
 		}
 	});
 
-	// Shuffle array (deck)
-	function shuffle(array) {
-		var currentIndex = array.length
-		, temporaryValue
-		, randomIndex;
+	// Reshuffle deck
+	var reshuffle = document.querySelector('.hand').appendChild( document.createElement('button') );
+	reshuffle.innerHTML = "Reshuffle";
+	buoy.addClass(reshuffle,'shuf');
+	reshuffle.addEventListener('click', function() {
+		if (myTurn = true && document.querySelectorAll('.card').length>=8){
+			var cards = [];
 
-		// While there remain elements to shuffle...
-		while (0 !== currentIndex) {
+			[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+				cards.push(el.cardProps);
+			});
 
-			// Pick a remaining element...
-			randomIndex = Math.floor(Math.random() * currentIndex);
-			currentIndex -= 1;
-
-			// And swap it with the current element.
-			temporaryValue = array[currentIndex];
-			array[currentIndex] = array[randomIndex];
-			array[randomIndex] = temporaryValue;
+			redeckCard(playerDeck,cards,true);
+			reshuffle.setAttribute('disabled','true');
 		}
-
-		return array;
-	}
+		//buoy.addClass(document.querySelector('.hand'),'disable');
+	});
 }
 
 // Play a card
@@ -412,6 +408,28 @@ function playCard(card,who) {
 // -------- CARD FUNCTIONS ---------
 // =================================
 
+// Shuffle array (deck)
+function shuffle(array) {
+	var currentIndex = array.length
+	, temporaryValue
+	, randomIndex;
+
+	// While there remain elements to shuffle...
+	while (0 !== currentIndex) {
+
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		// And swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+
+	return array;
+}
+
 function testCard(card,action) {
 	// Test a card against the hashed deck list
 	// Return true if it exists
@@ -454,11 +472,11 @@ function drawCard(deck,n,origin) {
 	for (var i=0;i<n;i++) {
 		var wannaplay;
 
-		// If starting draw, first grab supply + unit
-		if (n===8 && i===0) {
+		// If starting draw, first grab supply + unit (if possible)
+		if (n===8 && i===0 && indexOfAttr(deck,'type','supply') != -1) {
 			wannaplay = deck.splice( indexOfAttr(deck,'type','supply'), 1)[0];
 		} 
-		else if (n===8 && i===1) {
+		else if (n===8 && i===1 && indexOfAttr(deck,'type','unit') != -1) {
 			wannaplay = deck.splice( indexOfAttr(deck,'type','unit'), 1)[0];
 		}
 		// Otherwise draw whatever
@@ -474,7 +492,20 @@ function drawCard(deck,n,origin) {
 			});
 		}
 	}
-	
+}
+
+// Redeck Card
+function redeckCard(deck,cards,redraw) {
+	for (var i=0;i<cards.length;i++) {
+		deck.push( cards[i] );
+		document.getElementById(cards[i].id).remove();
+
+		// Last card, do something
+		if (i===cards.length-1) {
+			deck = shuffle(deck);
+			if (redraw) drawCard(playerDeck,cards.length);
+		}
+	}
 }
 
 // Actually draw a real card
@@ -489,6 +520,7 @@ function drawCardConfirmed(card) {
 	var img = newcard.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	newcard.classList.add('card');
+	newcard.cardProps = card;
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
 
@@ -527,6 +559,8 @@ function drawCardConfirmed(card) {
 				'action': 'play'
 			});
 		}
+
+		document.querySelector('.shuf').setAttribute('disabled','true');
 	});
 }
 
@@ -545,6 +579,7 @@ function unitCard(newUnit,card,who,id) {
 	buoy.addClass(newUnit,'unit');
 	newUnit.setAttribute('id', id);
 	newUnit.setAttribute('data-type', card.type);
+	newUnit.cardProps = card;
 	// Image
 	var img = newUnit.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/cards/unit_'+card.type+'.png');
@@ -628,6 +663,7 @@ function comboCard(unit,card,who) {
 	buoy.addClass(slot,'combo');
 
 	slot.setAttribute('data-type', card.type);
+	slot.cardProps = card;
 
 	if (cardType.combo[card.type].atk) {
 		var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
