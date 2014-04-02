@@ -20,30 +20,32 @@
 	}
 
 	.field {
-		background: white;
+		background: tan;
 		height: 70%;
 		overflow: hidden;
 
 		aside { 
 			height: 100%;
+			overflow: hidden;
+			padding-top: 50px;
 			position: relative;
 			width: 50%; 
 		}
 
 		aside:first-child {
-			border-right: 2px solid #CCC;
+			border-right: 2px solid #222;
 			float: left;
 
-			li:nth-child(3) { transform: translateX(10px) scale(0.9); }
-			li:first-child, li:last-child { transform: translateX(-10px) scale(0.9); }
+			li:nth-child(3) { transform: translateX(80px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(-50px) scale(0.9); }
 		}
 
 		aside:last-child {
-			border-left: 2px solid #CCC;
+			border-left: 2px solid #222;
 			float: right;
 
-			li:nth-child(3) { transform: translateX(-10px) scale(0.9); }
-			li:first-child, li:last-child { transform: translateX(10px) scale(0.9); }
+			li:nth-child(3) { transform: translateX(-80px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(50px) scale(0.9); }
 		}
 
 		h1 {
@@ -53,6 +55,7 @@
 			top: 0; left: 0;
 			text-align: center;
 			width: 100%;
+			z-index: 99;
 
 			.atk { color: red; }
 			.def { color: blue; }
@@ -73,6 +76,10 @@
 				right: 0;
 				transform: rotateY(180deg);
 			}
+
+		.sup:before {
+			content: attr(data-supuse) "/";
+		}
 	}
 
 	.formation {
@@ -84,17 +91,18 @@
 		justify-content: center;
 		//position: relative;
 		margin: 0 auto;
-		min-width: 120px;
-		width: 50%;
+		min-width: 180px;
+		width: 30%;
 
 		li {
-			border: 2px solid #AAA;
+			border: 2px solid darken(#D2B48C,20%);
 			border-radius: 50%;
 			min-height: 16.5%;
+			perspective: 300px;
 			position: relative;
 			transform: scale(0.9);
 
-			&:empty { opacity: 0.1; }
+			&:empty { background: white; opacity: 0.1; }
 
 			&.active { border-color: green; cursor: pointer; }
 
@@ -114,11 +122,11 @@
 				line-height: 40px;
 				opacity: 1;
 				position: absolute;
-				left: 45%;
+				left: 5%;
 				text-align: center;
 				transition: all 0.3s;
 				width: 40px;
-				z-index: 2;
+				z-index: 5;
 
 				&:before { content: '+'; }
 
@@ -139,18 +147,24 @@
 		}
 
 		.card {
+			transition: all 0.3s;
+			
 			&.disable { opacity: 0.5; pointer-events: none; }
+			&:hover { transform: scale(1.5); z-index: 1; }
 		}
 	}
 
 	.unit {
-		background: red;
-		border-radius: 10px;
-		margin: 0 auto;
-		height: 50px;
-		position: relative;
-		//top: 100%;
-		transform: translateY(50%);
-		width: 50px;
+		background: #333;
+		border-radius: 0;
+		height: 200px;
+		position: absolute;
+		top: -120px; left: 50%;
+		max-width: 150px;
+		min-width: 100px;
+
+		img { height: 100%; width: auto; }
 	}
+		.player .unit { transform: scale(0.8) translateX(-60%) rotateY(15deg); }
+		.opponent .unit { transform: scale(0.8) translateX(-60%) rotateY(-15deg); }
 }

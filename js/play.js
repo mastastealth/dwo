@@ -62,6 +62,9 @@ function playInit(connection, deck) {
 	var hashedDeck = {};
 	deck = [
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
 		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
 		{'type': 'apc', 'id' : 0, 'hash' : 0},
 		{'type': 'at', 'id' : 0, 'hash' : 0},
@@ -71,7 +74,8 @@ function playInit(connection, deck) {
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
 		{'type': 'poppy', 'id' : 0, 'hash' : 0},
-		{'type': 'oz', 'id' : 0, 'hash' : 0}
+		{'type': 'mo', 'id' : 0, 'hash' : 0},
+		{'type': 'saptiva', 'id' : 0, 'hash' : 0}
 	];
 
 	playerDeck = shuffle(deck);
@@ -186,15 +190,15 @@ function playCard(card,who) {
 					
 					// Add listener for each button
 					[].forEach.call(document.querySelectorAll('.player li button'), function(el) {
-		  				el.addEventListener('click', function() {
-		  					// If the slot is empty
-		  					if (el.children.length === 0) {
-		  						buoy.removeClass(firstUnit.parentNode, 'active');
-		  						buoy.removeClass(lastUnit.parentNode, 'active');
+						el.addEventListener('click', function() {
+							// If the slot is empty
+							if (el.children.length === 0) {
+								buoy.removeClass(firstUnit.parentNode, 'active');
+								buoy.removeClass(lastUnit.parentNode, 'active');
 
-		  						// Add unit to correct slot
-		  						newUnit = el.parentNode.appendChild( document.createElement('div') );
-		  						//if (buoy.hasClass(el,'next')) newUnit = el.parentNode.nextElementSibling.appendChild( document.createElement('div') );
+								// Add unit to correct slot
+								newUnit = el.parentNode.appendChild( document.createElement('div') );
+								//if (buoy.hasClass(el,'next')) newUnit = el.parentNode.nextElementSibling.appendChild( document.createElement('div') );
 								unitCard(newUnit,card,who,card.id);
 
 								if (buoy.hasClass(el,'prev')) conn.send( { 'func':'unitPos', 'pos' : 'prev', 'card' : card, 'who' : 'opponent', 'id' : card.id } );
@@ -202,19 +206,19 @@ function playCard(card,who) {
 
 								// Cleanup
 								addPrev.parentNode.removeChild(addPrev);
-		  						addNext.parentNode.removeChild(addNext);
-		  						addPrev = null;
-		  						addNext = null;
+								addNext.parentNode.removeChild(addNext);
+								addPrev = null;
+								addNext = null;
 
-		  						[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+								[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
 									buoy.removeClass(el, 'disable');
 								});
 
-		  						// Smart shift
-		  						smartShift(who);
-		  					}
-		  				});
-		  			});
+								// Smart shift
+								smartShift(who);
+							}
+						});
+					});
 				} // Otherwise, place according to the player's choice
 			}
 			// Remove card from hand
@@ -435,15 +439,30 @@ function testCard(card,action) {
 
 // Draw a card 
 function drawCard(deck,n,origin) {
-	//console.log('Drawing from: ',deck)
-
 	n = typeof n !== 'undefined' ? n : 1;
+
+	var indexOfAttr = function(array, attr, value) {
+	    for(var i = 0; i < array.length; i++) {
+	        if(array[i].hasOwnProperty(attr) && array[i][attr] === value) {
+	            return i;
+	        }
+	    }
+	    return -1;
+	}
 
 	// Add to UI
 	for (var i=0;i<n;i++) {
+		var wannaplay;
 
-		// Play card from our deck
-		var wannaplay = deck.pop();
+		// If starting draw, first grab supply + unit
+		if (n===8 && i===0) {
+			wannaplay = deck.splice( indexOfAttr(deck,'type','supply'), 1)[0];
+		} 
+		else if (n===8 && i===1) {
+			wannaplay = deck.splice( indexOfAttr(deck,'type','unit'), 1)[0];
+		}
+		// Otherwise draw whatever
+		else { wannaplay = deck.pop(); }
 
 		// Check against opponent to make sure it's legit
 		if (origin != 'origin') {
@@ -455,13 +474,20 @@ function drawCard(deck,n,origin) {
 			});
 		}
 	}
+	
 }
 
 // Actually draw a real card
 function drawCardConfirmed(card) {
+	// Image
+	var pre = '';
+	if ( cardType.unit[card.type] ) { pre = 'unit_'; }
+	else if ( cardType.co[card.type] ) { pre = 'co_'; }
 
 	// DOM Stuff
-	var newcard = document.querySelector('.hand').appendChild( document.createElement('div') )
+	var newcard = document.querySelector('.hand').appendChild( document.createElement('div') );
+	var img = newcard.appendChild( document.createElement('img') );
+	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	newcard.classList.add('card');
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
@@ -519,6 +545,9 @@ function unitCard(newUnit,card,who,id) {
 	buoy.addClass(newUnit,'unit');
 	newUnit.setAttribute('id', id);
 	newUnit.setAttribute('data-type', card.type);
+	// Image
+	var img = newUnit.appendChild( document.createElement('img') );
+	img.setAttribute('src','images/cards/unit_'+card.type+'.png');
 	// Set attack
 	newUnit.setAttribute('data-atk', cardType.unit[card.type].atk );
 	currentAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
@@ -542,6 +571,8 @@ function unitCalc(who) {
 	var commAtkBonus = 0;
 	var commDefBonus = 0;
 	var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
+	var currentSupUse = 0;
+	var currentSup = parseInt(document.querySelector('.'+who+' .sup').textContent);
 
 	[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(el) {
 		// If unit has a bonus
@@ -559,20 +590,24 @@ function unitCalc(who) {
 		if ( buoy.hasClass(el.parentNode,'combo') ) {
 			if (el.parentNode.getAttribute('data-atk')) comboAtkTotal += parseInt(el.parentNode.getAttribute('data-atk'))
 			if (el.parentNode.getAttribute('data-def')) comboDefTotal += parseInt(el.parentNode.getAttribute('data-def'))
+
+			currentSupUse += parseInt(el.parentNode.getAttribute('data-sup'));
 		}
 
 		unitTraits.push(cardType.unit[el.getAttribute('data-type')].trait);
+		// Add supply cost
+		currentSupUse += parseInt(cardType.unit[el.getAttribute('data-type')].sup);
 	});
 
 	if (document.querySelector('.'+who+' .commander')) {
 		var comm = document.querySelector('.'+who+' .commander');
 
 		for (var i=0;i<unitTraits.length;i++) {
-			if ( unitTraits[i].indexOf( comm.bonus[1] ) ) {
+			if ( unitTraits[i].indexOf( comm.bonus[1] ) != -1 ) {
 				if ( comm.bonus[2] === 'atk') commAtkBonus += comm.bonus[0]
 				if ( comm.bonus[2] === 'def') commDefBonus += comm.bonus[0]
 
-				if (comm.bonus2) {
+				if (comm.bonus2 && unitTraits[i].indexOf( comm.bonus2[1] ) != -1) {
 					if ( comm.bonus2[2] === 'atk') commAtkBonus += comm.bonus2[0]
 					if ( comm.bonus2[2] === 'def') commDefBonus += comm.bonus2[0]
 				}
@@ -585,6 +620,7 @@ function unitCalc(who) {
 
 	document.querySelector('.'+who+' .atk').innerHTML = unitAtk + unitBonus + comboAtkTotal + commAtkBonus;
 	document.querySelector('.'+who+' .def').innerHTML = parseInt(document.querySelector('.'+who+' .def').getAttribute('data-unit')) + comboDefTotal + commDefBonus;
+	document.querySelector('.'+who+' .sup').setAttribute('data-supuse', currentSupUse);
 }
 
 function comboCard(unit,card,who) {
