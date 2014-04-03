@@ -57,9 +57,46 @@
 			width: 100%;
 			z-index: 99;
 
-			.atk { color: red; }
-			.def { color: blue; }
+			.atk { 
+				background: #E44141; border-radius: 15px; 
+				color: white; line-height: 30px; width: 30px; }
+			.def { 
+				background: #4178E4; border-radius: 15px; 
+				color: white; line-height: 30px; width: 30px; }
+
+			.sup {
+				background: #EED84F;
+				height: 30px;
+				line-height: 30px;
+				position: absolute;;
+				top: 10px; right: 10px;
+				text-align: center;
+				width: 50px;
+
+				&:before, &:after {
+					border-style: solid;
+					content: '';
+					height: 0;
+					position: absolute;
+					left: 0;
+					width: 0;
+				}	
+
+				&:before {
+					border-width: 0 25px 10px 25px;
+					border-color: transparent transparent #EED84F transparent;
+					top: -10px;
+				}
+
+				&:after {
+					border-width: 10px 25px 0 25px;
+					border-color: #EED84F transparent transparent transparent;
+					bottom: -10px;
+				}
+			}
 		}
+
+		.player .sup { left: 10px; }
 
 		.commander {
 			background: linear-gradient(to right,red,blue);
@@ -76,10 +113,6 @@
 				right: 0;
 				transform: rotateY(180deg);
 			}
-
-		.sup:before {
-			content: attr(data-supuse) "/";
-		}
 	}
 
 	.formation {
@@ -101,13 +134,25 @@
 			perspective: 300px;
 			position: relative;
 			transform: scale(0.9);
+			transition: all 0.3s;
 
 			&:empty { background: white; opacity: 0.1; }
 
-			&.active { border-color: green; cursor: pointer; }
+			&.active { 
+				background: transparentize(green,0.6);
+				border-color: green; 
+				cursor: pointer; 
+				z-index: 1;
+
+				.unit { 
+					box-shadow: 0 0 15px green;
+					opacity: 0.3; 
+					pointer-events: none; 
+				}
+			}
 
 			&.combo { 
-				&.atk { box-shadow: 0 0 6px red; }
+				&.atk { background: transparentize(#E44141,0.7); box-shadow: 0 0 6px red; }
 				&.def { box-shadow: 0 0 6px blue; }
 				&.atk.def { box-shadow: 0 0 6px purple;  }
 			}

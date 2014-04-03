@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					onMessage(c);
 					playInit(c,deck);
 					myTurn = false;
+					notify('yellow', "Opponent's Turn");
 				});
 			});
 
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							onMessage(conn);
 							playInit(conn,deck);
 							myTurn = true;
+							notify('green', 'Your Turn');
 						});
 					return false;
 				}
@@ -110,18 +112,20 @@ document.addEventListener('DOMContentLoaded', function(){
 
 	onMessage = function(conn) {
 		conn.on('data', function(msg) {
-			console.log(msg);
+			//console.log(msg);
 			if (msg.func === 'testCard') { testCard(msg.card, msg.action, msg.who) }
 			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
 			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
 			else if (msg.func === 'playCard') { playCard(msg.card, msg.who) }
 			else if (msg.func === 'yourTurn') { 
 				myTurn = true; 
+				notify('green', 'Your Turn');
 				document.querySelector('.shuf').removeAttribute('disabled'); 
 				buoy.removeClass(document.querySelector('.hand'),'disable'); 
 			}
 			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who, msg.id) }
 			else if (msg.func === 'comboPos') { comboCard(msg.pos, msg.card, msg.who) }
+			else if (msg.func === 'notify') { notify(msg.type, msg.msg) }
 		});
 	};
 
