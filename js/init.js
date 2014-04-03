@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					// <TOADD: If first person to join (player) or not (watcher)> 
 					buoy.removeClass(m.parentNode,'active');
 					onMessage(c);
-					playInit(c,deck);
 					myTurn = false;
+					playInit(c,deck);
 					notify('yellow', "Opponent's Turn");
 				});
 			});
@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function(){
 						conn.on('open', function() {
 							buoy.removeClass(m.parentNode,'active');
 							onMessage(conn);
-							playInit(conn,deck);
 							myTurn = true;
+							playInit(conn,deck);
 							notify('green', 'Your Turn');
 						});
 					return false;
@@ -123,12 +123,17 @@ document.addEventListener('DOMContentLoaded', function(){
 				myTurn = true; 
 				notify('green', 'Your Turn');
 				document.querySelector('.shuf').removeAttribute('disabled'); 
+				document.querySelector('.end').removeAttribute('disabled');
+				document.querySelector('.turn').removeAttribute('disabled');
 				buoy.removeClass(document.querySelector('.hand'),'disable'); 
 			}
 			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who, msg.id) }
 			else if (msg.func === 'comboPos') { comboCard(msg.pos, msg.card, msg.who) }
 			else if (msg.func === 'notify') { notify(msg.type, msg.msg) }
-			else if (msg.func === 'win') { win(msg.points); resetField(0,false); }
+			else if (msg.func === 'win') { 
+				win(msg.points); 
+				resetField(0,false); 
+			}
 		});
 	};
 

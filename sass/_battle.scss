@@ -155,6 +155,8 @@
 				&.atk { background: transparentize(#E44141,0.7); box-shadow: 0 0 6px red; }
 				&.def { box-shadow: 0 0 6px blue; }
 				&.atk.def { box-shadow: 0 0 6px purple;  }
+
+				&.active { animation: borderPulse 0.5s infinite alternate; opacity: 1; }
 			}
 
 			button {
@@ -187,6 +189,7 @@
 		position: relative;
 
 		button {
+			background: transparentize(green,0.9);
 			position: absolute;
 			top: -60px; left: 10px;
 
@@ -195,6 +198,8 @@
 				left: calc(50% + 10px); 
 				&:hover { background: #E44141; border-color: darkred; color: white; }
 			}
+
+			&[disabled=true] { background: rgba(120,120,120,0.3); color: #666; }
 		}
 
 		.card {

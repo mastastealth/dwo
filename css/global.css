@@ -597,6 +597,12 @@ footer {
   box-shadow: 0 0 6px purple;
 }
 
+.game .formation li.combo.active {
+  -webkit-animation: borderPulse 0.5s infinite alternate;
+  animation: borderPulse 0.5s infinite alternate;
+  opacity: 1;
+}
+
 .game .formation li button {
   background: green;
   border-radius: 20px;
@@ -636,6 +642,7 @@ footer {
 }
 
 .game .hand button {
+  background: rgba(0, 128, 0, 0.1);
   position: absolute;
   top: -60px;
   left: 10px;
@@ -655,6 +662,11 @@ footer {
   background: #E44141;
   border-color: darkred;
   color: white;
+}
+
+.game .hand button[disabled=true] {
+  background: rgba(120, 120, 120, 0.3);
+  color: #666;
 }
 
 .game .hand .card {

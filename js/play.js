@@ -65,8 +65,8 @@ function playInit(connection, deck) {
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
 		{'type': 'drone', 'id' : 0, 'hash' : 0}, 
 		{'type': 'drone', 'id' : 0, 'hash' : 0}, 
-		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
-		{'type': 'apc', 'id' : 0, 'hash' : 0},
+		{'type': 'at', 'id' : 0, 'hash' : 0}, 
+		{'type': 'at', 'id' : 0, 'hash' : 0},
 		{'type': 'at', 'id' : 0, 'hash' : 0},
 		{'type': 'frontline', 'id' : 0, 'hash' : 0},
 		{'type': 'barrier', 'id' : 0, 'hash' : 0},
@@ -74,8 +74,7 @@ function playInit(connection, deck) {
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
 		{'type': 'poppy', 'id' : 0, 'hash' : 0},
-		{'type': 'mo', 'id' : 0, 'hash' : 0},
-		{'type': 'saptiva', 'id' : 0, 'hash' : 0}
+		{'type': 'mo', 'id' : 0, 'hash' : 0}
 	];
 
 	playerDeck = shuffle(deck);
@@ -108,8 +107,13 @@ function playInit(connection, deck) {
 	// End Turn
 	var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') );
 	endTurn.innerHTML = "End Turn";
+	buoy.addClass(endTurn,'turn');
+	if (!myTurn) endTurn.setAttribute('disabled','true');
+
 	endTurn.addEventListener('click', function() {
 		if (myTurn = true){
+			endTurn.setAttribute('disabled','true');
+			document.querySelector('.end').setAttribute('disabled','true');
 			if (document.querySelectorAll('.card').length<8) {
 				drawCard(playerDeck,8-document.querySelectorAll('.card').length);
 			} else { drawCard(playerDeck,1); }
@@ -126,6 +130,7 @@ function playInit(connection, deck) {
 	var endRound = document.querySelector('.hand').appendChild( document.createElement('button') );
 	endRound.innerHTML = "End Round";
 	buoy.addClass(endRound,'end');
+	if (!myTurn) endRound.setAttribute('disabled','true');
 
 	endRound.addEventListener('click', function() {
 		if (myTurn = true){
@@ -146,6 +151,8 @@ function playInit(connection, deck) {
 	var reshuffle = document.querySelector('.hand').appendChild( document.createElement('button') );
 	reshuffle.innerHTML = "Reshuffle";
 	buoy.addClass(reshuffle,'shuf');
+	if (!myTurn) reshuffle.setAttribute('disabled','true');
+
 	reshuffle.addEventListener('click', function() {
 		if (myTurn = true && document.querySelectorAll('.card').length>=8){
 			var cards = [];
@@ -793,10 +800,24 @@ function resetField(points,loser) {
 		if (!loser && document.querySelector('.player .combo')) redeckCard(playerDeck,[document.querySelector('.player .combo').cardProps],false);
 
 		if (loser) {
+			[].forEach.call(document.querySelectorAll('.player .combo'), function(el) {
+				el.setAttribute('class','');
+				el.removeAttribute('data-atk');
+				el.removeAttribute('data-def');
+				el.removeAttribute('data-sup');
+				el.removeAttribute('data-type');
+				el.removeAttribute('id');
+			});
+
 			notify('red', 'Lost Round');
 			conn.send({ 'func':'notify', 'type':'green', 'msg': 'You win round'});
 			conn.send({ 'func':'win', 'points': points });
 		}
+
+		window.setTimeout( function() {
+			unitCalc('player');
+			unitCalc('opponent');
+		}, 500);
 	} 
 	// More than one unit
 	else {
@@ -805,13 +826,21 @@ function resetField(points,loser) {
 			var objType;
 			if (o.nodeName==='DIV') { objType = 'unit' } else { objType = 'combo' }
 
-			console.log(o);
 			redeckCard(playerDeck,[o.cardProps],false);
 
 			[].forEach.call(document.querySelectorAll('.player .active.'+objType), function(obj) {
 				// Kill Listeners
 				obj.removeEventListener('click', chooseListener);
-				obj.remove();
+				if(objType === 'unit') {
+					obj.remove();
+				} else {
+					obj.setAttribute('class','');
+					obj.removeAttribute('data-atk');
+					obj.removeAttribute('data-def');
+					obj.removeAttribute('data-sup');
+					obj.removeAttribute('data-type');
+					obj.removeAttribute('id');
+				}
 			});
 
 			window.setTimeout( function() {
@@ -892,6 +921,9 @@ function resetField(points,loser) {
 			});
 		} 
 	}
+
+	document.querySelector('.player .commander').remove();
+	document.querySelector('.player .commander').remove();
 
 	// Reset stats
 	function wipeStats(who) {
