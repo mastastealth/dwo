@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){ 
 	var deck;
+	var victoryPts = 0;
 
 	//Activate Overlay
 	function overlayOn() {
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					var keyCode = e.keyCode || e.which;
 					// If pressing enter
 					if (keyCode == '13'){
+						document.querySelector('.overlay input').setAttribute('disabled','true');
 						var room = this.value.replace(/\s+/g, '');
 						conn = peer.connect( 'dwo'+room, { reliable: true } );
 
@@ -126,8 +128,11 @@ document.addEventListener('DOMContentLoaded', function(){
 			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who, msg.id) }
 			else if (msg.func === 'comboPos') { comboCard(msg.pos, msg.card, msg.who) }
 			else if (msg.func === 'notify') { notify(msg.type, msg.msg) }
+			else if (msg.func === 'win') { win(msg.points); resetField(0,false); }
 		});
 	};
+
+	function win(p) { victoryPts += p; }
 
 	// Prepend function
 	Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };

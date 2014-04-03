@@ -191,6 +191,10 @@
 			top: -60px; left: 10px;
 
 			&.shuf { left: calc(50% - 110px); }
+			&.end { 
+				left: calc(50% + 10px); 
+				&:hover { background: #E44141; border-color: darkred; color: white; }
+			}
 		}
 
 		.card {
@@ -211,7 +215,23 @@
 		min-width: 100px;
 
 		img { height: 100%; width: auto; }
+
+		&.active { 
+			animation: borderPulse 0.5s infinite alternate;
+			border: 2px solid limegreen; 
+			box-shadow: 0 0 2px limegreen; 
+			cursor: pointer;
+
+			img { pointer-events: none; }
+		}
 	}
 		.player .unit { transform: scale(0.8) translateX(-60%) rotateY(15deg); }
 		.opponent .unit { transform: scale(0.8) translateX(-60%) rotateY(-15deg); }
+}
+
+@keyframes borderPulse {
+	from { border: 2px solid limegreen; 
+			box-shadow: 0 0 2px limegreen; }
+	to { border: 2px solid white; 
+			box-shadow: 0 0 2px white; }
 }

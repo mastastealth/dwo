@@ -646,6 +646,17 @@ footer {
   left: calc(50% - 110px);
 }
 
+.game .hand button.end {
+  left: -webkit-calc(50% + 10px);
+  left: calc(50% + 10px);
+}
+
+.game .hand button.end:hover {
+  background: #E44141;
+  border-color: darkred;
+  color: white;
+}
+
 .game .hand .card {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
@@ -679,6 +690,19 @@ footer {
   width: auto;
 }
 
+.game .unit.active {
+  -webkit-animation: borderPulse 0.5s infinite alternate;
+  animation: borderPulse 0.5s infinite alternate;
+  border: 2px solid limegreen;
+  -webkit-box-shadow: 0 0 2px limegreen;
+  box-shadow: 0 0 2px limegreen;
+  cursor: pointer;
+}
+
+.game .unit.active img {
+  pointer-events: none;
+}
+
 .game .player .unit {
   -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
   -ms-transform: scale(0.8) translateX(-60%) rotateY(15deg);
@@ -689,6 +713,34 @@ footer {
   -webkit-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
   -ms-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
   transform: scale(0.8) translateX(-60%) rotateY(-15deg);
+}
+
+@-webkit-keyframes borderPulse {
+  from {
+    border: 2px solid limegreen;
+    -webkit-box-shadow: 0 0 2px limegreen;
+    box-shadow: 0 0 2px limegreen;
+  }
+
+  to {
+    border: 2px solid white;
+    -webkit-box-shadow: 0 0 2px white;
+    box-shadow: 0 0 2px white;
+  }
+}
+
+@keyframes borderPulse {
+  from {
+    border: 2px solid limegreen;
+    -webkit-box-shadow: 0 0 2px limegreen;
+    box-shadow: 0 0 2px limegreen;
+  }
+
+  to {
+    border: 2px solid white;
+    -webkit-box-shadow: 0 0 2px white;
+    box-shadow: 0 0 2px white;
+  }
 }
 
 body,
