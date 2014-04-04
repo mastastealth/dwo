@@ -139,7 +139,10 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	};
 
-	function win(p) { victoryPts += p; }
+	function win(p) { 
+		victoryPts += p; 
+		document.querySelector('.player outpost').textContent = victoryPts;
+	}
 
 	// Prepend function
 	Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
