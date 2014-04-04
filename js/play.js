@@ -70,27 +70,27 @@ function playInit(connection, deck, atkr) {
 
 	var hashedDeck = {};
 	deck = [
-		{'type': 'infantry', 'id' : 0, 'hash' : 0}, // 20 Units
-		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
-		{'type': 'infantry', 'id' : 0, 'hash' : 0},
-		{'type': 'drone', 'id' : 0, 'hash' : 0}, 
-		{'type': 'drone', 'id' : 0, 'hash' : 0}, 
-		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
-		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
-		{'type': 'a2g', 'id' : 0, 'hash' : 0}, 
-		{'type': 'a2g', 'id' : 0, 'hash' : 0}, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0, 'unit' : 1 }, // 20 Units
+		{'type': 'infantry', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0, 'unit' : 1 },
+		{'type': 'drone', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'drone', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'tank', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'tank', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'a2g', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'a2g', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
 
-		{'type': 'arty', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
-		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
-		{'type': 'jet', 'id' : 0, 'hash' : 0}, 
-		{'type': 'helo', 'id' : 0, 'hash' : 0}, 
-		{'type': 'helo', 'id' : 0, 'hash' : 0}, 
-		{'type': 'jet', 'id' : 0, 'hash' : 0}, 
-		{'type': 'apc', 'id' : 0, 'hash' : 0}, 
-		{'type': 'bomber', 'id' : 0, 'hash' : 0}, 
-		{'type': 'bomber', 'id' : 0, 'hash' : 0}, 
+		{'type': 'arty', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'jet', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'helo', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'helo', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'jet', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'bomber', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+		{'type': 'bomber', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
 
 		{'type': 'at', 'id' : 0, 'hash' : 0}, // 25 Combos
 		{'type': 'at', 'id' : 0, 'hash' : 0},
@@ -186,15 +186,17 @@ function playInit(connection, deck, atkr) {
 	if (!myTurn) endTurn.setAttribute('disabled','true');
 
 	endTurn.addEventListener('click', function() {
-		if (myTurn = true){
+		if (myTurn){
+			// If it is your turn, disable buttons and turn
+			myTurn = false;
 			endTurn.setAttribute('disabled','true');
 			document.querySelector('.end').setAttribute('disabled','true');
+			// AUto draw cards
 			if (document.querySelectorAll('.card').length<8) {
 				drawCard(playerDeck,8-document.querySelectorAll('.card').length);
 			} else { drawCard(playerDeck,1); }
-
+			// Tell opponent it's his turn
 			conn.send( { 'func':'yourTurn' } );
-			myTurn = false;
 			buoy.addClass(document.querySelector('.hand'),'disable');
 		}
 
@@ -208,7 +210,8 @@ function playInit(connection, deck, atkr) {
 	if (!myTurn) endRound.setAttribute('disabled','true');
 
 	endRound.addEventListener('click', function() {
-		if (myTurn = true){
+		// Only possible to end round on your turn
+		if (myTurn) {
 			var points;
 
 			if (document.querySelectorAll('.opponent .unit').length <= 3) {
@@ -594,8 +597,8 @@ function drawCard(deck,n,origin) {
 		if (n===8 && i===0 && indexOfAttr(deck,'type','supply') != -1) {
 			wannaplay = deck.splice( indexOfAttr(deck,'type','supply'), 1)[0];
 		} 
-		else if (n===8 && i===1 && indexOfAttr(deck,'type','unit') != -1) {
-			wannaplay = deck.splice( indexOfAttr(deck,'type','unit'), 1)[0];
+		else if (n===8 && i===1 && indexOfAttr(deck,'unit',1) != -1) {
+			wannaplay = deck.splice( indexOfAttr(deck,'unit',1), 1)[0];
 		}
 		// Otherwise draw whatever
 		else { wannaplay = deck.pop(); }
@@ -614,8 +617,11 @@ function drawCard(deck,n,origin) {
 
 // Redeck Card
 function redeckCard(deck,cards,redraw) {
+	var count = 0;
 	for (var i=0;i<cards.length;i++) {
 		deck.push( cards[i] );
+		console.log('Redecking: ',cards[i]);
+		count++;
 		// Delete unit/cards and not li.combo's
 		if (document.getElementById(cards[i].id)) {
 			document.getElementById(cards[i].id).remove();
@@ -624,7 +630,8 @@ function redeckCard(deck,cards,redraw) {
 		// Last card, do something
 		if (i===cards.length-1) {
 			deck = shuffle(deck);
-			if (redraw) drawCard(playerDeck,cards.length);
+			if (redraw && cards.length<8) { drawCard(playerDeck,cards.length) }
+			else { drawCard(playerDeck,8) }
 		}
 	}
 }
@@ -749,7 +756,6 @@ function unitCalc(who) {
 			});
 
 			bonusTotal += thisBonus;
-			console.log(bonusTotal, thisBonus)
 		}
 		// If unit has combo attached
 		if ( buoy.hasClass(el.parentNode,'combo') ) {
@@ -830,6 +836,17 @@ function comboCard(unit,card,who) {
 
 function specialCombo(card,who) {
 	switch (card.type) {
+		case "support":
+			if (who==='player') document.getElementById(card.id).remove();
+
+			currentSup = parseInt(document.querySelector('.'+who+' .sup').getAttribute('data-sup'));
+			document.querySelector('.'+who+' .sup').setAttribute('data-sup', currentSup+1);
+
+			unitCalc('opponent');
+			unitCalc('player');
+
+			if (who==='player') conn.send( { 'func':'specialCombo', 'card' : card, 'who' : who } );
+			break;
 		case "sniper":
 			// Place on inf, then listener to kill
 			// opponent combo
@@ -847,6 +864,12 @@ function specialCombo(card,who) {
 		case "barrier":
 			break;
 		case "stealth":
+			break;
+		case "acover":
+			break;
+		case "bigguns":
+			break;
+		case "tstrike":
 			break;
 	}
 }
@@ -879,7 +902,6 @@ function smartShift(who) {
 		} 
 		// or do the opposite for bottom
 		else if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
-			console.log('Shift Up');
 			var firstLi = document.querySelector('.'+who+' li:first-child');
 			document.querySelector('.'+who+' ul').appendChild(firstLi);
 		}
@@ -910,28 +932,30 @@ function notify(type, msg) {
 }
 
 function resetField(points,loser) {
+	function clearCombo(el) {
+		el.setAttribute('class','');
+		el.removeAttribute('data-atk');
+		el.removeAttribute('data-def');
+		el.removeAttribute('data-sup');
+		el.removeAttribute('data-type');
+		//el.removeAttribute('id');
+		el.querySelector('span').firstElementChild.remove();
+	}
+
 	// Reset units, auto save if one unit
 	if (document.querySelectorAll('.player .unit').length === 1) {
-		console.log(document.querySelector('.player .unit').cardProps);
 		redeckCard(playerDeck,[document.querySelector('.player .unit').cardProps],false);
 		// Redeck combo if it exists
-		if (!loser && document.querySelector('.player .combo')) redeckCard(playerDeck,[document.querySelector('.player .combo').cardProps],false);
+		if (!loser && document.querySelector('.player .combo')) {
+			var pCombo = document.querySelector('.player .combo');
+			redeckCard(playerDeck,[pCombo.cardProps],false);
+			clearCombo(pCombo);
+		}
 
 		if (loser) {
 			[].forEach.call(document.querySelectorAll('.player .combo'), function(el) {
-				el.setAttribute('class','');
-				el.removeAttribute('data-atk');
-				el.removeAttribute('data-def');
-				el.removeAttribute('data-sup');
-				el.removeAttribute('data-type');
-				el.removeAttribute('id');
+				clearCombo(el);
 			});
-
-			notify('red', 'Lost Round');
-			conn.send({ 'func':'notify', 'type':'green', 'msg': 'You win round'});
-			conn.send({ 'func':'win', 'points': points });
-
-			document.querySelector('.opponent .outpost').textContent = points;
 		}
 
 		window.setTimeout( function() {
@@ -954,12 +978,7 @@ function resetField(points,loser) {
 				if(objType === 'unit') {
 					obj.remove();
 				} else {
-					obj.setAttribute('class','');
-					obj.removeAttribute('data-atk');
-					obj.removeAttribute('data-def');
-					obj.removeAttribute('data-sup');
-					obj.removeAttribute('data-type');
-					obj.querySelector('span').firstElementChild.remove();
+					clearCombo(obj);
 				}
 			});
 
@@ -981,17 +1000,8 @@ function resetField(points,loser) {
 
 			// Discard all combos
 			[].forEach.call(document.querySelectorAll('.player .combo'), function(el) {
-				el.setAttribute('class','');
-				el.removeAttribute('data-atk');
-				el.removeAttribute('data-def');
-				el.removeAttribute('data-sup');
-				el.removeAttribute('data-type');
-				el.querySelector('span').firstElementChild.remove();
+				clearCombo(el);
 			});
-
-			notify('red', 'Lost Round');
-			conn.send({ 'func':'notify', 'type':'green', 'msg': 'You win round'});
-			conn.send({ 'func':'win', 'points': points });
 		} 
 		// Winner saves all
 		else { 
@@ -1012,18 +1022,12 @@ function resetField(points,loser) {
 
 		// Auto save 1 combo, if not, also add selectors
 		if (!loser && document.querySelectorAll('.player .combo').length === 1) {
-			console.log('Multiple units, 1 Combo');
+			console.log('2+ Units, 1 Combo');
 
-			var onlyCombo = document.querySelectorAll('.player .combo');
-			console.log(onlyCombo);
+			var onlyCombo = document.querySelector('.player .combo');
 			redeckCard(playerDeck,[onlyCombo.cardProps],false);
 
-			onlyCombo.setAttribute('class','');
-			onlyCombo.removeAttribute('data-atk');
-			onlyCombo.removeAttribute('data-def');
-			onlyCombo.removeAttribute('data-sup');
-			onlyCombo.removeAttribute('data-type');
-			onlyCombo.querySelector('span').firstElementChild.remove();
+			clearCombo(onlyCombo);
 
 			window.setTimeout( function() {
 				unitCalc('player');
@@ -1050,12 +1054,7 @@ function resetField(points,loser) {
 			});
 
 			[].forEach.call(document.querySelectorAll('.opponent .combo'), function(combo) {
-				combo.setAttribute('class','');
-				combo.removeAttribute('data-atk');
-				combo.removeAttribute('data-def');
-				combo.removeAttribute('data-sup');
-				combo.removeAttribute('data-type');
-				combo.querySelector('span').firstElementChild.remove();
+				clearCombo(combo);
 			});
 
 			unitCalc('opponent');
@@ -1075,23 +1074,24 @@ function resetField(points,loser) {
 	wipeStats('player');
 	wipeStats('opponent');
 
+	// Declare Loss
+	if (loser) {
+		notify('red', 'Lost Round');
+		conn.send({ 'func':'notify', 'type':'green', 'msg': 'You win round'});
+		conn.send({ 'func':'win', 'points': points });
+		document.querySelector('.opponent .outpost').textContent = points;
+	}
+
 	// Swap attacker status
 	if (!attacker) {
 		attacker = true;
-		myTurn = true; 
-		document.querySelector('.shuf').removeAttribute('disabled'); 
-		document.querySelector('.end').removeAttribute('disabled');
-		document.querySelector('.turn').removeAttribute('disabled');
-		buoy.removeClass(document.querySelector('.hand'),'disable');
 	} else { 
 		attacker = false;
 		notify('yellow', "Opponent's Turn as Attacker");
 		document.querySelector('.turn').setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
-		if (document.querySelectorAll('.card').length<8) {
-			drawCard(playerDeck,8-document.querySelectorAll('.card').length);
-		} else { drawCard(playerDeck,1); }
-
+		document.querySelector('.shuf').setAttribute('disabled','true');
+		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn' } );
 		myTurn = false;
 		buoy.addClass(document.querySelector('.hand'),'disable');

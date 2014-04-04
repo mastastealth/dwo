@@ -117,31 +117,50 @@ document.addEventListener('DOMContentLoaded', function(){
 	onMessage = function(conn) {
 		conn.on('data', function(msg) {
 			//console.log(msg);
-			if (msg.func === 'testCard') { testCard(msg.card, msg.action, msg.who) }
-			else if (msg.func === 'odeck') { opponentDeck = msg.deck }
-			else if (msg.func === 'drawCardConfirmed') { drawCardConfirmed(msg.card) }
-			else if (msg.func === 'playCard') { playCard(msg.card, msg.who) }
-			else if (msg.func === 'yourTurn') { 
-				myTurn = true; 
-				notify('green', 'Your Turn');
-				document.querySelector('.shuf').removeAttribute('disabled'); 
-				document.querySelector('.end').removeAttribute('disabled');
-				document.querySelector('.turn').removeAttribute('disabled');
-				buoy.removeClass(document.querySelector('.hand'),'disable'); 
-			}
-			else if (msg.func === 'unitPos') { placeUnit(msg.pos, msg.card, msg.who, msg.id) }
-			else if (msg.func === 'comboPos') { comboCard(msg.pos, msg.card, msg.who) }
-			else if (msg.func === 'notify') { notify(msg.type, msg.msg) }
-			else if (msg.func === 'win') { 
-				if (attacker === true) win(msg.points); 
-				resetField(0,false); 
+			switch (msg.func) {
+				case 'testCard': 
+					testCard(msg.card, msg.action, msg.who);
+					break;
+				case 'odeck':
+					opponentDeck = msg.deck; 
+					break;
+				case 'drawCardConfirmed':
+					drawCardConfirmed(msg.card); 
+					break;
+				case 'playCard':
+					playCard(msg.card, msg.who); 
+					break;
+				case 'yourTurn':
+					myTurn = true; 
+					notify('green', 'Your Turn');
+					document.querySelector('.shuf').removeAttribute('disabled'); 
+					document.querySelector('.end').removeAttribute('disabled');
+					document.querySelector('.turn').removeAttribute('disabled');
+					buoy.removeClass(document.querySelector('.hand'),'disable'); 
+					break;
+				case 'unitPos':
+					placeUnit(msg.pos, msg.card, msg.who, msg.id);
+					break;
+				case 'comboPos':
+					comboCard(msg.pos, msg.card, msg.who);
+					break;
+				case 'specialCombo':
+					specialCombo(msg.card, msg.who);
+					break;
+				case 'notify':
+					notify(msg.type, msg.msg);
+					break;
+				case 'win' :
+					if (attacker === true) win(msg.points); 
+					resetField(0,false); 
+					break;
 			}
 		});
 	};
 
 	function win(p) { 
-		victoryPts += p; 
-		document.querySelector('.player outpost').textContent = victoryPts;
+		victoryPts += parseInt(p); 
+		document.querySelector('.player .outpost').textContent = victoryPts;
 	}
 
 	// Prepend function

@@ -714,11 +714,13 @@ footer {
 }
 
 .game .hand button.end {
+  background: rgba(255, 0, 0, 0.1);
+  border-color: darkred;
   left: -webkit-calc(50% + 10px);
   left: calc(50% + 10px);
 }
 
-.game .hand button.end:hover {
+.game .hand button.end:not([disabled=true]):hover {
   background: #E44141;
   border-color: darkred;
   color: white;
@@ -726,12 +728,14 @@ footer {
 
 .game .hand button[disabled=true] {
   background: rgba(120, 120, 120, 0.3);
+  border-color: #666;
   color: #666;
 }
 
 .game .hand .card {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
+  vertical-align: middle;
 }
 
 .game .hand .card.disable {
@@ -747,22 +751,8 @@ footer {
 }
 
 .game .hand .cardContainer {
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -moz-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
   height: 100%;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -moz-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+  line-height: 200px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;

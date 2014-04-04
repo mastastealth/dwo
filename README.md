@@ -5,7 +5,12 @@ card game, as similar in functionality to it's future implementation. Overall
 structure will be defined with this prototype, as well as balance, and other
 practice with the code.
 
-This was programmed mostly in Vanilla JS.
+This was programmed mostly in Vanilla JS. It also uses some really new tech like 
+Flexbox and WebRTC DataChannels, so for now browser support is limited to:
+
+- Latest Firefox
+- Latest Chrome
+- Latest Opera
 
 ### Basic Rules
 
