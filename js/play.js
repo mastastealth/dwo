@@ -44,8 +44,8 @@ var cardType = {
 		'fallback' : { 'def' : 2, 'atk' : -1, 'sup' : 0, 'canuse' : ['grd','grd'] },
 		'cstrike' : { 'def' : 0, 'atk' : 3, 'sup' : 1, 'canuse' : ['grd','air'] },
 		'shell' : { 'def' : 0, 'atk' : 2, 'sup' : 1, 'canuse' : ['arm','arm'] },
-		'coverage' : { 'def' : 3, 'atk' : 0, 'sup' : 1, 'canuse' : ['grd','air'] },
-		'wingman' : { 'def' : 2, 'atk' : 0, 'sup' : 0, 'canuse' : ['air','air'] },
+		'coverage' : { 'def' : 3, 'atk' : 0, 'sup' : 1, 'vs': 'as', 'canuse' : ['grd','air'] },
+		'wingman' : { 'def' : 2, 'atk' : 0, 'sup' : 0, 'vs': 'air', 'canuse' : ['air','air'] },
 		'stealth' : { 'special' : true, 'sup' : 1, 'canuse' : ['inf','lr'] },
 		'barrier' : { 'special' : true, 'sup' : 0, 'canuse' : ['arm','inf','arm'] },
 		'squad' : { 'atk' : 3, 'def' : 0, 'sup' : 0, 'canuse' : ['inf','inf','inf']},
@@ -70,19 +70,85 @@ function playInit(connection, deck, atkr) {
 
 	var hashedDeck = {};
 	deck = [
+		{'type': 'infantry', 'id' : 0, 'hash' : 0}, // 20 Units
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
 		{'type': 'infantry', 'id' : 0, 'hash' : 0}, 
+		{'type': 'infantry', 'id' : 0, 'hash' : 0},
 		{'type': 'drone', 'id' : 0, 'hash' : 0}, 
 		{'type': 'drone', 'id' : 0, 'hash' : 0}, 
-		{'type': 'at', 'id' : 0, 'hash' : 0}, 
+		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
+		{'type': 'tank', 'id' : 0, 'hash' : 0}, 
+		{'type': 'a2g', 'id' : 0, 'hash' : 0}, 
+		{'type': 'a2g', 'id' : 0, 'hash' : 0}, 
+
+		{'type': 'arty', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'recon', 'id' : 0, 'hash' : 0}, 
+		{'type': 'jet', 'id' : 0, 'hash' : 0}, 
+		{'type': 'helo', 'id' : 0, 'hash' : 0}, 
+		{'type': 'helo', 'id' : 0, 'hash' : 0}, 
+		{'type': 'jet', 'id' : 0, 'hash' : 0}, 
+		{'type': 'apc', 'id' : 0, 'hash' : 0}, 
+		{'type': 'bmbr', 'id' : 0, 'hash' : 0}, 
+		{'type': 'bmbr', 'id' : 0, 'hash' : 0}, 
+
+		{'type': 'at', 'id' : 0, 'hash' : 0}, // 25 Combos
 		{'type': 'at', 'id' : 0, 'hash' : 0},
-		{'type': 'at', 'id' : 0, 'hash' : 0},
+		{'type': 'aa', 'id' : 0, 'hash' : 0},
 		{'type': 'frontline', 'id' : 0, 'hash' : 0},
-		{'type': 'barrier', 'id' : 0, 'hash' : 0},
+		{'type': 'fallback', 'id' : 0, 'hash' : 0},
+
+		{'type': 'frontline', 'id' : 0, 'hash' : 0},
+		{'type': 'fallback', 'id' : 0, 'hash' : 0},
+		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
+		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
+		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
+
+		{'type': 'cstrike', 'id' : 0, 'hash' : 0},
+		{'type': 'cstrike', 'id' : 0, 'hash' : 0},
+		{'type': 'shell', 'id' : 0, 'hash' : 0},
+		{'type': 'shell', 'id' : 0, 'hash' : 0},
+		{'type': 'coverage', 'id' : 0, 'hash' : 0},
+
+		{'type': 'coverage', 'id' : 0, 'hash' : 0},
+		{'type': 'wingman', 'id' : 0, 'hash' : 0},
+		{'type': 'wingman', 'id' : 0, 'hash' : 0},
+		{'type': 'medic', 'id' : 0, 'hash' : 0},
+		{'type': 'medic', 'id' : 0, 'hash' : 0},
+
+		{'type': 'reactive', 'id' : 0, 'hash' : 0},
+		{'type': 'reactive', 'id' : 0, 'hash' : 0},
+		{'type': 'reactive', 'id' : 0, 'hash' : 0},
+		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
+		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
+
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, // 25 Supplies
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
 		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
 		{'type': 'supply', 'id' : 0, 'hash' : 0},
-		{'type': 'poppy', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0},
+		{'type': 'supply', 'id' : 0, 'hash' : 0}, 
+
+		{'type': 'poppy', 'id' : 0, 'hash' : 0}, // 2 Commanders
 		{'type': 'mo', 'id' : 0, 'hash' : 0}
 	];
 
