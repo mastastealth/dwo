@@ -1,0 +1,269 @@
+/* --------------------------
+
+	The actual game styles
+
+---------------------------*/
+
+.game {
+	background: #3D9970;
+	position: absolute;
+	top: 0; left: 0;
+	height: 100%;
+	max-height: 0%;
+	overflow: hidden;
+	transition: all 1s ease;
+	width: 100%;
+
+	&.active {
+		max-height: 100%;
+		min-height: 480px;
+	}
+
+	.field {
+		background: tan;
+		height: 70%;
+		overflow: hidden;
+
+		aside { 
+			height: 100%;
+			overflow: hidden;
+			padding-top: 50px;
+			position: relative;
+			width: 50%; 
+		}
+
+		aside:first-child {
+			border-right: 2px solid #222;
+			float: left;
+
+			li:nth-child(3) { transform: translateX(80px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(-50px) scale(0.9); }
+		}
+
+		aside:last-child {
+			border-left: 2px solid #222;
+			float: right;
+
+			li:nth-child(3) { transform: translateX(-80px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(50px) scale(0.9); }
+		}
+
+		h1 {
+			background: rgba(0,0,0,0.1);
+			line-height: 40px;
+			position: absolute;
+			top: 0; left: 0;
+			text-align: center;
+			width: 100%;
+			z-index: 99;
+
+			.atk { 
+				background: #E44141; border-radius: 15px; 
+				color: white; line-height: 30px; width: 30px; }
+			.def { 
+				background: #4178E4; border-radius: 15px; 
+				color: white; line-height: 30px; width: 30px; }
+
+			.sup {
+				background: #EED84F;
+				height: 30px;
+				line-height: 30px;
+				position: absolute;;
+				top: 10px; right: 10px;
+				text-align: center;
+				width: 50px;
+
+				&:before, &:after {
+					border-style: solid;
+					content: '';
+					height: 0;
+					position: absolute;
+					left: 0;
+					width: 0;
+				}	
+
+				&:before {
+					border-width: 0 25px 10px 25px;
+					border-color: transparent transparent #EED84F transparent;
+					top: -10px;
+				}
+
+				&:after {
+					border-width: 10px 25px 0 25px;
+					border-color: #EED84F transparent transparent transparent;
+					bottom: -10px;
+				}
+			}
+		}
+
+		.player .sup { left: 10px; }
+
+		.commander {
+			background: linear-gradient(to right,red,blue);
+			height: 300px;
+			position: absolute;
+			bottom: 0;
+			width: 160px;
+		}
+			.player .commander {
+				left: 0;
+			}
+
+			.opponent .commander {
+				right: 0;
+				transform: rotateY(180deg);
+			}
+	}
+
+	.formation {
+		//align-items: center;
+		align-content: stretch;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		justify-content: center;
+		//position: relative;
+		margin: 0 auto;
+		min-width: 180px;
+		width: 30%;
+
+		li {
+			border: 2px solid darken(#D2B48C,20%);
+			border-radius: 50%;
+			min-height: 16.5%;
+			perspective: 300px;
+			position: relative;
+			transform: scale(0.9);
+			transition: all 0.3s;
+
+			&:empty { background: white; opacity: 0.1; }
+
+			&.active { 
+				background: transparentize(green,0.6);
+				border-color: green; 
+				cursor: pointer; 
+				z-index: 1;
+
+				.unit { 
+					box-shadow: 0 0 15px green;
+					opacity: 0.3; 
+					pointer-events: none; 
+				}
+			}
+
+			&.combo { 
+				&.atk { background: transparentize(#E44141,0.7); box-shadow: 0 0 6px red; }
+				&.def { box-shadow: 0 0 6px blue; }
+				&.atk.def { box-shadow: 0 0 6px purple;  }
+
+				&.active { animation: borderPulse 0.5s infinite alternate; opacity: 1; }
+
+				&:before {
+					content: url( attr(data-img) );
+				}
+
+				span {
+					opacity: 0;
+					max-width: 100px;
+					pointer-events: none;
+					position: absolute;
+					top: 0; right: -100px;
+					transition: all 0.5s 0.5s;
+					transform: translateY(-50%);
+					z-index: 10;
+
+					img { width: 100%; }
+				}
+
+				&:hover span {
+					opacity: 1;
+					pointer-events: all;
+					transform: scale(1.3) translateY(-50%);
+
+					&:hover { max-width: 200px; }
+				}
+			}
+
+			button {
+				background: green;
+				border-radius: 20px;
+				color: white;
+				cursor: pointer;
+				font-size: 36px;
+				height: 40px;
+				line-height: 40px;
+				opacity: 1;
+				position: absolute;
+				left: 5%;
+				text-align: center;
+				transition: all 0.3s;
+				width: 40px;
+				z-index: 5;
+
+				&:before { content: '+'; }
+
+				&.prev { top: 50px; }
+				&.next { top: 0px; }
+
+				&:hover { opacity: 0.8; }
+			}
+		}
+	}
+
+		.opponent li.combo span { left: -100px; }
+
+	.hand {
+		position: relative;
+
+		button {
+			background: transparentize(green,0.9);
+			position: absolute;
+			top: -60px; left: 10px;
+
+			&.shuf { left: calc(50% - 110px); }
+			&.end { 
+				left: calc(50% + 10px); 
+				&:hover { background: #E44141; border-color: darkred; color: white; }
+			}
+
+			&[disabled=true] { background: rgba(120,120,120,0.3); color: #666; }
+		}
+
+		.card {
+			transition: all 0.3s;
+
+			&.disable { opacity: 0.5; pointer-events: none; }
+			&:hover { transform: scale(1.5); z-index: 1; }
+		}
+	}
+
+	.unit {
+		background: #333;
+		border-radius: 0;
+		height: 200px;
+		position: absolute;
+		top: -120px; left: 50%;
+		max-width: 150px;
+		min-width: 100px;
+
+		img { height: 100%; width: auto; }
+
+		&.active { 
+			animation: borderPulse 0.5s infinite alternate;
+			border: 2px solid limegreen; 
+			box-shadow: 0 0 2px limegreen; 
+			cursor: pointer;
+
+			img { pointer-events: none; }
+		}
+	}
+		.player .unit { transform: scale(0.8) translateX(-60%) rotateY(15deg); }
+		.opponent .unit { transform: scale(0.8) translateX(-60%) rotateY(-15deg); }
+}
+
+@keyframes borderPulse {
+	from { border: 2px solid limegreen; 
+			box-shadow: 0 0 2px limegreen; }
+	to { border: 2px solid white; 
+			box-shadow: 0 0 2px white; }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Deck Wars Online</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+	<div class="game">
+		<div class="field">
+			<aside class="player">
+				<h1>
+					<span class="atk" data-unit="0" data-bonus="0">0</span>
+					<span class="def" data-unit="0" data-bonus="0">0</span>
+					<span class="sup" data-sup="0" data-supuse="0">0</span>
+				</h1>
+				<ul class="formation">
+					<li><span></span></li>
+					<li><span></span></li>
+					<li><span></span></li>
+					<li><span></span></li>
+					<li><span></span></li>
+				</ul>
+			</aside>
+			<aside class="opponent">
+				<h1>
+					<span class="atk" data-unit="0" data-bonus="0">0</span>
+					<span class="def" data-unit="0" data-bonus="0">0</span>
+					<span class="sup" data-sup="0" data-supuse="0">0</span>
+				</h1>
+				<ul class="formation">
+					<li><span></span></li>
+					<li><span></span></li>
+					<li><span></span></li>
+					<li><span></span></li>
+					<li><span></span></li>
+				</ul>
+			</aside>
+		</div>
+		
+		<div class="hand">
+			
+		</div>
+	</div>
+
+	<div class="home">
+		<div class="overlay">
+			<div class="modal"></div>
+		</div>
+
+		<header>
+			<img src="images/misc/logo.png" alt="Deck Wars Online" class="logo">
+		</header>
+
+		<div class="row">
+			<button class="create">Create Game</button>
+			<button class="join">Join Game</button>
+			<button class="build" disabled>Build Deck</button>
+		</div>
+
+		<div id="tlkio" data-channel="deckwarsonline"></div>
+		<script async src="http://tlk.io/embed.js" type="text/javascript"></script>
+
+		<footer>
+			Made by <a href="//brianfran.co">Brian Franco.</a>
+		</footer>
+	</div>
+
+	<script src="//cdn.peerjs.com/0.3.8/peer.min.js"></script>
+	<script src="js/min/md5.min.js"></script>
+	<script src="js/min/store.min.js"></script>
+	<script src="js/min/game.min.js"></script>
+</body>
+</html>
