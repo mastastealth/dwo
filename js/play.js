@@ -2,6 +2,7 @@ var conn;
 var opponentDeck;
 var playerDeck;
 var myTurn;
+var attacker;
 
 // Define all the cards
 var cardType = {
@@ -54,7 +55,8 @@ var cardType = {
 var properCards;
 
 // Starts off the game and all the other functions
-function playInit(connection, deck) {
+function playInit(connection, deck, atkr) {
+	var attacker = atkr;
 	conn = connection;
 
 	properCards = md5(cardType);
@@ -793,7 +795,7 @@ function notify(type, msg) {
 function resetField(points,loser) {
 	console.log('RESETING FIELD');
 	// Reset units, auto save if one unit
-	if (document.querySelectorAll('.player .unit').length <= 1) {
+	if (document.querySelectorAll('.player .unit').length === 1) {
 		console.log(document.querySelector('.player .unit').cardProps);
 		redeckCard(playerDeck,[document.querySelector('.player .unit').cardProps],false);
 		// Redeck combo if it exists
@@ -922,9 +924,6 @@ function resetField(points,loser) {
 		} 
 	}
 
-	document.querySelector('.player .commander').remove();
-	document.querySelector('.player .commander').remove();
-
 	// Reset stats
 	function wipeStats(who) {
 		if (who==="opponent") {
@@ -951,8 +950,31 @@ function resetField(points,loser) {
 
 		document.querySelector('.'+who+' .sup').setAttribute('data-sup','0');
 		document.querySelector('.'+who+' .sup').setAttribute('data-supuse','0');
+		if (document.querySelector('.'+who+' .commander')) document.querySelector('.'+who+' .commander').remove();
 	}
 
 	wipeStats('player');
 	wipeStats('opponent');
+
+	// Swap attacker status
+	if (!attacker) {
+		attacker = true;
+		myTurn = true; 
+		document.querySelector('.shuf').removeAttribute('disabled'); 
+		document.querySelector('.end').removeAttribute('disabled');
+		document.querySelector('.turn').removeAttribute('disabled');
+		buoy.removeClass(document.querySelector('.hand'),'disable');
+	} else { 
+		attacker = false;
+		notify('yellow', "Opponent's Turn as Attacker");
+		document.querySelector('.turn').setAttribute('disabled','true');
+		document.querySelector('.end').setAttribute('disabled','true');
+		if (document.querySelectorAll('.card').length<8) {
+			drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+		} else { drawCard(playerDeck,1); }
+
+		conn.send( { 'func':'yourTurn' } );
+		myTurn = false;
+		buoy.addClass(document.querySelector('.hand'),'disable');
+	}
 }

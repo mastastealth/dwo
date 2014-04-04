@@ -50,7 +50,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					buoy.removeClass(m.parentNode,'active');
 					onMessage(c);
 					myTurn = false;
-					playInit(c,deck);
+					attacker = false;
+					playInit(c,deck,attacker);
 					notify('yellow', "Opponent's Turn");
 				});
 			});
@@ -86,7 +87,8 @@ document.addEventListener('DOMContentLoaded', function(){
 							buoy.removeClass(m.parentNode,'active');
 							onMessage(conn);
 							myTurn = true;
-							playInit(conn,deck);
+							attacker = true;
+							playInit(conn,deck,attacker);
 							notify('green', 'Your Turn');
 						});
 					return false;
@@ -131,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			else if (msg.func === 'comboPos') { comboCard(msg.pos, msg.card, msg.who) }
 			else if (msg.func === 'notify') { notify(msg.type, msg.msg) }
 			else if (msg.func === 'win') { 
-				win(msg.points); 
+				if (attacker === true) win(msg.points); 
 				resetField(0,false); 
 			}
 		});
