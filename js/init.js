@@ -140,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function(){
 				case 'yourTurn':
 					myTurn = true; 
 					notify('green', 'Your Turn');
-					document.querySelector('.shuf').removeAttribute('disabled'); 
 					document.querySelector('.end').removeAttribute('disabled');
 					document.querySelector('.turn').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
