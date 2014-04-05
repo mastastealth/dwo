@@ -20,14 +20,34 @@ input { display: block; }
 .game.active ~ .home > #tlkio {
 	box-shadow: -2px 0 2px rgba(0,0,0,0.3);
 	height: 100%;
+	overflow: visible !important;
 	position: fixed;
 	top: 0; right: -400px;
-	transform: translateX(0px);
+	transform: translateX(-50px);
 	transition: transform 0.4s;
 	width: 400px;
 	z-index: 1;
 
-	&.active { transform: translateX(-100%); }
+	&.active { 
+		transform: translateX(-100%);
+		z-index: 99;
+	}
+
+	span {
+		background: #4677C1;
+		border-radius: 5px 0 0 5px;
+		color: white;
+		cursor: pointer;
+		height: 50px;
+		font-size: 32px;
+		line-height: 50px;
+		position: absolute;
+		top: 58%; left: -50px;
+		width: 50px;
+
+		&:before { content: '💬' ;}
+		&:hover { background: lighten(#4677C1,10%); }
+	}
 }
 
 .overlay {

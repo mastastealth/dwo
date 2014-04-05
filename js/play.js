@@ -351,8 +351,6 @@ function playCard(card,who) {
 		else if (cardType.combo[card.type]) {
 			// Only do choosing if player
 			if (who === 'player') {
-				console.log(cardType.combo[card.type]);
-
 				// Listener for typical combos
 				function clickListener(e) {
 					var slot = e.target;
@@ -381,7 +379,6 @@ function playCard(card,who) {
 				// First check if combo can be played anywhere
 				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(el) {
 					// Get each unit's traits
-					console.log('Checking '+el.getAttribute('id'));
 					var traits = cardType.unit[el.getAttribute('data-type')].trait;
 		
 					// For every trait
@@ -489,7 +486,6 @@ function playCard(card,who) {
 					}
 
 					if (comboMatch) {
-						console.log('Combo match!');
 						// For non-special combos, do standard stuff
 						if (!cardType.combo[card.type].special) {
 							// Remove card from hand
@@ -501,6 +497,8 @@ function playCard(card,who) {
 							el.parentNode.addEventListener('click', clickListener);
 							el.parentNode.arg = [card,who];
 						}
+					} else {
+						notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
 					}
 				});
 
@@ -508,7 +506,7 @@ function playCard(card,who) {
 					specialCombo(card,who);
 				}
 			}
-		} else {
+		} else if (card.type === "supply") {
 			// If supplies, then just add to current supply count
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').getAttribute('data-sup'));
 			document.querySelector('.'+who+' .sup').setAttribute('data-sup', currentSup+3);

@@ -1,3 +1,6 @@
+@charset "UTF-8";
+
+
 /*  http://meyerweb.com/eric/tools/css/reset/ 
 	v2.0 | 20110126
 	...combined with...
@@ -377,7 +380,8 @@ footer {
   overflow: hidden;
   -webkit-transition: all 1s ease;
   transition: all 1s ease;
-  width: 100%;
+  width: -webkit-calc(100% - 50px);
+  width: calc(100% - 50px);
 }
 
 .game.active {
@@ -853,12 +857,13 @@ input {
   -webkit-box-shadow: -2px 0 2px rgba(0, 0, 0, 0.3);
   box-shadow: -2px 0 2px rgba(0, 0, 0, 0.3);
   height: 100%;
+  overflow: visible !important;
   position: fixed;
   top: 0;
   right: -400px;
-  -webkit-transform: translateX(0px);
-  -ms-transform: translateX(0px);
-  transform: translateX(0px);
+  -webkit-transform: translateX(-50px);
+  -ms-transform: translateX(-50px);
+  transform: translateX(-50px);
   -webkit-transition: -webkit-transform 0.4s;
   transition: transform 0.4s;
   width: 400px;
@@ -869,6 +874,29 @@ input {
   -webkit-transform: translateX(-100%);
   -ms-transform: translateX(-100%);
   transform: translateX(-100%);
+  z-index: 99;
+}
+
+.game.active ~ .home > #tlkio span {
+  background: #4677C1;
+  border-radius: 5px 0 0 5px;
+  color: white;
+  cursor: pointer;
+  height: 50px;
+  font-size: 32px;
+  line-height: 50px;
+  position: absolute;
+  top: 58%;
+  left: -50px;
+  width: 50px;
+}
+
+.game.active ~ .home > #tlkio span:before {
+  content: "💬";
+}
+
+.game.active ~ .home > #tlkio span:hover {
+  background: #6c93ce;
 }
 
 .overlay {
