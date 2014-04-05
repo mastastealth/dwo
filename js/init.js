@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function(){
 		if ( buoy.hasClass(this, 'create') ) {
 			buoy.addClass(game,'active');
 			overlayOn();
+			var tlkBtn = document.getElementById('tlkio').appendChild( document.createElement('span') );
+			tlkBtn.addEventListener('click', function(e) {
+				var tlk = document.getElementById('tlkio');
+				if ( buoy.hasClass(tlk,'active') ) {
+					buoy.removeClass(tlk,'active')
+				} else { buoy.addClass(tlk,'active') }
+			});
 
 			// Randomly generate room ID and populate modal with info
 			var roomid = Math.random().toString(36).substr(2, 5);
@@ -133,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function(){
 				case 'yourTurn':
 					myTurn = true; 
 					notify('green', 'Your Turn');
-					document.querySelector('.shuf').removeAttribute('disabled'); 
 					document.querySelector('.end').removeAttribute('disabled');
 					document.querySelector('.turn').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 

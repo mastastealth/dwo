@@ -214,6 +214,11 @@ function playInit(connection, deck, atkr) {
 		if (myTurn) {
 			var points;
 
+			// AUto draw cards
+			if (document.querySelectorAll('.card').length<8) {
+				drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+			} else { drawCard(playerDeck,1); }
+
 			if (document.querySelectorAll('.opponent .unit').length <= 3) {
 				points = 1;
 			} else if (document.querySelectorAll('.opponent .unit').length===4) {
@@ -222,25 +227,6 @@ function playInit(connection, deck, atkr) {
 
 			// Discard units (& combos)
 			resetField(points,true);
-		}
-	});
-
-	// Reshuffle deck
-	var reshuffle = document.querySelector('.hand').appendChild( document.createElement('button') );
-	reshuffle.innerHTML = "Reshuffle";
-	buoy.addClass(reshuffle,'shuf');
-	if (!myTurn) reshuffle.setAttribute('disabled','true');
-
-	reshuffle.addEventListener('click', function() {
-		if (myTurn = true && document.querySelectorAll('.card').length>=8){
-			var cards = [];
-
-			[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
-				cards.push(el.cardProps);
-			});
-
-			redeckCard(playerDeck,cards,true);
-			reshuffle.setAttribute('disabled','true');
 		}
 	});
 }
@@ -329,6 +315,9 @@ function playCard(card,who) {
 			// Remove card from hand
 			if (who === 'player') cardEl.remove();
 		} 
+		else if (cardType.unit[card.type] && document.querySelectorAll('.'+who+' .unit').length >= 5) {
+			notify('yellow', "Can't play any more units, your field is full!");
+		}
 		// Add commander to field
 		else if (cardType.co[card.type]) {
 			if (!document.querySelector('.'+who+' .commander')) {
@@ -351,8 +340,6 @@ function playCard(card,who) {
 		else if (cardType.combo[card.type]) {
 			// Only do choosing if player
 			if (who === 'player') {
-				console.log(cardType.combo[card.type]);
-
 				// Listener for typical combos
 				function clickListener(e) {
 					var slot = e.target;
@@ -377,11 +364,12 @@ function playCard(card,who) {
 						});
 					}
 				}
+				// Notification limiter
+				var notified = 0;
 
 				// First check if combo can be played anywhere
 				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(el) {
 					// Get each unit's traits
-					console.log('Checking '+el.getAttribute('id'));
 					var traits = cardType.unit[el.getAttribute('data-type')].trait;
 		
 					// For every trait
@@ -489,7 +477,6 @@ function playCard(card,who) {
 					}
 
 					if (comboMatch) {
-						console.log('Combo match!');
 						// For non-special combos, do standard stuff
 						if (!cardType.combo[card.type].special) {
 							// Remove card from hand
@@ -501,14 +488,18 @@ function playCard(card,who) {
 							el.parentNode.addEventListener('click', clickListener);
 							el.parentNode.arg = [card,who];
 						}
+					} else if (!comboMatch && !cardType.combo[card.type].special) {
+						notified++;
 					}
 				});
+
+				if (notified === 5) notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
 
 				if (cardType.combo[card.type].any) {
 					specialCombo(card,who);
 				}
 			}
-		} else {
+		} else if (card.type === "supply") {
 			// If supplies, then just add to current supply count
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').getAttribute('data-sup'));
 			document.querySelector('.'+who+' .sup').setAttribute('data-sup', currentSup+3);
@@ -549,6 +540,24 @@ function shuffle(array) {
 	}
 
 	return array;
+}
+
+function reshuffleCheck() {
+	var cards = [];
+	var supCount = 0;
+	var unitCount = 0;
+
+	[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+		cards.push(el.cardProps);
+		if (el.cardProps.unit) unitCount += 1;
+		if (el.cardProps.type === "supply") supCount += 1;
+	});
+
+	console.log(unitCount, supCount);
+
+	if (supCount === 0 && unitCount === 0) {
+		redeckCard(playerDeck,cards,true);
+	}
 }
 
 function testCard(card,action) {
@@ -688,7 +697,7 @@ function drawCardConfirmed(card) {
 			});
 		}
 
-		document.querySelector('.shuf').setAttribute('disabled','true');
+		//document.querySelector('.shuf').setAttribute('disabled','true');
 	});
 }
 
@@ -905,15 +914,19 @@ function smartShift(who) {
 			var firstLi = document.querySelector('.'+who+' li:first-child');
 			document.querySelector('.'+who+' ul').appendChild(firstLi);
 		}
-	} else if (document.querySelectorAll('.'+who+' .unit').length === 4) {
+	} 
+	// Add empty li to opposite side of end with unit
+	else if (document.querySelectorAll('.'+who+' .unit').length === 4) {
 		if ( document.querySelector('.'+who+' li:first-child').children.length > 1 ) {
-			document.querySelector('.'+who+' ul').prependChild( document.createElement('li') );
+			var li = document.querySelector('.'+who+' ul').prependChild( document.createElement('li') );
 		}
 		if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
-			document.querySelector('.'+who+' ul').appendChild( document.createElement('li') );
+			var li = document.querySelector('.'+who+' ul').appendChild( document.createElement('li') );
 		}
+		li.appendChild( document.createElement('span') );
+
 	} else if (document.querySelectorAll('.'+who+' .unit').length === 5) {
-		var emptyLi = document.querySelector('.'+who+' li:empty');
+		var emptyLi = document.querySelector('.'+who+' li span:only-child').parentNode;
 		emptyLi.parentNode.removeChild(emptyLi);
 	}
 
@@ -938,7 +951,6 @@ function resetField(points,loser) {
 		el.removeAttribute('data-def');
 		el.removeAttribute('data-sup');
 		el.removeAttribute('data-type');
-		//el.removeAttribute('id');
 		el.querySelector('span').firstElementChild.remove();
 	}
 
@@ -1074,6 +1086,9 @@ function resetField(points,loser) {
 	wipeStats('player');
 	wipeStats('opponent');
 
+	// Check hand
+	reshuffleCheck();
+
 	// Declare Loss
 	if (loser) {
 		notify('red', 'Lost Round');
@@ -1090,7 +1105,7 @@ function resetField(points,loser) {
 		notify('yellow', "Opponent's Turn as Attacker");
 		document.querySelector('.turn').setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
-		document.querySelector('.shuf').setAttribute('disabled','true');
+		//document.querySelector('.shuf').setAttribute('disabled','true');
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn' } );
 		myTurn = false;
