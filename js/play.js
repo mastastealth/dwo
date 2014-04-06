@@ -320,6 +320,8 @@ function playCard(card,who) {
 		} 
 		else if (cardType.unit[card.type] && document.querySelectorAll('.'+who+' .unit').length >= 5) {
 			notify('yellow', "Can't play any more units, your field is full!");
+		} else if (cardType.unit[card.type] && unitCount < 5 && !fieldOfPlayCheck) {
+			notify('yellow', "Can't play any more units, only attacker can expand field count!");
 		}
 		// Add commander to field
 		else if (cardType.co[card.type]) {
