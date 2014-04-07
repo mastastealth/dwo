@@ -670,44 +670,44 @@ function drawCardConfirmed(card) {
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
 
-	newcard.addEventListener('click', function() {
-		//console.log('Testing Card ',card);
+	newcard.addEventListener('click', playListener);
+}
 
-		function canAfford(card) {
-			//console.log(card);
+function playListener(e) {
+	var card = e.target.cardProps;
 
-			var totalSup = parseInt(document.querySelector('.player .sup').getAttribute('data-sup') );
-			var currentSup = 0;
-			var neededSup;
+	function canAfford(card) {
+		//console.log(card);
 
-			if (cardType.unit[card.getAttribute('data-type')]) {
-				neededSup = cardType.unit[card.getAttribute('data-type')].sup;
-			} else if (cardType.combo[card.getAttribute('data-type')]) {
-				neededSup = cardType.combo[card.getAttribute('data-type')].sup;
-			} else { neededSup = 0 }
+		var totalSup = parseInt(document.querySelector('.player .sup').getAttribute('data-sup') );
+		var currentSup = 0;
+		var neededSup;
 
-			[].forEach.call(document.querySelectorAll('.player .unit'), function(el) {
-				currentSup += parseInt(el.getAttribute('data-sup'));
-			});
+		if (cardType.unit[card.getAttribute('data-type')]) {
+			neededSup = cardType.unit[card.getAttribute('data-type')].sup;
+		} else if (cardType.combo[card.getAttribute('data-type')]) {
+			neededSup = cardType.combo[card.getAttribute('data-type')].sup;
+		} else { neededSup = 0 }
 
-			//console.log(neededSup, currentSup, totalSup);
+		[].forEach.call(document.querySelectorAll('.player .unit'), function(el) {
+			currentSup += parseInt(el.getAttribute('data-sup'));
+		});
 
-			if (neededSup + currentSup <= totalSup) {
-				return true;
-			} else { return false; }
-		}
+		//console.log(neededSup, currentSup, totalSup);
 
-		if (myTurn && canAfford(this) ) {
-			conn.send({ 
-				'func'  : 'testCard', 
-				'card'  : card,
-				'who'   : 'origin',
-				'action': 'play'
-			});
-		}
+		if (neededSup + currentSup <= totalSup) {
+			return true;
+		} else { return false; }
+	}
 
-		//document.querySelector('.shuf').setAttribute('disabled','true');
-	});
+	if (myTurn && canAfford(e.target) ) {
+		conn.send({ 
+			'func'  : 'testCard', 
+			'card'  : card,
+			'who'   : 'origin',
+			'action': 'play'
+		});
+	}
 }
 
 // Discard a card
@@ -1270,8 +1270,66 @@ function resetField(points,loser) {
 		document.querySelector('.end').setAttribute('disabled','true');
 		//document.querySelector('.shuf').setAttribute('disabled','true');
 		// Tell opponent it's his turn
-		conn.send( { 'func':'yourTurn' } );
+		conn.send( { 'func':'yourTurn', 'var' : false } );
 		myTurn = false;
 		buoy.addClass(document.querySelector('.hand'),'disable');
 	}
+}
+
+// Swap 3 cards at the beginning of your turn
+function swapThree(doit) {
+	if (!doit) return false;
+	document.querySelector('.turn').setAttribute('disabled','true');
+	var count = 0;
+
+	function chooseThree(e) {
+		if (count<= 3) {
+			if ( buoy.hasClass(e.target, 'active') ) {
+				buoy.removeClass(e.target, 'active');
+				count = document.querySelectorAll('.card.active').length;
+			} 
+			else if ( !buoy.hasClass(e.target, 'active') && count<3 ) { 
+				buoy.addClass(e.target, 'active');
+				count = document.querySelectorAll('.card.active').length;
+			}
+		}
+	}
+
+	function finishSwap() {
+		[].forEach.call(document.querySelectorAll('.card'), function(card) {
+			card.removeEventListener('click', chooseThree);
+
+			// Swap cards
+			if (count === 3 || count === 0) {
+				if ( buoy.hasClass(card, 'active') ) {
+					redeckCard(playerDeck, [card.cardProps], true);
+					card.remove();
+				} else {
+					card.addEventListener('click', playListener);
+				}
+			} else {
+				card.addEventListener('click', playListener);
+			}
+		});	
+
+		document.querySelector('.turn').removeAttribute('disabled');
+		if (count===3) conn.send( { 'func':'notify', 'type' : 'yellow', 'msg' : 'Opponent swapped 3 cards' } );
+
+		done.removeEventListener('click', finishSwap);
+		done.remove();
+		done = null;
+	}
+
+	[].forEach.call(document.querySelectorAll('.card'), function(card) {
+		//buoy.addClass(card, 'active');
+		card.removeEventListener('click', playListener);
+		card.addEventListener('click', chooseThree);
+	});
+
+	// Add button for "DONE"
+	var done = document.querySelector('.player').appendChild( document.createElement('button') );
+	done.textContent = 'Done';
+	done.addEventListener('click', finishSwap);
+
+	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
 }

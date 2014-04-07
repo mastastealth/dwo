@@ -746,6 +746,10 @@ footer {
   position: relative;
 }
 
+.game .hand.disable .card {
+  opacity: 0.5;
+}
+
 .game .hand button {
   background: rgba(0, 128, 0, 0.1);
   position: absolute;
@@ -780,7 +784,17 @@ footer {
 .game .hand .card {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   vertical-align: middle;
+}
+
+.game .hand .card.active {
+  -webkit-box-shadow: 0 0 0 2px white;
+  box-shadow: 0 0 0 2px white;
+  opacity: 0.5;
 }
 
 .game .hand .card.disable {
@@ -793,6 +807,10 @@ footer {
   -ms-transform: scale(1.3);
   transform: scale(1.3);
   z-index: 1;
+}
+
+.game .hand .card img {
+  pointer-events: none;
 }
 
 .game .hand .cardContainer {
