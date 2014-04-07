@@ -151,7 +151,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					comboCard(msg.pos, msg.card, msg.who);
 					break;
 				case 'specialCombo':
-					specialCombo(msg.card, msg.who);
+					var v = (msg['var']) ? msg['var'] : 0;
+					specialCombo(msg.card, msg.who, v);
 					break;
 				case 'notify':
 					notify(msg.type, msg.msg);
