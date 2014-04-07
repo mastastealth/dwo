@@ -24,6 +24,11 @@
 		height: 70%;
 		overflow: hidden;
 
+		button {
+			position: absolute;
+			bottom: 10px; right: 10px;
+		}
+
 		aside { 
 			height: 100%;
 			overflow: hidden;
@@ -149,6 +154,15 @@
 
 			&:empty { background: white; opacity: 0.1; }
 
+			&:hover { 
+				z-index: 1; 
+
+				&:not(.active) .unit {
+					transition: all 0.3s;
+					transform: scale(1.2) translateX(-60%) rotateY(0deg);
+				}
+			}
+
 			&.active { 
 				background: transparentize(green,0.6);
 				border-color: green; 
@@ -163,8 +177,18 @@
 			}
 
 			&.combo { 
-				&.atk { background: transparentize(#E44141,0.7); box-shadow: 0 0 6px red; }
-				&.def { box-shadow: 0 0 6px blue; }
+				&.atk { 
+					background: transparentize(#E44141,0.7);
+					border-color: darken(#E44141,5%); 
+					box-shadow: 0 0 6px red;
+				}
+
+				&.def { 
+					background: transparentize(#4178E4, 0.7);
+					border-color: darken(#4178E4,5%);
+					box-shadow: 0 0 6px blue; 
+				}
+
 				&.atk.def { box-shadow: 0 0 6px purple;  }
 
 				&.active { animation: borderPulse 0.5s infinite alternate; opacity: 1; }
@@ -202,7 +226,7 @@
 				cursor: pointer;
 				font-size: 36px;
 				height: 40px;
-				line-height: 40px;
+				line-height: 35px;
 				opacity: 1;
 				position: absolute;
 				left: 5%;
@@ -213,8 +237,16 @@
 
 				&:before { content: '+'; }
 
-				&.prev { top: 50px; }
-				&.next { top: 0px; }
+				&.up:before { content: '↑'; }
+				&.down:before { content: '↓'; }
+
+				&.up, &.down {
+					left: -10%; 
+					&:before { font-size: 18px; }
+				}
+
+				&.prev, &.down { top: 50px; }
+				&.next, &.up { top: 0px; }
 
 				&:hover { opacity: 0.8; }
 			}

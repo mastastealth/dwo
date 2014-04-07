@@ -395,6 +395,12 @@ footer {
   overflow: hidden;
 }
 
+.game .field button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
 .game .field aside {
   height: 100%;
   overflow: hidden;
@@ -591,6 +597,18 @@ footer {
   opacity: 0.1;
 }
 
+.game .formation li:hover {
+  z-index: 1;
+}
+
+.game .formation li:hover:not(.active) .unit {
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform: scale(1.2) translateX(-60%) rotateY(0deg);
+  -ms-transform: scale(1.2) translateX(-60%) rotateY(0deg);
+  transform: scale(1.2) translateX(-60%) rotateY(0deg);
+}
+
 .game .formation li.active {
   background: rgba(0, 128, 0, 0.4);
   border-color: green;
@@ -607,11 +625,14 @@ footer {
 
 .game .formation li.combo.atk {
   background: rgba(228, 65, 65, 0.3);
+  border-color: #e12b2b;
   -webkit-box-shadow: 0 0 6px red;
   box-shadow: 0 0 6px red;
 }
 
 .game .formation li.combo.def {
+  background: rgba(65, 120, 228, 0.3);
+  border-color: #2b68e1;
   -webkit-box-shadow: 0 0 6px blue;
   box-shadow: 0 0 6px blue;
 }
@@ -669,7 +690,7 @@ footer {
   cursor: pointer;
   font-size: 36px;
   height: 40px;
-  line-height: 40px;
+  line-height: 35px;
   opacity: 1;
   position: absolute;
   left: 5%;
@@ -684,11 +705,31 @@ footer {
   content: '+';
 }
 
-.game .formation li button.prev {
+.game .formation li button.up:before {
+  content: '↑';
+}
+
+.game .formation li button.down:before {
+  content: '↓';
+}
+
+.game .formation li button.up,
+.game .formation li button.down {
+  left: -10%;
+}
+
+.game .formation li button.up:before,
+.game .formation li button.down:before {
+  font-size: 18px;
+}
+
+.game .formation li button.prev,
+.game .formation li button.down {
   top: 50px;
 }
 
-.game .formation li button.next {
+.game .formation li button.next,
+.game .formation li button.up {
   top: 0px;
 }
 
