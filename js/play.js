@@ -111,12 +111,12 @@ function playInit(connection, deck, atkr) {
 		{'type': 'coverage', 'id' : 0, 'hash' : 0},
 
 		{'type': 'coverage', 'id' : 0, 'hash' : 0},
-		{'type': 'wingman', 'id' : 0, 'hash' : 0},
+		{'type': 'retreat', 'id' : 0, 'hash' : 0},
 		{'type': 'wingman', 'id' : 0, 'hash' : 0},
 		{'type': 'medic', 'id' : 0, 'hash' : 0},
 		{'type': 'medic', 'id' : 0, 'hash' : 0},
 
-		{'type': 'reactive', 'id' : 0, 'hash' : 0},
+		{'type': 'retreat', 'id' : 0, 'hash' : 0},
 		{'type': 'reactive', 'id' : 0, 'hash' : 0},
 		{'type': 'reactive', 'id' : 0, 'hash' : 0},
 		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
@@ -399,8 +399,8 @@ function playCard(card,who) {
 						var farSideMatch = 0;
 						var farPrev;
 						var farNext;
-						var prev = el.parentNode.previousElementSibling.querySelector('.unit');
-						var next = el.parentNode.nextElementSibling.querySelector('.unit');
+						var prev = (el.parentNode.previousElementSibling.querySelector('.unit')) ? el.parentNode.previousElementSibling.querySelector('.unit') : false;
+						var next = (el.parentNode.nextElementSibling.querySelector('.unit')) ? el.parentNode.nextElementSibling.querySelector('.unit') : false;
 						
 						if (prev) {
 							if (!buoy.hasClass(prev,'combo')) {
@@ -670,48 +670,48 @@ function drawCardConfirmed(card) {
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
 
-	newcard.addEventListener('click', function() {
-		//console.log('Testing Card ',card);
+	newcard.addEventListener('click', playListener);
+}
 
-		function canAfford(card) {
-			//console.log(card);
+function playListener(e) {
+	var card = e.target.cardProps;
 
-			var totalSup = parseInt(document.querySelector('.player .sup').getAttribute('data-sup') );
-			var currentSup = 0;
-			var neededSup;
+	function canAfford(card) {
+		//console.log(card);
 
-			if (cardType.unit[card.getAttribute('data-type')]) {
-				neededSup = cardType.unit[card.getAttribute('data-type')].sup;
-			} else if (cardType.combo[card.getAttribute('data-type')]) {
-				neededSup = cardType.combo[card.getAttribute('data-type')].sup;
-			} else { neededSup = 0 }
+		var totalSup = parseInt(document.querySelector('.player .sup').getAttribute('data-sup') );
+		var currentSup = 0;
+		var neededSup;
 
-			[].forEach.call(document.querySelectorAll('.player .unit'), function(el) {
-				currentSup += parseInt(el.getAttribute('data-sup'));
-			});
+		if (cardType.unit[card.getAttribute('data-type')]) {
+			neededSup = cardType.unit[card.getAttribute('data-type')].sup;
+		} else if (cardType.combo[card.getAttribute('data-type')]) {
+			neededSup = cardType.combo[card.getAttribute('data-type')].sup;
+		} else { neededSup = 0 }
 
-			//console.log(neededSup, currentSup, totalSup);
+		[].forEach.call(document.querySelectorAll('.player .unit'), function(el) {
+			currentSup += parseInt(el.getAttribute('data-sup'));
+		});
 
-			if (neededSup + currentSup <= totalSup) {
-				return true;
-			} else { return false; }
-		}
+		//console.log(neededSup, currentSup, totalSup);
 
-		if (myTurn && canAfford(this) ) {
-			conn.send({ 
-				'func'  : 'testCard', 
-				'card'  : card,
-				'who'   : 'origin',
-				'action': 'play'
-			});
-		}
+		if (neededSup + currentSup <= totalSup) {
+			return true;
+		} else { return false; }
+	}
 
-		//document.querySelector('.shuf').setAttribute('disabled','true');
-	});
+	if (myTurn && canAfford(e.target) ) {
+		conn.send({ 
+			'func'  : 'testCard', 
+			'card'  : card,
+			'who'   : 'origin',
+			'action': 'play'
+		});
+	}
 }
 
 // Discard a card
-function discardCard() {
+function discardCard(card) {
 
 }
 
@@ -756,11 +756,20 @@ function unitCalc(who) {
 	var unitTraits= [];
 	var commAtkBonus = 0;
 	var commDefBonus = 0;
-	var unitAtk = parseInt(atkSpan.getAttribute('data-unit') );
+	var unitAtk = 0;
+	var unitDef = 0;
 	var currentSupUse = 0;
 	var currentSup = parseInt( supSpan.getAttribute('data-sup') );
 
 	[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(el) {
+		// Add attack
+		if ( cardType.unit[el.getAttribute('data-type')].atk ) {
+			unitAtk += parseInt( cardType.unit[el.getAttribute('data-type')].atk );
+		}
+		// Add defense
+		if ( cardType.unit[el.getAttribute('data-type')].def ) {
+			unitDef += parseInt( cardType.unit[el.getAttribute('data-type')].def );
+		}
 		// If unit has a bonus
 		if ( cardType.unit[el.getAttribute('data-type')].bonus ) {
 			var bonusTrait = cardType.unit[el.getAttribute('data-type')].bonus;
@@ -808,7 +817,10 @@ function unitCalc(who) {
 	var unitBonus = bonusTotal+parseInt(atkSpan.getAttribute('data-bonus') );
 
 	atkSpan.innerHTML = unitAtk + unitBonus + comboAtkTotal + commAtkBonus;
-	defSpan.innerHTML = parseInt(defSpan.getAttribute('data-unit')) + comboDefTotal + commDefBonus;
+	atkSpan.setAttribute('data-unit', unitAtk);
+
+	defSpan.innerHTML = unitDef + comboDefTotal + commDefBonus;
+	defSpan.setAttribute('data-unit', unitDef);
 	
 	supSpan.setAttribute('data-supuse', currentSupUse);
 	supSpan.textContent = supSpan.getAttribute('data-supuse')+'/'+supSpan.getAttribute('data-sup');
@@ -871,10 +883,57 @@ function specialCombo(card,who,v) {
 			// opponent card, argument to limit type by trait
 			break;
 		case "retreat":
-			// Add listener to redeck whatever card is clicked
-			// Make all cards active
-			// Then do another "smart shift" if unit
-			// was chosen from the middle to collapse formation
+			function retreat(e) {
+				// Remove unit
+				var unit = e.target.querySelector('.unit').cardProps.id
+				e.target.querySelector('.unit').remove();
+
+				// Clear any combos out
+				clearCombo(e.target);
+
+				// Collapse formation
+				e.target.parentNode.appendChild( e.target );
+
+				// Reset junk
+				[].forEach.call(document.querySelectorAll('.'+who+' li.active'), function(slot) {
+					buoy.removeClass(slot,'active');
+					slot.removeEventListener('click', retreat);
+				});
+
+				// Recalc and send
+				unitCalc('player');
+				unitCalc('opponent');
+				conn.send( { 
+					'func':'specialCombo', 
+					'card' : card, 
+					'who' : 'opponent', 
+					'var' : unit
+				});
+			}
+
+			if (who==='player') {
+				// Make all cards active
+				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(unit) {
+					var slot = unit.parentNode;
+					buoy.addClass(slot,'active');
+					// Add listener to redeck whatever card is clicked
+					slot.addEventListener('click', retreat);
+				});
+
+				notify('yellow','Select a unit to retreat! (Combo will be discarded)');
+			} else {
+				// Remove unit
+				console.log(v);
+				var unit = document.getElementById(v);
+				var slot = unit.parentNode;
+				// Clear stuff
+				clearCombo(unit.parentNode);
+				unit.remove();
+				slot.parentNode.appendChild( slot );
+				// Recalc
+				unitCalc('player');
+				unitCalc('opponent');
+			}
 			break;
 		case "shift":
 			if (who==='player') {
@@ -1046,17 +1105,18 @@ function notify(type, msg) {
 	window.setTimeout( function() { bubble.remove(); }, 5000);
 }
 
+// Clear a slot of its combo
+function clearCombo(el) {
+	el.setAttribute('class','');
+	el.removeAttribute('data-atk');
+	el.removeAttribute('data-def');
+	el.removeAttribute('data-sup');
+	el.removeAttribute('data-type');
+	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
+}
+
 // Use at the end of the round to wipe/add scores and reset field
 function resetField(points,loser) {
-	function clearCombo(el) {
-		el.setAttribute('class','');
-		el.removeAttribute('data-atk');
-		el.removeAttribute('data-def');
-		el.removeAttribute('data-sup');
-		el.removeAttribute('data-type');
-		el.querySelector('span').firstElementChild.remove();
-	}
-
 	// Reset units, auto save if one unit
 	if (document.querySelectorAll('.player .unit').length === 1) {
 		redeckCard(playerDeck,[document.querySelector('.player .unit').cardProps],false);
@@ -1210,8 +1270,66 @@ function resetField(points,loser) {
 		document.querySelector('.end').setAttribute('disabled','true');
 		//document.querySelector('.shuf').setAttribute('disabled','true');
 		// Tell opponent it's his turn
-		conn.send( { 'func':'yourTurn' } );
+		conn.send( { 'func':'yourTurn', 'var' : false } );
 		myTurn = false;
 		buoy.addClass(document.querySelector('.hand'),'disable');
 	}
+}
+
+// Swap 3 cards at the beginning of your turn
+function swapThree(doit) {
+	if (!doit) return false;
+	document.querySelector('.turn').setAttribute('disabled','true');
+	var count = 0;
+
+	function chooseThree(e) {
+		if (count<= 3) {
+			if ( buoy.hasClass(e.target, 'active') ) {
+				buoy.removeClass(e.target, 'active');
+				count = document.querySelectorAll('.card.active').length;
+			} 
+			else if ( !buoy.hasClass(e.target, 'active') && count<3 ) { 
+				buoy.addClass(e.target, 'active');
+				count = document.querySelectorAll('.card.active').length;
+			}
+		}
+	}
+
+	function finishSwap() {
+		[].forEach.call(document.querySelectorAll('.card'), function(card) {
+			card.removeEventListener('click', chooseThree);
+
+			// Swap cards
+			if (count === 3 || count === 0) {
+				if ( buoy.hasClass(card, 'active') ) {
+					redeckCard(playerDeck, [card.cardProps], true);
+					card.remove();
+				} else {
+					card.addEventListener('click', playListener);
+				}
+			} else {
+				card.addEventListener('click', playListener);
+			}
+		});	
+
+		document.querySelector('.turn').removeAttribute('disabled');
+		if (count===3) conn.send( { 'func':'notify', 'type' : 'yellow', 'msg' : 'Opponent swapped 3 cards' } );
+
+		done.removeEventListener('click', finishSwap);
+		done.remove();
+		done = null;
+	}
+
+	[].forEach.call(document.querySelectorAll('.card'), function(card) {
+		//buoy.addClass(card, 'active');
+		card.removeEventListener('click', playListener);
+		card.addEventListener('click', chooseThree);
+	});
+
+	// Add button for "DONE"
+	var done = document.querySelector('.player').appendChild( document.createElement('button') );
+	done.textContent = 'Done';
+	done.addEventListener('click', finishSwap);
+
+	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
 }

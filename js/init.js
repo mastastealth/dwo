@@ -138,11 +138,13 @@ document.addEventListener('DOMContentLoaded', function(){
 					playCard(msg.card, msg.who); 
 					break;
 				case 'yourTurn':
+					var v = (!msg['var']) ? msg['var'] : true;
 					myTurn = true; 
 					notify('green', 'Your Turn');
 					document.querySelector('.end').removeAttribute('disabled');
 					document.querySelector('.turn').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
+					swapThree(v);
 					break;
 				case 'unitPos':
 					placeUnit(msg.pos, msg.card, msg.who, msg.id);
