@@ -154,8 +154,15 @@
 
 			&:empty { background: white; opacity: 0.1; }
 
-			&:hover { z-index: 1; }
-			
+			&:hover { 
+				z-index: 1; 
+
+				&:not(.active) .unit {
+					transition: all 0.3s;
+					transform: scale(1.2) translateX(-60%) rotateY(0deg);
+				}
+			}
+
 			&.active { 
 				background: transparentize(green,0.6);
 				border-color: green; 
@@ -170,8 +177,18 @@
 			}
 
 			&.combo { 
-				&.atk { background: transparentize(#E44141,0.7); box-shadow: 0 0 6px red; }
-				&.def { box-shadow: 0 0 6px blue; }
+				&.atk { 
+					background: transparentize(#E44141,0.7);
+					border-color: darken(#E44141,5%); 
+					box-shadow: 0 0 6px red;
+				}
+
+				&.def { 
+					background: transparentize(#4178E4, 0.7);
+					border-color: darken(#4178E4,5%);
+					box-shadow: 0 0 6px blue; 
+				}
+
 				&.atk.def { box-shadow: 0 0 6px purple;  }
 
 				&.active { animation: borderPulse 0.5s infinite alternate; opacity: 1; }

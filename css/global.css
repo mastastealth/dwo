@@ -601,6 +601,14 @@ footer {
   z-index: 1;
 }
 
+.game .formation li:hover:not(.active) .unit {
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform: scale(1.2) translateX(-60%) rotateY(0deg);
+  -ms-transform: scale(1.2) translateX(-60%) rotateY(0deg);
+  transform: scale(1.2) translateX(-60%) rotateY(0deg);
+}
+
 .game .formation li.active {
   background: rgba(0, 128, 0, 0.4);
   border-color: green;
@@ -617,11 +625,14 @@ footer {
 
 .game .formation li.combo.atk {
   background: rgba(228, 65, 65, 0.3);
+  border-color: #e12b2b;
   -webkit-box-shadow: 0 0 6px red;
   box-shadow: 0 0 6px red;
 }
 
 .game .formation li.combo.def {
+  background: rgba(65, 120, 228, 0.3);
+  border-color: #2b68e1;
   -webkit-box-shadow: 0 0 6px blue;
   box-shadow: 0 0 6px blue;
 }

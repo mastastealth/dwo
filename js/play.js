@@ -979,6 +979,8 @@ function specialCombo(card,who,v) {
 			// Same as sniper, works for GRD
 			break;
 	}
+
+	if (who!='player')notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }
 
 // =================================
