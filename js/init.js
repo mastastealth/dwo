@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					document.querySelector('.end').removeAttribute('disabled');
 					document.querySelector('.turn').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
+					// Swap 3
 					break;
 				case 'unitPos':
 					placeUnit(msg.pos, msg.card, msg.who, msg.id);
