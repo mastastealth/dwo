@@ -196,7 +196,7 @@ function playInit(connection, deck, atkr) {
 				drawCard(playerDeck,8-document.querySelectorAll('.card').length);
 			} else { drawCard(playerDeck,1); }
 			// Tell opponent it's his turn
-			conn.send( { 'func':'yourTurn' } );
+			conn.send( { 'func':'yourTurn', 'var' : false } );
 			buoy.addClass(document.querySelector('.hand'),'disable');
 		}
 
@@ -1270,16 +1270,17 @@ function resetField(points,loser) {
 		document.querySelector('.end').setAttribute('disabled','true');
 		//document.querySelector('.shuf').setAttribute('disabled','true');
 		// Tell opponent it's his turn
-		conn.send( { 'func':'yourTurn', 'var' : false } );
+		conn.send( { 'func':'yourTurn', 'var' : true } );
 		myTurn = false;
 		buoy.addClass(document.querySelector('.hand'),'disable');
 	}
 }
 
 // Swap 3 cards at the beginning of your turn
-function swapThree(doit) {
-	if (!doit) return false;
+function swapThree(dontdoit) {
+	if (dontdoit) return false;
 	document.querySelector('.turn').setAttribute('disabled','true');
+	document.querySelector('.end').setAttribute('disabled','true');
 	var count = 0;
 
 	function chooseThree(e) {
@@ -1313,6 +1314,7 @@ function swapThree(doit) {
 		});	
 
 		document.querySelector('.turn').removeAttribute('disabled');
+		document.querySelector('.end').removeAttribute('disabled');
 		if (count===3) conn.send( { 'func':'notify', 'type' : 'yellow', 'msg' : 'Opponent swapped 3 cards' } );
 
 		done.removeEventListener('click', finishSwap);

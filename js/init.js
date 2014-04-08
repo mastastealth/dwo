@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					playCard(msg.card, msg.who); 
 					break;
 				case 'yourTurn':
-					var v = (!msg['var']) ? msg['var'] : true;
+					var v = (msg['var'] === false) ? msg['var'] : true;
 					myTurn = true; 
 					notify('green', 'Your Turn');
 					document.querySelector('.end').removeAttribute('disabled');
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					notify(msg.type, msg.msg);
 					break;
 				case 'win' :
-					if (attacker === true) win(msg.points); 
+					if (attacker === true || (!attacker && parseInt(document.querySelector('.player .atk').textContent) > parseInt(document.querySelector('.opponent .def')) ) ) win(msg.points);
 					resetField(0,false); 
 					break;
 			}
