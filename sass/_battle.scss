@@ -283,9 +283,11 @@
 			user-select: none;
 			vertical-align: middle;
 
+			&.choose { animation: borderPulse 0.5s alternate infinite; }
 			&.active { box-shadow: 0 0 0 2px white; opacity: 0.5; }
 			&.disable { opacity: 0.5; pointer-events: none; }
 			&:hover { transform: scale(1.3); z-index: 1; }
+			&.new { animation: fadeIn 1.2s -0.1s; }
 
 			img { pointer-events: none; }
 		}

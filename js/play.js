@@ -20,7 +20,7 @@ var cardType = {
 		'helo' : { 'atk': 2, 'def': 2, 'sup': 2, 'trait' : ['air', 'aa'] },
 		'a2g' : { 'atk': 2, 'def': 4, 'sup': 3, 'bonus' : [2,'arm'], 'trait' : ['air', 'as'] },
 		'jet' : { 'atk': 0, 'def': 4, 'sup': 3, 'bonus' : [4,'air'], 'trait' : ['air', 'aa'] },
-		'bomber' : { 'atk': 0, 'def': 3, 'sup': 4, 'bonus' : [4,'grd'], 'trait' : ['air', 'as'] },
+		'bomber' : { 'atk': 0, 'def': 3, 'sup': 4, 'bonus' : [4,'arm'], 'trait' : ['air', 'as'] },
 		'hbomber' : { 'atk': 1, 'def': 4, 'sup': 5, 'bonus' : [4,'grd'], 'trait' : ['air', 'as'] }
 	},
 	'co' : {
@@ -184,7 +184,7 @@ function playInit(connection, deck, atkr) {
 	var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') );
 	endTurn.innerHTML = "End Turn";
 	buoy.addClass(endTurn,'turn');
-	if (!myTurn) endTurn.setAttribute('disabled','true');
+	endTurn.setAttribute('disabled','true');
 
 	endTurn.addEventListener('click', endTurnListener);
 
@@ -653,7 +653,9 @@ function drawCardConfirmed(card) {
 	var newcard = document.querySelector('.hand .cardContainer').appendChild( document.createElement('div') );
 	var img = newcard.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
-	newcard.classList.add('card');
+	buoy.addClass(newcard, 'card');
+	buoy.addClass(newcard, 'new');
+	window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },1200)
 	newcard.cardProps = card;
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
@@ -685,7 +687,10 @@ function playListener(e) {
 
 		if (neededSup + currentSup <= totalSup) {
 			return true;
-		} else { return false; }
+		} else { 
+			notify('red', 'Not Enough Supplies');
+			return false; 
+		}
 	}
 
 	if (myTurn && canAfford(e.target) ) {
@@ -1079,11 +1084,14 @@ function smartShift(who) {
 	} 
 	// Add empty li to opposite side of end with unit
 	else if (document.querySelectorAll('.'+who+' .unit').length === 4) {
+		var li = document.createElement('li');
 		if ( document.querySelector('.'+who+' li:first-child').children.length > 1 ) {
-			var li = document.querySelector('.'+who+' ul').prependChild( document.createElement('li') );
+			console.log('Prepending...', li);
+			document.querySelector('.'+who+' ul').prependChild( li );
 		}
-		if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
-			var li = document.querySelector('.'+who+' ul').appendChild( document.createElement('li') );
+		else if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
+			console.log('Appending...', li);
+			document.querySelector('.'+who+' ul').appendChild( li );
 		}
 		li.appendChild( document.createElement('span') );
 
@@ -1279,9 +1287,11 @@ function resetField(points,loser) {
 
 // Swap 3 cards at the beginning of your turn
 function swapThree(dontdoit) {
-	if (dontdoit) return false;
 	document.querySelector('.turn').setAttribute('disabled','true');
 	document.querySelector('.end').setAttribute('disabled','true');
+	forceEnd = false;
+
+	if (dontdoit) return false;
 	var count = 0;
 
 	function chooseThree(e) {
@@ -1300,6 +1310,7 @@ function swapThree(dontdoit) {
 	function finishSwap() {
 		[].forEach.call(document.querySelectorAll('.card'), function(card) {
 			card.removeEventListener('click', chooseThree);
+			buoy.removeClass(card, 'choose');
 
 			// Swap cards
 			if (count === 3 || count === 0) {
@@ -1324,7 +1335,7 @@ function swapThree(dontdoit) {
 	}
 
 	[].forEach.call(document.querySelectorAll('.card'), function(card) {
-		//buoy.addClass(card, 'active');
+		buoy.addClass(card, 'choose');
 		card.removeEventListener('click', playListener);
 		card.addEventListener('click', chooseThree);
 	});
@@ -1357,20 +1368,26 @@ function endTurnListener(e) {
 }
 
 function forceEndCheck(who) {
-	console.log(forceEnd);
-	if (attacker && myTurn) {
-		// Attacker's atk is greater than Defenders def
-		if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
-			forceEnd += 1;
-			if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card your turn will end (or end it now)');
+	window.setTimeout( function(){
+		console.log(forceEnd);
+		if (attacker && myTurn) {
+			// Attacker's atk is greater than Defenders def
+			if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
+				forceEnd += 1;
+				if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card your turn will end (or end it now)');
+			}
+		} else if (!attacker && myTurn) {
+			// Defenders def is greater than or equal to Attacker's atk
+			if (parseInt(document.querySelector('.'+who+' .def').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
+				forceEnd += 1;
+				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
+			}
 		}
-	} else if (!attacker && myTurn) {
-		// Defenders def is greater than or equal to Attacker's atk
-		if (parseInt(document.querySelector('.'+who+' .def').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
-			forceEnd += 1;
-			if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
+		//console.log(forceEnd);
+		if (forceEnd===1) {
+			document.querySelector('.turn').removeAttribute('disabled');
+			document.querySelector('.end').setAttribute('disabled','true');
 		}
-	}
-	//console.log(forceEnd);
-	if (forceEnd>1) endTurnListener();
+		if (forceEnd>1) endTurnListener();
+	}, 300);
 }

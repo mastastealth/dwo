@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					forceEnd = false;
 					notify('green', 'Your Turn');
 					document.querySelector('.end').removeAttribute('disabled');
-					document.querySelector('.turn').removeAttribute('disabled');
+					//document.querySelector('.turn').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);
 					break;
