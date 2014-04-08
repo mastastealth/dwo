@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				case 'yourTurn':
 					var v = (msg['var'] === false) ? msg['var'] : true;
 					myTurn = true; 
+					forceEnd = false;
 					notify('green', 'Your Turn');
 					document.querySelector('.end').removeAttribute('disabled');
 					document.querySelector('.turn').removeAttribute('disabled');

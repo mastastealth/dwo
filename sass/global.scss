@@ -127,6 +127,7 @@ input { display: block; }
 	border-radius: 10px;
 	font-size: 24px;
 	line-height: 80px;
+	pointer-events: none;
 	position: fixed;
 	top: 10px; left: 10%;
 	text-align: center;

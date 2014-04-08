@@ -3,6 +3,7 @@ var opponentDeck;
 var playerDeck;
 var myTurn;
 var attacker;
+var forceEnd = 0;
 
 // Define all the cards
 var cardType = {
@@ -185,23 +186,7 @@ function playInit(connection, deck, atkr) {
 	buoy.addClass(endTurn,'turn');
 	if (!myTurn) endTurn.setAttribute('disabled','true');
 
-	endTurn.addEventListener('click', function() {
-		if (myTurn){
-			// If it is your turn, disable buttons and turn
-			myTurn = false;
-			endTurn.setAttribute('disabled','true');
-			document.querySelector('.end').setAttribute('disabled','true');
-			// AUto draw cards
-			if (document.querySelectorAll('.card').length<8) {
-				drawCard(playerDeck,8-document.querySelectorAll('.card').length);
-			} else { drawCard(playerDeck,1); }
-			// Tell opponent it's his turn
-			conn.send( { 'func':'yourTurn', 'var' : false } );
-			buoy.addClass(document.querySelector('.hand'),'disable');
-		}
-
-		notify('red', 'Ended Turn');
-	});
+	endTurn.addEventListener('click', endTurnListener);
 
 	// End Round
 	var endRound = document.querySelector('.hand').appendChild( document.createElement('button') );
@@ -247,7 +232,6 @@ function playCard(card,who) {
 			if (unitCount === 0) {
 				newUnit = document.querySelector('.'+who+' li:nth-child(3)').appendChild( document.createElement('div') );
 				unitCard(newUnit,card,who,card.id);
-
 			} 
 			// If more than one unit, choose position
 			else {
@@ -337,6 +321,8 @@ function playCard(card,who) {
 
 				unitCalc('opponent');
 				unitCalc('player');
+
+				forceEndCheck(who);
 
 				if (who != 'player') notify('purple', "<img src='images/cards/co_"+card.type+".png'> Commander was played");
 			}
@@ -515,6 +501,8 @@ function playCard(card,who) {
 
 			unitCalc('opponent');
 			unitCalc('player');
+
+			forceEndCheck(who);
 
 			if (who != 'player') notify('yellow', "<img src='images/cards/supply.png'> Supply was played");
 		}
@@ -743,6 +731,8 @@ function unitCard(newUnit,card,who,id) {
 	unitCalc('opponent');
 	unitCalc('player');
 
+	forceEndCheck(who);
+
 	if (who!="player") notify(cardType.unit[card.type].trait[0], "<img src='images/cards/unit_"+card.type+".png'> Unit was played");
 }
 
@@ -861,6 +851,8 @@ function comboCard(unit,card,who) {
 	unitCalc('opponent');
 	unitCalc('player');
 
+	forceEndCheck(who);
+
 	if (who!='player')notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }
 
@@ -875,6 +867,8 @@ function specialCombo(card,who,v) {
 
 			unitCalc('opponent');
 			unitCalc('player');
+
+			forceEndCheck(who);
 
 			if (who==='player') conn.send( { 'func':'specialCombo', 'card' : card, 'who' : 'opponent' } );
 			break;
@@ -903,6 +897,8 @@ function specialCombo(card,who,v) {
 				// Recalc and send
 				unitCalc('player');
 				unitCalc('opponent');
+				forceEndCheck(who);
+
 				conn.send( { 
 					'func':'specialCombo', 
 					'card' : card, 
@@ -933,6 +929,7 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
+				forceEndCheck(who);
 			}
 			break;
 		case "shift":
@@ -974,7 +971,10 @@ function specialCombo(card,who,v) {
 					});
 
 					document.querySelector('.turn').removeAttribute('disabled');
-					if (who==='player') conn.send( { 'func':'specialCombo', 'card' : card, 'who' : 'opponent', 'var' : moves } );
+					if (who==='player') {
+						conn.send( { 'func':'specialCombo', 'card' : card, 'who' : 'opponent', 'var' : moves } );
+						forceEndCheck(who);
+					}
 				}
 
 				// Iterate through each unit and add up/down buttons
@@ -1014,6 +1014,7 @@ function specialCombo(card,who,v) {
 		case "reinforce":
 			document.getElementById(card.id).remove();
 			drawCard(playerDeck,3);
+			forceEndCheck(who);
 			break;
 		// 2 Star Combo
 		case "intel":
@@ -1334,4 +1335,42 @@ function swapThree(dontdoit) {
 	done.addEventListener('click', finishSwap);
 
 	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
+}
+
+function endTurnListener(e) {
+	var endTurn = document.querySelector('.turn');
+	if (myTurn){
+		// If it is your turn, disable buttons and turn
+		myTurn = false;
+		endTurn.setAttribute('disabled','true');
+		document.querySelector('.end').setAttribute('disabled','true');
+		// AUto draw cards
+		if (document.querySelectorAll('.card').length<8) {
+			drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+		} else { drawCard(playerDeck,1); }
+		// Tell opponent it's his turn
+		conn.send( { 'func':'yourTurn', 'var' : false } );
+		buoy.addClass(document.querySelector('.hand'),'disable');
+		notify('red', 'Ended Turn');
+		forceEnd = 0;
+	}
+}
+
+function forceEndCheck(who) {
+	console.log(forceEnd);
+	if (attacker && myTurn) {
+		// Attacker's atk is greater than Defenders def
+		if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
+			forceEnd += 1;
+			if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card your turn will end (or end it now)');
+		}
+	} else if (!attacker && myTurn) {
+		// Defenders def is greater than or equal to Attacker's atk
+		if (parseInt(document.querySelector('.'+who+' .def').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
+			forceEnd += 1;
+			if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
+		}
+	}
+	//console.log(forceEnd);
+	if (forceEnd>1) endTurnListener();
 }
