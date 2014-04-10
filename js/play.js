@@ -869,6 +869,7 @@ function comboCard(unit,card,who) {
 		// Special combo color slots
 		if (card.type==='support') buoy.addClass(slot,'sup');
 		if (card.type==='sniper') buoy.addClass(slot,'atk');
+		if (card.type==='intel') { buoy.addClass(slot,'atk'); buoy.addClass(slot,'def'); }
 	} else {
 		unitCalc('opponent');
 		unitCalc('player');
@@ -1071,7 +1072,22 @@ function specialCombo(card,who,v) {
 			break;
 		// 2 Star Combo
 		case "intel":
-			// Use notification to display all of opponent's units?
+			// Use notification to display all of opponent's units
+			if (who==='player') {
+				//conn.send( { 'func':'specialCombo', 'card' : card, 'who' : 'opponent' } );
+			} else {
+				var cards = "";
+
+				[].forEach.call(document.querySelectorAll('.card'), function(card) {
+					var pre = '';
+					if ( cardType.unit[card.type] ) { pre = 'unit_'; }
+					else if ( cardType.co[card.type] ) { pre = 'co_'; }
+
+					cards+= "<img src='images/cards/"+pre+card.cardProps.type+".png'>";
+				});
+
+				conn.send( { 'func' : 'notify', 'type': 'green', 'msg' : cards });
+			}
 			break;
 		case "stealth":
 			// Add .unit inf (with li?) to support combos
