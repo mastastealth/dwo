@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					attacker = false;
 					playInit(c,deck,attacker);
 					notify('yellow', "Opponent's Turn");
+					buoy.addClass(document.querySelector('.hand'),'disable')
 				});
 			});
 
