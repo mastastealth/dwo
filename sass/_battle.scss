@@ -139,7 +139,9 @@
 			}
 
 		.commander {
-			background: linear-gradient(to right,red,blue);
+			background-position: center bottom;
+			background-repeat: no-repeat;
+			background-size: contain;
 			height: 300px;
 			position: absolute;
 			bottom: 0;
