@@ -1295,22 +1295,29 @@ function resetField(points,loser) {
 		if (document.querySelector('.'+who+' .commander')) document.querySelector('.'+who+' .commander').remove();
 	}
 
+	// Declare Loss
+	if (loser) {
+		var a = parseInt(document.querySelector('.opponent .atk').textContent);
+		var d = parseInt(document.querySelector('.player .def').textContent);
+		var winMsg = (attacker && a > d) ? 'You win round AND counter-attacked! You take points!' : 'You win round';
+
+		conn.send({ 'func':'notify', 'type':'green', 'msg': winMsg });
+		conn.send({ 'func':'win', 'points': points });
+
+		if (!attacker || (attacker && a > d) ) {
+			console.log('lost');
+			if (attacker && a>d) { notify('red', 'Lost Round AND Counter-attacked! Opponent gets points!'); }
+			else { notify('red', 'Lost Round'); }
+			var currentPts = (document.querySelector('.opponent .outpost').textContent) ? parseInt(document.querySelector('.opponent .outpost').textContent) : 0;
+			document.querySelector('.opponent .outpost').textContent = currentPts + points;
+		}
+	}
+
 	wipeStats('player');
 	wipeStats('opponent');
 
 	// Check hand
 	reshuffleCheck();
-
-	// Declare Loss
-	if (loser) {
-		notify('red', 'Lost Round');
-		conn.send({ 'func':'notify', 'type':'green', 'msg': 'You win round'});
-		conn.send({ 'func':'win', 'points': points });
-		if (!attacker){
-			var currentPts = (document.querySelector('.opponent .outpost').textContent) ? parseInt(document.querySelector('.opponent .outpost').textContent) : 0;
-			document.querySelector('.opponent .outpost').textContent = currentPts + points;
-		}
-	}
 
 	// Swap attacker status
 	if (!attacker) {
