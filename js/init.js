@@ -162,7 +162,9 @@ document.addEventListener('DOMContentLoaded', function(){
 					notify(msg.type, msg.msg);
 					break;
 				case 'win' :
-					if (attacker === true || (!attacker && parseInt(document.querySelector('.player .atk').textContent) > parseInt(document.querySelector('.opponent .def')) ) ) win(msg.points);
+					var a = parseInt(document.querySelector('.player .atk').textContent);
+					var d = parseInt(document.querySelector('.opponent .def').textContent);
+					if (attacker || (!attacker && a > d) ) win(msg.points);
 					resetField(0,false); 
 					break;
 			}
