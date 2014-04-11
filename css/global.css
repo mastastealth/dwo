@@ -531,11 +531,14 @@ footer {
 
 .game .field aside.attacker h1 .atk,
 .game .field aside:not(.attacker) h1 .def {
-  -webkit-animation: statPulse 2s alternate infinite;
   animation: statPulse 2s alternate infinite;
+  -webkit-animation: none;
   border-radius: 0;
   margin: 0 5px;
   position: relative;
+  -webkit-transform: scale(1.4);
+  -ms-transform: scale(1.4);
+  transform: scale(1.4);
 }
 
 .game .field aside.attacker h1 .atk:after,
@@ -936,13 +939,11 @@ footer {
 
 @-webkit-keyframes statPulse {
   from {
-    color: white;
     -webkit-transform: scale(1.3);
     transform: scale(1.3);
   }
 
   to {
-    color: black;
     -webkit-transform: scale(1.5);
     transform: scale(1.5);
   }
@@ -950,14 +951,12 @@ footer {
 
 @keyframes statPulse {
   from {
-    color: white;
     -webkit-transform: scale(1.3);
     -ms-transform: scale(1.3);
     transform: scale(1.3);
   }
 
   to {
-    color: black;
     -webkit-transform: scale(1.5);
     -ms-transform: scale(1.5);
     transform: scale(1.5);
