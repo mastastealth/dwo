@@ -85,11 +85,7 @@ input { display: block; }
 	animation: spin 1s infinite linear;
 }
 
-.hand {
-	//overflow-x: auto;
-	text-align: center;
-	//white-space: nowrap;
-}
+.hand { text-align: center; }
 
 .card {
 	background: #333;

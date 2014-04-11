@@ -321,8 +321,6 @@
 				
 				&:not([disabled=true]):hover { background: #E44141; border-color: darkred; color: white; }
 			}
-
-			&[disabled=true] { background: rgba(120,120,120,0.3); border-color: #666; color: #666; }
 		}
 
 		.card {

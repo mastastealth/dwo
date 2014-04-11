@@ -1,5 +1,5 @@
 body {
-	background: #92CE9A; 
+	background: #92CE9A url(../images/bg/bg_table.png); 
 	font-family: Calibri, Tahoma, sans-serif; 
 	overflow: auto;
 }
@@ -16,7 +16,7 @@ a { color: darkgreen; }
 
 #tlkio {
 	background: white;
-	box-shadow: 0 2px 2px -1px rgba(0,0,0,0.2);
+	box-shadow: 0 2px 2px -1px rgba(0,0,0,0.3);
 	margin: 0 auto 20px;
 	max-width: 800px;
 	height:480px;
@@ -24,7 +24,7 @@ a { color: darkgreen; }
 }
 
 button {
-	background: transparent;
+	background: transparentize(#3D9970,0.6);
 	border: 1px solid darkgreen;
 	border-radius: 4px;
 	height: 50px;
@@ -33,7 +33,7 @@ button {
 	transition: all 0.3s;
 
 	&:not(:disabled):hover { background: rgba(0,0,0,0.3); color: white; }
-	&:disabled { border-color: #666; }
+	&[disabled] { background: rgba(120,120,120,0.3); border-color: #666; color: #666; }
 }
 
 footer {
