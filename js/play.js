@@ -19,9 +19,9 @@ var cardType = {
 		'drone' : { 'atk': 1, 'def': 1, 'sup': 1, 'trait' : ['air', 'aa', 'as', 'inf'] },
 		'helo' : { 'atk': 2, 'def': 2, 'sup': 2, 'trait' : ['air', 'aa'] },
 		'a2g' : { 'atk': 2, 'def': 4, 'sup': 3, 'bonus' : [2,'arm'], 'trait' : ['air', 'as'] },
-		'jet' : { 'atk': 0, 'def': 4, 'sup': 3, 'bonus' : [4,'air'], 'trait' : ['air', 'aa'] },
-		'bomber' : { 'atk': 0, 'def': 3, 'sup': 4, 'bonus' : [4,'arm'], 'trait' : ['air', 'as'] },
-		'hbomber' : { 'atk': 1, 'def': 4, 'sup': 5, 'bonus' : [4,'grd'], 'trait' : ['air', 'as'] }
+		'jet' : { 'atk': 1, 'def': 4, 'sup': 3, 'bonus' : [3,'air'], 'trait' : ['air', 'aa'] },
+		'bomber' : { 'atk': 1, 'def': 3, 'sup': 4, 'bonus' : [3,'arm'], 'trait' : ['air', 'as', 'lr'] },
+		'hbomber' : { 'atk': 1, 'def': 4, 'sup': 5, 'bonus' : [4,'grd'], 'trait' : ['air', 'as', 'lr'] }
 	},
 	'co' : {
 		'saptiva' : { 'bonus' : [1,'inf','atk'], 'bonus2' : [1,'inf','def']},
@@ -112,7 +112,7 @@ function playInit(connection, deck, atkr) {
 
 		{'type': 'shift', 'id' : 0, 'hash' : 0},
 		{'type': 'shell', 'id' : 0, 'hash' : 0},
-		{'type': 'shell', 'id' : 0, 'hash' : 0},
+		{'type': 'stealth', 'id' : 0, 'hash' : 0},
 		{'type': 'reinforce', 'id' : 0, 'hash' : 0},
 		{'type': 'coverage', 'id' : 0, 'hash' : 0},
 
@@ -223,8 +223,8 @@ function playCard(card,who) {
 	if ( properCards === md5(cardType) ) {
 		
 		// Initial counts and stuff
-		var unitCount = document.querySelectorAll('.'+who+' .unit').length;
-		var oUnitCount = document.querySelectorAll('aside:not(.'+who+') .unit').length;
+		var unitCount = document.querySelectorAll('.'+who+' .formation .unit').length;
+		var oUnitCount = document.querySelectorAll('aside:not(.'+who+') .formation .unit').length;
 		var fieldOfPlayCheck = true;
 
 		// If you're defender AND your current is >= opponent AND your opponent has more than 3
@@ -254,8 +254,8 @@ function playCard(card,who) {
 					// if (unitCount >= 3 && unitCount >= theirUnitCount) return false;
 					
 					// Get first and last positioned units
-					var firstUnit = document.querySelectorAll('.'+who+' .unit')[0];
-					var lastUnit = document.querySelectorAll('.'+who+' .unit')[document.querySelectorAll('.'+who+' .unit').length-1];
+					var firstUnit = document.querySelectorAll('.'+who+' .formation .unit')[0];
+					var lastUnit = document.querySelectorAll('.'+who+' .formation .unit')[document.querySelectorAll('.'+who+' .formation .unit').length-1];
 					var addPrev;
 					var addNext;
 
@@ -307,7 +307,7 @@ function playCard(card,who) {
 			// Remove card from hand
 			if (who === 'player') cardEl.remove();
 		} 
-		else if (cardType.unit[card.type] && document.querySelectorAll('.'+who+' .unit').length >= 5) {
+		else if (cardType.unit[card.type] && document.querySelectorAll('.'+who+' .formation .unit').length >= 5) {
 			notify('yellow', "Can't play any more units, your field is full!");
 		} else if (cardType.unit[card.type] && unitCount < 5 && !fieldOfPlayCheck) {
 			notify('yellow', "Can't play any more units, only attacker can expand field count!");
@@ -670,25 +670,31 @@ function zoomCard() {
 	// Scrolling is weird
 }
 
+function addUnit(u,who,card) {
+	// Set attack
+	u.setAttribute('data-atk', cardType.unit[card].atk );
+	currentAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
+	document.querySelector('.'+who+' .atk').setAttribute( 'data-unit', currentAtk+parseInt(u.getAttribute('data-atk')) );
+	// Set defense
+	u.setAttribute('data-def', cardType.unit[card].def );
+	currentDef = parseInt(document.querySelector('.'+who+' .def').getAttribute('data-unit') );
+	document.querySelector('.'+who+' .def').setAttribute( 'data-unit', currentDef+parseInt(u.getAttribute('data-def')) );
+	// Set supply cost
+	u.setAttribute('data-sup', cardType.unit[card].sup );
+}
+
 function unitCard(newUnit,card,who,id) {
 	// Add unit class and type
 	buoy.addClass(newUnit,'unit');
 	newUnit.setAttribute('id', id);
 	newUnit.setAttribute('data-type', card.type);
 	newUnit.cardProps = card;
+
 	// Image
 	var img = newUnit.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/cards/unit_'+card.type+'.png');
-	// Set attack
-	newUnit.setAttribute('data-atk', cardType.unit[card.type].atk );
-	currentAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
-	document.querySelector('.'+who+' .atk').setAttribute( 'data-unit', currentAtk+parseInt(newUnit.getAttribute('data-atk')) );
-	// Set defense
-	newUnit.setAttribute('data-def', cardType.unit[card.type].def );
-	currentDef = parseInt(document.querySelector('.'+who+' .def').getAttribute('data-unit') );
-	document.querySelector('.'+who+' .def').setAttribute( 'data-unit', currentDef+parseInt(newUnit.getAttribute('data-def')) );
-	// Set supply cost
-	newUnit.setAttribute('data-sup', cardType.unit[card.type].sup );
+	
+	addUnit(newUnit,who,card.type);
 
 	unitCalc('opponent');
 	unitCalc('player');
@@ -1050,16 +1056,33 @@ function specialCombo(card,who,v) {
 			break;
 		case "stealth":
 			// Add .unit inf (with li?) to support combos
-			// var extra;
-			// if (!document.querySelector('ul.extra')) {
-			// 	extra = document.createElement('ul');
-			// 	bouy.addClass(extra,'extra');
-			// } else { extra = document.querySelector('ul.extra'); }
+			var extra;
+			if (!document.querySelector('.'+who+' ul.extra')) {
+				extra = document.createElement('ul');
+				buoy.addClass(extra,'extra');
+				document.querySelector('.'+who).appendChild(extra);
+			} else { extra = document.querySelector('.'+who+' ul.extra'); }
 
-			// var extraSlot = extra.appendChild( document.createElement('li'));
-			// var unit = extraSlot.appendChild( document.createElement('div'));
-			
-			// Position similar to and beside Commander
+			// Add elements
+			var extraSlot = extra.appendChild( document.createElement('li') );
+			var unit = extraSlot.appendChild( document.createElement('div') );
+			var uid = document.querySelector('.'+who+' ul.extra li').length;
+			unit.cardProps = { 'id' : 'infantry_extra'+uid, 'type' : 'infantry' };
+			unit.setAttribute('id','infantry_extra'+uid);
+			buoy.addClass(unit,'unit');
+			unit.setAttribute('data-type', "infantry");
+
+			// Image
+			var img = unit.appendChild( document.createElement('img') );
+			img.setAttribute('src','images/cards/unit_infantry.png');
+
+			addUnit(unit,who,'infantry');
+
+			unitCalc('opponent');
+			unitCalc('player');
+
+			forceEndCheck(who);
+
 			break;
 		// 3 Star Combo
 		case "barrier":
@@ -1089,10 +1112,10 @@ function placeUnit(pos, card, who, id) {
 	var newUnit;
 
 	if (pos === 'prev') {
-		var firstUnit = document.querySelectorAll('.opponent .unit')[0];
+		var firstUnit = document.querySelectorAll('.opponent .formation .unit')[0];
 		newUnit = firstUnit.parentNode.previousElementSibling.appendChild( document.createElement('div') );
 	} else {
-		var lastUnit = document.querySelectorAll('.opponent .unit')[document.querySelectorAll('.opponent .unit').length-1];
+		var lastUnit = document.querySelectorAll('.opponent .formation .unit')[document.querySelectorAll('.opponent .formation .unit').length-1];
 		newUnit = lastUnit.parentNode.nextElementSibling.appendChild( document.createElement('div') );
 	}
 	
@@ -1154,6 +1177,8 @@ function clearCombo(el) {
 	el.removeAttribute('data-sup');
 	el.removeAttribute('data-type');
 	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
+	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
+	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove();
 }
 
 // Use at the end of the round to wipe/add scores and reset field
@@ -1262,12 +1287,12 @@ function resetField(points,loser) {
 		} 
 	}
 
-	if (document.querySelectorAll('.player li').length>5) {
-		document.querySelector('.player li:first-child').remove();
+	if (document.querySelectorAll('.player .formation li').length>5) {
+		document.querySelector('.player .formation li:first-child').remove();
 	}
 
-	if (document.querySelectorAll('.opponent li').length>5) {
-		document.querySelector('.opponent li:first-child').remove();
+	if (document.querySelectorAll('.opponent .formation li').length>5) {
+		document.querySelector('.opponent .formation li:first-child').remove();
 	}
 
 	// Reset stats
@@ -1424,7 +1449,6 @@ function endTurnListener(e) {
 
 function forceEndCheck(who) {
 	window.setTimeout( function(){
-		console.log(forceEnd);
 		if (attacker && myTurn) {
 			// Attacker's atk is greater than Defenders def
 			if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
@@ -1438,11 +1462,10 @@ function forceEndCheck(who) {
 				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
 			}
 		}
-		//console.log(forceEnd);
+		console.log(forceEnd);
 		if (forceEnd===1) {
 			document.querySelector('.turn').removeAttribute('disabled');
 			document.querySelector('.end').setAttribute('disabled','true');
-		}
-		if (forceEnd>1) endTurnListener();
+		} else if (forceEnd>1) { endTurnListener(); } 
 	}, 300);
 }
