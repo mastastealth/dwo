@@ -20,7 +20,7 @@
 	}
 
 	.field {
-		background: tan;
+		background: black;
 		height: 70%;
 		overflow: hidden;
 
@@ -30,12 +30,17 @@
 		}
 
 		aside { 
+			background: tan;
 			height: 100%;
 			overflow: hidden;
 			padding-top: 50px;
 			position: relative;
 			width: 50%; 
 		}
+
+		// aside:not(.myturn) {
+		// 	background: transparentize(tan,0.2);
+		// }
 
 		aside:first-child {
 			border-right: 2px solid #222;
