@@ -324,6 +324,10 @@ a {
   text-align: center;
 }
 
+.home .row button {
+  min-width: 120px;
+}
+
 .logo,
 .row {
   margin-bottom: 20px;
@@ -536,7 +540,7 @@ footer {
 }
 
 .game .field {
-  background: tan;
+  background: black;
   height: 70%;
   overflow: hidden;
 }
@@ -548,6 +552,7 @@ footer {
 }
 
 .game .field aside {
+  background: tan;
   height: 100%;
   overflow: hidden;
   padding-top: 50px;
@@ -1256,6 +1261,11 @@ input {
 .fa-spinner {
   -webkit-animation: spin 1s infinite linear;
   animation: spin 1s infinite linear;
+}
+
+.modal input[disabled] ~ .fa-spinner {
+  display: block;
+  margin: 10px auto 0;
 }
 
 .hand {

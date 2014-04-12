@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		function cancelConn() {
 			peer.destroy();
-			buoy.removeClass(m.parentNode,'active');
+			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
 		}
@@ -185,16 +185,30 @@ document.addEventListener('DOMContentLoaded', function(){
 			peer.on('connection', function(c) { 
 				conn = c;
 				c.on('open', function() {
-					// <TOADD: If first person to join (player) or not (watcher)> 
 					buoy.removeClass(m.parentNode,'active');
 					onMessage(c);
 					myTurn = false;
 					attacker = false;
 					playInit(c,deck,attacker);
 					notify('yellow', "Opponent's Turn");
-					buoy.addClass(document.querySelector('.hand'),'disable')
+					buoy.addClass(document.querySelector('.hand'),'disable');
+					// TEMPORARY: Disconnect so no one else can join
+					peer.disconnect();
+				});
+
+				// On player disconnect
+				conn.on('close', function(c) {
+					// Notify
+					notify('red', 'Player Disconnected');
+					// Kill Connection
+					cancelConn();
+					// Reset Board
+					[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+						el.remove();
+					});
 				});
 			});
+
 
 			// Cancel!
 			document.querySelector('.overlay .cancel').addEventListener('click', function(e) {
@@ -220,6 +234,9 @@ document.addEventListener('DOMContentLoaded', function(){
 					// If pressing enter
 					if (keyCode == '13'){
 						document.querySelector('.overlay input').setAttribute('disabled','true');
+						var spinner = document.createElement('i');
+						buoy.addClass(spinner,'fa'); buoy.addClass(spinner,'fa-spinner');
+						m.appendChild( spinner );
 						var room = this.value.replace(/\s+/g, '');
 						conn = peer.connect( 'dwo'+room, { reliable: true } );
 

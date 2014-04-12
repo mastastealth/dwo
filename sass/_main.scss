@@ -8,6 +8,8 @@ a { color: darkgreen; }
 
 .home {
 	text-align: center;
+
+	.row button { min-width: 120px; }
 }
 
 .logo, .row {

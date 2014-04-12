@@ -1241,7 +1241,7 @@ function resetField(points,loser) {
 	if (loser) {
 		var a = parseInt(document.querySelector('.opponent .atk').textContent);
 		var d = parseInt(document.querySelector('.player .def').textContent);
-		var winMsg = (attacker && a > d) ? 'You win round AND counter-attacked! You take points!' : 'You win round';
+		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You win round';
 
 		conn.send({ 'func':'notify', 'type':'green', 'msg': winMsg });
 		conn.send({ 'func':'win', 'points': points });
@@ -1379,7 +1379,7 @@ function forceEndCheck(who) {
 				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
 			}
 		}
-		console.log(forceEnd);
+		//console.log(forceEnd);
 		if (forceEnd===1) {
 			document.querySelector('.turn').removeAttribute('disabled');
 			document.querySelector('.end').setAttribute('disabled','true');
