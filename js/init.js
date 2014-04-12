@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		if (newDeck.length === 72) {
 			store.set('deck', newDeck);
+			deck = newDeck;
 			notify('green', 'New Deck Saved!');
 		} else {
 			notify('red', 'Deck Not Saved!');
