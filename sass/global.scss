@@ -2,6 +2,7 @@
 @import "flex";
 
 @import "main";
+@import "builder";
 @import "battle";
 
 body, html { 
@@ -17,7 +18,8 @@ input { display: block; }
 
 .light { color: #999; }
 
-.game.active ~ .home > #tlkio {
+.game.active ~ .home > #tlkio,
+.builder.active ~ .home > #tlkio {
 	box-shadow: -2px 0 2px rgba(0,0,0,0.3);
 	height: 100%;
 	overflow: visible !important;

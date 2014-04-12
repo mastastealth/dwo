@@ -23,5 +23,6 @@ SOFTWARE.
 */
 
 // @prepros-append buoy.js
+// @prepros-append deck.js
 // @prepros-append init.js
 // @prepros-append play.js
