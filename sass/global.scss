@@ -86,6 +86,9 @@ input { display: block; }
 .fa-spinner {
 	animation: spin 1s infinite linear;
 }
+	.modal input[disabled] ~ .fa-spinner {
+		display: block; margin: 10px auto 0;
+	}
 
 .hand { text-align: center; }
 
