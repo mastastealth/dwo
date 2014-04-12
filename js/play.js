@@ -1379,7 +1379,7 @@ function forceEndCheck(who) {
 				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
 			}
 		}
-		console.log(forceEnd);
+		//console.log(forceEnd);
 		if (forceEnd===1) {
 			document.querySelector('.turn').removeAttribute('disabled');
 			document.querySelector('.end').setAttribute('disabled','true');

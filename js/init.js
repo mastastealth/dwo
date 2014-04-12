@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		function cancelConn() {
 			peer.destroy();
-			buoy.removeClass(m.parentNode,'active');
+			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
 		}
@@ -195,7 +195,20 @@ document.addEventListener('DOMContentLoaded', function(){
 					// TEMPORARY: Disconnect so no one else can join
 					peer.disconnect();
 				});
+
+				// On player disconnect
+				conn.on('close', function(c) {
+					// Notify
+					notify('red', 'Player Disconnected');
+					// Kill Connection
+					cancelConn();
+					// Reset Board
+					[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+						el.remove();
+					});
+				});
 			});
+
 
 			// Cancel!
 			document.querySelector('.overlay .cancel').addEventListener('click', function(e) {
