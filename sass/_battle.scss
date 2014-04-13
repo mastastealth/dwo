@@ -276,6 +276,8 @@
 			width: 40px;
 			z-index: 5;
 
+			&[disabled] { background: #999; }
+
 			&:before { content: '+'; }
 
 			&.up:before { content: '↑'; }

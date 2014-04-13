@@ -1,5 +1,6 @@
 // Make .game active
 buoy.addClass(document.querySelector('.game'), 'active');
+buoy.addClass(document.querySelector('.game'), 'tut');
 buoy.addClass(document.querySelector('.player'), 'attacker');
 
 // Explain Bubble Function
@@ -220,7 +221,7 @@ function swapTime() {
 	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.');
 	// Explain Swap 3
 	bubbleP.textContent = "All right, one more mechanic you'll encounter in a real match is that at the start of your turn you are given the chance to \
-	swap out 3 cards for new ones. This can either help you out win this round, be used to set up a hand for the next! You can of course opt to keep your current \
+	swap out 3 cards for new ones. This can either help you out win this round or be used to set up a hand for the next! You can of course opt to keep your current \
 	hand. In this case though, select all 3 cards and then hit Done.";
 	bubbleBtn.textContent = "Done";
 	bubbleBtn.setAttribute('onclick', 'swapTime2()') ;
@@ -243,7 +244,7 @@ function swapTime2() {
 		drawCardConfirmed( {'type': 'tank', 'id' : 'tank', 'combo' : 1 } );
 
 		bubbleP.textContent = "Sweet, we got some new cards, and these are actually useful! Thanks to the opponent's helo, your AA unit's bonus will activate \
-		when played. However, look at your cards carefully. We want to play ALL 3 for maximum power (make your opponent feel threatened), can you figure out the correct order?";
+		when played. However, look at your cards carefully. We want to play ALL 3 this turn for maximum power, can you figure out the correct order?";
 
 		document.querySelector('#supply').setAttribute('onclick', 'swapTime3("s")') ;
 		document.querySelector('#aa').setAttribute('onclick', 'swapTime3("a")') ;
@@ -374,7 +375,7 @@ function opponent7() {
 	// Explain Slot Limit
 	bubbleP.textContent = "So why wouldn't the attacker want to expand the field? For 1, it means using up more supplies. Maybe you have a weak \
 	hand & are better off losing this 1 point? For every extra unit on the field, the points up for grab for a successful win are also raised, so stakes are higher. \
-	Lastly, by limiting to 3 we also know our opponent can only play 1 more unit, limiting his options.";
+	Lastly, by staying with 3 units we also know our opponent can only play 1 more unit, limiting his options.";
 
 	window.setTimeout( function() { 
 		notify('yellow', "<img src='images/cards/supply.png'> Supply was played") ;
@@ -384,9 +385,9 @@ function opponent7() {
 
 // Opp. plays A2G
 function opponent8() {
-	bubbleP.textContent = "Your opponent has got you in a bind! Not only has he matched your attack, he is also surpassing YOUR defense with HIS attack. Normally \
+	bubbleP.textContent = "Your opponent still has you in a bind though! Not only has he matched your attack, he is also surpassing YOUR defense with HIS attack. Normally \
 	only the attacker will win points for winning, but if the defender pulls of this trick (a counterattack), he will win the point at the end of this round! (and had \
-		you expanded the field, he could of won 1 extra per unit!) But you got this...";
+		you expanded the field, he could have won 1 extra per unit!) But you got this...";
 
 	bubbleBtn.setAttribute('onclick', 'finalPlay()') ;
 
@@ -481,7 +482,7 @@ function finalPlay5() {
 
 	bubbleP.textContent = "NOPE! Guess he had nothing left to play (or he's plotting your demise next round). Good job! One final thing for this tutorial: \
 	As the winner, you automatically get to keep all your units (they are placed back into your draw deck). You also get to save one combo as well! \
-	Meanwhile, the loser discards all his combos & only save one unit. Both players however, discard all their used supplies & any used commanders.";
+	Meanwhile, the loser discards all his combos & can only save one unit. Both players however, discard all their used supplies & any used commanders.";
 	
 	bubbleBtn.setAttribute('disabled', true);
 	[].forEach.call(document.querySelectorAll('.player .combo'), function(el) {
@@ -509,6 +510,7 @@ function finalPlay6() {
 
 function endTut() {
 	buoy.removeClass(document.querySelector('.game'), 'active');
+	buoy.removeClass(document.querySelector('.game'), 'tut');
 	document.querySelector('.commander').remove();
 	document.querySelector('.bubble').remove();
 }

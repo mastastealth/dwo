@@ -891,6 +891,10 @@ footer {
   z-index: 5;
 }
 
+.game li button[disabled] {
+  background: #999;
+}
+
 .game li button:before {
   content: '+';
 }
