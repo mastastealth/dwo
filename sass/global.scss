@@ -15,6 +15,7 @@ h2, h3, h4,
 input { margin-bottom: 10px; }
 
 input { display: block; }
+button { outline: none; }
 
 .light { color: #999; }
 
@@ -98,9 +99,9 @@ input { display: block; }
 	cursor: pointer;
 	display: inline-block;
 	margin-right: 5px;
-	height: 190px;
+	height: 200px;
 	max-width: 200px;
-	min-width: 140px;
+	min-width: 130px;
 	overflow: hidden;
 	position: relative;
 
@@ -115,9 +116,10 @@ input { display: block; }
 	img { 
 		animation: blink 0.1s;
 		display: block;
+		margin: 0 auto;
 		height: 100%; 
 		width: auto; 
-		transform: scale(1.1);
+		transform: scale(1.05);
 	}
 }
 
@@ -140,10 +142,41 @@ input { display: block; }
 	&.blue { background: transparentize(#4178E4,0.2); }
 	&.purple { background: transparentize(#8B41E4,0.2); }
 	
-	&.grd { background: transparentize(#89D748,0.2); }
-	&.air { background: transparentize(#59C5E4,0.2); }
+	&.grd, &.air, &.unit { background: transparentize(#89D748,0.2); }
+	//&.air { background: transparentize(#59C5E4,0.2); }
 
 	img { height: 70px; margin-right: 10px; vertical-align: middle; }
+
+	&.bubble {
+		animation: none;
+		background: rgba(255,255,255,0.7);
+		font-size: 18px;
+		line-height: 160%;
+		min-height: 40px;
+		padding: 10px 70px 10px 10px;
+		pointer-events: all;
+		bottom: 32%; top: auto;
+
+		button {
+			height: 40px;
+			position: absolute;
+			top: 45%; right: 10px;
+
+			&:not([disabled]):hover { background: green; }
+		}
+	}
+}
+
+.menu {
+	background: #CCC;
+	border: 1px solid #999;
+	height: 30px;
+	position: absolute;
+	top: 5px; left: 50%;
+	transform: translateX(-50%);
+	z-index: 100;
+
+	&:hover { background: #E44141; border-color: darkred; color: white; }
 }
 
 @keyframes spin {

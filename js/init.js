@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function(){ 
 	var victoryPts = 0;
+	var conn;
+	var peer;
+	var game = document.querySelector('.game');
+	var m = document.querySelector('.overlay .modal');
 
 	//Activate Overlay
 	function overlayOn() {
@@ -150,11 +154,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	// Clicking on a homepage button
 	[].forEach.call(document.querySelectorAll('.home button'), function(el) {
 	  el.addEventListener('click', function() {
-		// Sets some main variables
-		var m = document.querySelector('.overlay .modal');
-		var game = document.querySelector('.game');
-		var conn;
-		var peer;
 
 		function cancelConn() {
 			peer.destroy();
@@ -268,7 +267,25 @@ document.addEventListener('DOMContentLoaded', function(){
 
 			window.setTimeout( function() { loadDeck(deck); }, 1200);
 		}
+		// Tutorial
+		else if ( buoy.hasClass(this, 'howto') ) {
+			var tut = document.createElement('script');
+			tut.src = 'js/tut.js';
+			document.head.appendChild(tut);
+		}
 	  });
+	});
+
+	// Quit Button 
+	document.querySelector('.game .menu').addEventListener('click', function() {
+		if ( buoy.hasClass(document.querySelector('.game'), 'tut') ) {
+			endTut();
+		} else {
+			peer.destroy();
+			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
+			buoy.removeClass(game,'active');
+			m.innerHTML = '';
+		}
 	});
 
 	validDeck = function(deck) {
