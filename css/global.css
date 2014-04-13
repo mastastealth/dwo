@@ -560,6 +560,11 @@ footer {
   width: 50%;
 }
 
+.game .field .player:not(.myturn),
+.game .field .player.myturn + .opponent {
+  background: rgba(210, 180, 140, 0.85);
+}
+
 .game .field aside:first-child {
   border-right: 2px solid #222;
   float: left;
@@ -1024,8 +1029,10 @@ footer {
 }
 
 .game .hand .card.new {
-  -webkit-animation: fadeIn 1.2s -0.1s;
-  animation: fadeIn 1.2s -0.1s;
+  opacity: 0;
+  -webkit-transform: translateY(120%);
+  -ms-transform: translateY(120%);
+  transform: translateY(120%);
 }
 
 .game .hand .card img {

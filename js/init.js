@@ -244,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							onMessage(conn);
 							myTurn = true;
 							attacker = true;
+							buoy.addClass(document.querySelector('.player'),'myturn');
 							playInit(conn,deck,attacker);
 							notify('green', 'Your Turn');
 						});
@@ -315,9 +316,9 @@ document.addEventListener('DOMContentLoaded', function(){
 					var v = (msg['var'] === false) ? msg['var'] : true;
 					myTurn = true; 
 					forceEnd = false;
+					buoy.addClass(document.querySelector('.player'),'myturn');
 					notify('green', 'Your Turn');
 					document.querySelector('.end').removeAttribute('disabled');
-					//document.querySelector('.turn').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);
 					break;

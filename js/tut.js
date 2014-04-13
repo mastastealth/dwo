@@ -2,6 +2,7 @@
 buoy.addClass(document.querySelector('.game'), 'active');
 buoy.addClass(document.querySelector('.game'), 'tut');
 buoy.addClass(document.querySelector('.player'), 'attacker');
+buoy.addClass(document.querySelector('.player'), 'myturn');
 
 // Explain Bubble Function
 
@@ -90,6 +91,7 @@ function introUnit3() {
 // Explain End of Turn Draw
 function opponent() {
 	notify('red', 'Ended Turn');
+	buoy.removeClass(document.querySelector('.player'), 'myturn');
 	drawCardConfirmed( {'type': 'at', 'id' : 'combo1', 'combo' : 1 } );
 	buoy.addClass( document.querySelector('.hand .card'), 'disable' );
 
@@ -135,6 +137,7 @@ function opponent4() {
 
 // Play Combo
 function newturn() {
+	buoy.addClass(document.querySelector('.player'), 'myturn');
 	notify('green', 'Your Turn');
 	bubbleP.textContent = "Back to our new combo card. Combos are attached to units to enhance certain stats. You can easily tell which stat they enhance at a glance: \
 	Red cards enhance attack, blue cards enhance defense. You might notice the star and icon on the left. Remember about unit traits?";
@@ -164,6 +167,7 @@ function opponent5() {
 	without playing anything else. (However this time, we'll auto draw a couple more cards we'll be using to finish up this round)";
 
 	document.querySelector('.player .atk').textContent = '3';
+	buoy.removeClass(document.querySelector('.player'), 'myturn');
 	notify('red', 'Ended Turn');
 	
 	bubbleBtn.removeAttribute('disabled');
@@ -217,6 +221,7 @@ function swapTime() {
 		buoy.addClass(card, 'choose');
 	});
 
+	buoy.addClass(document.querySelector('.player'), 'myturn');
 	notify('green', 'Your Turn');
 	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.');
 	// Explain Swap 3
@@ -352,6 +357,7 @@ function swapTime4(e) {
 					can opt to expand the field to play a 4th or (max) 5th unit, but this comes with some risks...(go ahead and play your last unit)";
 				}
 				if (document.querySelectorAll('.player .unit').length===3) {
+					buoy.removeClass(document.querySelector('.player'), 'myturn');
 					notify('red', 'Ended Turn');
 					opponent7();
 				}
@@ -403,6 +409,7 @@ function opponent8() {
 
 // Play Sap + Explain Commanders
 function finalPlay() {
+	buoy.addClass(document.querySelector('.player'), 'myturn');
 	notify('green', 'Your Turn');
 	bubbleP.textContent = "One last card type to explain in this tutorial is the commander card. Commander cards are similar to combos, in that they provide units \
 	with stat boosts, except commanders apply across your whole field (not just 1 unit). Click my card to activate my bonus!";
@@ -439,6 +446,7 @@ function finalPlay3() {
 
 // Win
 function finalPlay4(e) {
+	buoy.removeClass(document.querySelector('.player'), 'myturn');
 	notify('red', 'Ended Turn');
 	document.querySelector('.player .atk').textContent = '11';
 	document.querySelector('.player .sup').textContent = '6/6';
@@ -511,6 +519,7 @@ function finalPlay6() {
 function endTut() {
 	buoy.removeClass(document.querySelector('.game'), 'active');
 	buoy.removeClass(document.querySelector('.game'), 'tut');
+	buoy.removeClass(document.querySelector('.player'), 'myturn');
 	document.querySelector('.commander').remove();
 	document.querySelector('.bubble').remove();
 }

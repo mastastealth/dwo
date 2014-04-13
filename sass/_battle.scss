@@ -38,9 +38,9 @@
 			width: 50%; 
 		}
 
-		// aside:not(.myturn) {
-		// 	background: transparentize(tan,0.2);
-		// }
+		.player:not(.myturn), .player.myturn + .opponent {
+			background: transparentize(tan,0.15);
+		}
 
 		aside:first-child {
 			border-right: 2px solid #222;
@@ -339,7 +339,10 @@
 			&.active { box-shadow: 0 0 0 2px white; opacity: 0.5; }
 			&.disable { opacity: 0.5; pointer-events: none; }
 			&:hover { transform: scale(1.2) translateY(12px); z-index: 1; }
-			&.new { animation: fadeIn 1.2s -0.1s; }
+			&.new { 
+				opacity: 0;
+				transform: translateY(120%); 
+			}
 
 			img { pointer-events: none; }
 		}
