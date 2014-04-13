@@ -529,7 +529,7 @@ function drawCardConfirmed(card) {
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	buoy.addClass(newcard, 'card');
 	buoy.addClass(newcard, 'new');
-	window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },1200)
+	window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
 	newcard.cardProps = card;
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
