@@ -268,6 +268,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
 			window.setTimeout( function() { loadDeck(deck); }, 1200);
 		}
+		// Tutorial
+		else if ( buoy.hasClass(this, 'howto') ) {
+			var tut = document.createElement('script');
+			tut.src = 'js/tut.js';
+			document.head.appendChild(tut);
+		}
 	  });
 	});
 

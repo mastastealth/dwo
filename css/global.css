@@ -1013,9 +1013,9 @@ footer {
 }
 
 .game .hand .card:hover {
-  -webkit-transform: scale(1.3);
-  -ms-transform: scale(1.3);
-  transform: scale(1.3);
+  -webkit-transform: scale(1.2) translateY(12px);
+  -ms-transform: scale(1.2) translateY(12px);
+  transform: scale(1.2) translateY(12px);
   z-index: 1;
 }
 
@@ -1149,6 +1149,10 @@ input {
   display: block;
 }
 
+button {
+  outline: none;
+}
+
 .light {
   color: #999;
 }
@@ -1278,9 +1282,9 @@ input {
   cursor: pointer;
   display: inline-block;
   margin-right: 5px;
-  height: 190px;
+  height: 200px;
   max-width: 200px;
-  min-width: 140px;
+  min-width: 130px;
   overflow: hidden;
   position: relative;
 }
@@ -1289,11 +1293,12 @@ input {
   -webkit-animation: blink 0.1s;
   animation: blink 0.1s;
   display: block;
+  margin: 0 auto;
   height: 100%;
   width: auto;
-  -webkit-transform: scale(1.1);
-  -ms-transform: scale(1.1);
-  transform: scale(1.1);
+  -webkit-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .notify {
@@ -1332,18 +1337,59 @@ input {
   background: rgba(139, 65, 228, 0.8);
 }
 
-.notify.grd {
+.notify.grd,
+.notify.air,
+.notify.unit {
   background: rgba(137, 215, 72, 0.8);
-}
-
-.notify.air {
-  background: rgba(89, 197, 228, 0.8);
 }
 
 .notify img {
   height: 70px;
   margin-right: 10px;
   vertical-align: middle;
+}
+
+.notify.bubble {
+  -webkit-animation: none;
+  animation: none;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  line-height: 160%;
+  min-height: 40px;
+  padding: 10px 70px 10px 10px;
+  pointer-events: all;
+  bottom: 32%;
+  top: auto;
+}
+
+.notify.bubble button {
+  height: 40px;
+  position: absolute;
+  top: 45%;
+  right: 10px;
+}
+
+.notify.bubble button:not([disabled]):hover {
+  background: green;
+}
+
+.menu {
+  background: #CCC;
+  border: 1px solid #999;
+  height: 30px;
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.menu:hover {
+  background: #E44141;
+  border-color: darkred;
+  color: white;
 }
 
 @-webkit-keyframes spin {

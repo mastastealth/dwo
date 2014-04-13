@@ -1080,7 +1080,7 @@ function notify(type, msg) {
 	buoy.addClass(bubble, 'notify');
 	buoy.addClass(bubble, type);
 
-	var notCount = document.querySelectorAll('.notify').length;
+	var notCount = document.querySelectorAll('.notify:not(.bubble)').length;
 	if (notCount > 1) bubble.style.top = (((notCount-1)*80)+(10*(notCount)))+'px';
 
 	window.setTimeout( function() { bubble.remove(); }, 5000);
@@ -1370,13 +1370,13 @@ function forceEndCheck(who) {
 			// Attacker's atk is greater than Defenders def
 			if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
 				forceEnd += 1;
-				if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card your turn will end (or end it now)');
+				if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)');
 			}
 		} else if (!attacker && myTurn) {
 			// Defenders def is greater than or equal to Attacker's atk
 			if (parseInt(document.querySelector('.'+who+' .def').textContent) >= parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
 				forceEnd += 1;
-				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card your turn will end (or end it now)');
+				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card & your turn will end (or end it now)');
 			}
 		}
 		//console.log(forceEnd);
