@@ -738,7 +738,7 @@ function comboCard(unit,card,who) {
 
 		// Special combo color slots
 		if (card.type==='support') buoy.addClass(slot,'sup');
-		if (card.type==='sniper') buoy.addClass(slot,'atk');
+		if (card.type==='sniper' || card.type==='tstrike') buoy.addClass(slot,'atk');
 		if (card.type==='intel' || card.type==='stealth') { 
 			buoy.addClass(slot,'atk'); 
 			buoy.addClass(slot,'def'); 
@@ -793,19 +793,20 @@ function specialCombo(card,who,v) {
 
 		// Kill Card(s)
 		clearCombo( e.target );
-		if ( e.target.querySelector('.unit') ) e.target.querySelector('.unit').remove();
+		var uid = e.target.querySelector('.unit').cardProps.id;
+		if ( e.target.querySelector('.unit').killUnit ) e.target.querySelector('.unit').remove();
 
 		// Recalc
 		unitCalc('player');
 		unitCalc('opponent');
-		forceEndCheck(who);
+		if (forceEnd!=1) forceEndCheck(who);
 
 		// Send kill
 		conn.send( { 
 			'func':'specialCombo', 
 			'card' : card, 
 			'who' : 'opponent', 
-			'var' : e.target.querySelector('.unit').cardProps.id
+			'var' : uid
 		});
 	}
 
@@ -1020,7 +1021,7 @@ function specialCombo(card,who,v) {
 		case "tstrike":
 			// Add listener to kill
 			if (who==='player') {
-				[].forEach.call(document.querySelectorAll('aside:not(.'+who+') .combo .unit'), function(u) {
+				[].forEach.call(document.querySelectorAll('aside:not(.'+who+') .unit'), function(u) {
 					if ( cardType.unit[ u.cardProps.type ].trait.indexOf('grd') != -1 ) {
 						buoy.addClass(u.parentNode,'active');
 						u.killUnit = true;
@@ -1065,33 +1066,33 @@ function placeUnit(pos, card, who, id) {
 
 // Shifts unit formation up or down depending if close to the edge
 function smartShift(who) {
-	if (document.querySelectorAll('.'+who+' .unit').length === 3) {
+	if (document.querySelectorAll('.'+who+' .formation .unit').length === 3) {
 		// Unit was added on the top side, bring bottom, empty li to top to center formation
-		if ( document.querySelector('.'+who+' li:first-child').children.length > 1 ) {
-			var lastLi = document.querySelector('.'+who+' li:last-child');
-			document.querySelector('.'+who+' ul').prependChild(lastLi);
+		if ( document.querySelector('.'+who+' .formation li:first-child').children.length > 1 ) {
+			var lastLi = document.querySelector('.'+who+' .formation li:last-child');
+			document.querySelector('.'+who+' ul.formation').prependChild(lastLi);
 		} 
 		// or do the opposite for bottom
-		else if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
-			var firstLi = document.querySelector('.'+who+' li:first-child');
-			document.querySelector('.'+who+' ul').appendChild(firstLi);
+		else if ( document.querySelector('.'+who+' .formation li:last-child').children.length > 1 ) {
+			var firstLi = document.querySelector('.'+who+' .formation li:first-child');
+			document.querySelector('.'+who+' ul.formation').appendChild(firstLi);
 		}
 	} 
 	// Add empty li to opposite side of end with unit
-	else if (document.querySelectorAll('.'+who+' .unit').length === 4) {
+	else if (document.querySelectorAll('.'+who+' .formation .unit').length === 4) {
 		var li = document.createElement('li');
-		if ( document.querySelector('.'+who+' li:first-child').children.length > 1 ) {
+		if ( document.querySelector('.'+who+' .formation li:first-child').children.length > 1 ) {
 			console.log('Prepending...', li);
-			document.querySelector('.'+who+' ul').prependChild( li );
+			document.querySelector('.'+who+' ul.formation').prependChild( li );
 		}
-		else if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
+		else if ( document.querySelector('.'+who+' .formation li:last-child').children.length > 1 ) {
 			console.log('Appending...', li);
-			document.querySelector('.'+who+' ul').appendChild( li );
+			document.querySelector('.'+who+' ul.formation').appendChild( li );
 		}
 		li.appendChild( document.createElement('span') );
 
-	} else if (document.querySelectorAll('.'+who+' .unit').length === 5) {
-		var emptyLi = document.querySelector('.'+who+' li span:only-child').parentNode;
+	} else if (document.querySelectorAll('.'+who+' .formation .unit').length === 5) {
+		var emptyLi = document.querySelector('.'+who+' .formation li span:only-child').parentNode;
 		emptyLi.parentNode.removeChild(emptyLi);
 	}
 }
@@ -1376,8 +1377,8 @@ function endTurnListener(e) {
 		endTurn.setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
 		// AUto draw cards
-		if (document.querySelectorAll('.card').length<8) {
-			drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+		if (document.querySelectorAll('.hand .card').length<8) {
+			drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
 		} else { drawCard(playerDeck,1); }
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn', 'var' : false } );

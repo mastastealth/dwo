@@ -112,20 +112,21 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	}
 
-	function loadDeck(deck) {
-		if (!deck) { 
+	function loadDeck(loadedDeck) {
+		if (!loadedDeck) { 
 			notify('red', 'No Deck Found Here, Create a new one!');
 			clearDeck();
 			return false; 
 		}
 
-		console.log('Loading deck...');
+		notify('green', 'Loaded Deck!');
 		clearDeck();
+		deck = loadedDeck;
 
 		window.requestAnimationFrame( function() {
-			for (var i=0;i<deck.length;i++) {
-				if (!deck[i].supply) {
-					cardCounter( document.querySelector('div[data-type="'+deck[i].type+'"] .add') );
+			for (var i=0;i<loadedDeck.length;i++) {
+				if (!loadedDeck[i].supply) {
+					cardCounter( document.querySelector('div[data-type="'+loadedDeck[i].type+'"] .add') );
 				}
 			}
 		});
@@ -295,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			});
 
 			window.setTimeout( function() { 
-				buoy.addClass( document.querySelector('.loadDeck1'), 'active'); 
+				if (!document.querySelector('.loadDeck.active')) buoy.addClass( document.querySelector('.loadDeck1'), 'active'); 
 				loadDeck( store.get('deck') ); 
 			}, 1200);
 		}
