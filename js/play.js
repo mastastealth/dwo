@@ -754,6 +754,36 @@ function comboCard(unit,card,who) {
 }
 
 function specialCombo(card,who,v) {
+	function extraUnit(u) {
+		// Add .unit inf (with li?) to support combos
+		var extra;
+		if (!document.querySelector('.'+who+' ul.extra')) {
+			extra = document.createElement('ul');
+			buoy.addClass(extra,'extra');
+			document.querySelector('.'+who).appendChild(extra);
+		} else { extra = document.querySelector('.'+who+' ul.extra'); }
+
+		// Add elements
+		var extraSlot = extra.appendChild( document.createElement('li') );
+		var unit = extraSlot.appendChild( document.createElement('div') );
+		var uid = document.querySelector('.'+who+' ul.extra li').length;
+		unit.cardProps = { 'id' : u+'_extra'+uid, 'type' : u };
+		unit.setAttribute('id',u+'_extra'+uid);
+		buoy.addClass(unit,'unit');
+		unit.setAttribute('data-type', u);
+
+		// Image
+		var img = unit.appendChild( document.createElement('img') );
+		img.setAttribute('src','images/cards/unit_'+u+'.png');
+
+		addUnit(unit,who,u);
+
+		unitCalc('opponent');
+		unitCalc('player');
+
+		forceEndCheck(who);
+	}
+
 	console.log('Special Combo!');
 	switch (card.type) {
 		// One Star Combos
@@ -972,34 +1002,7 @@ function specialCombo(card,who,v) {
 			}
 			break;
 		case "stealth":
-			// Add .unit inf (with li?) to support combos
-			var extra;
-			if (!document.querySelector('.'+who+' ul.extra')) {
-				extra = document.createElement('ul');
-				buoy.addClass(extra,'extra');
-				document.querySelector('.'+who).appendChild(extra);
-			} else { extra = document.querySelector('.'+who+' ul.extra'); }
-
-			// Add elements
-			var extraSlot = extra.appendChild( document.createElement('li') );
-			var unit = extraSlot.appendChild( document.createElement('div') );
-			var uid = document.querySelector('.'+who+' ul.extra li').length;
-			unit.cardProps = { 'id' : 'infantry_extra'+uid, 'type' : 'infantry' };
-			unit.setAttribute('id','infantry_extra'+uid);
-			buoy.addClass(unit,'unit');
-			unit.setAttribute('data-type', "infantry");
-
-			// Image
-			var img = unit.appendChild( document.createElement('img') );
-			img.setAttribute('src','images/cards/unit_infantry.png');
-
-			addUnit(unit,who,'infantry');
-
-			unitCalc('opponent');
-			unitCalc('player');
-
-			forceEndCheck(who);
-
+			extraUnit('infantry');
 			break;
 		// 3 Star Combo
 		case "barrier":
@@ -1009,8 +1012,7 @@ function specialCombo(card,who,v) {
 			// Might need to rework this card to just extra def...
 			break;
 		case "bigguns":
-			// Add .unit arm (with li?) to support combos
-			// Position similar to and beside Commander
+			extraUnit('tank');
 			break;
 		case "tstrike":
 			// Same as sniper, works for GRD
