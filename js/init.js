@@ -36,11 +36,30 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 
 	document.querySelector('.saveDeck').addEventListener('click', function() {
-		saveDeck();
+		if ( document.querySelector('.loadDeck1.active') ) {
+			saveDeck( 'deck' );
+		} else if ( document.querySelector('.loadDeck2.active') ) {
+			saveDeck( 'deck2' );
+		} else if ( document.querySelector('.loadDeck3.active') ) {
+			saveDeck( 'deck3' );
+		}
 	});
 
-	document.querySelector('.loadDeck').addEventListener('click', function() {
-		loadDeck( store.get('deck') );
+	[].forEach.call(document.querySelectorAll('.loadDeck'), function(btn) {
+		btn.addEventListener('click', function(e) {
+			console.log(e.target);
+
+			buoy.removeClass( document.querySelector('.loadDeck.active'), 'active');
+			buoy.addClass(e.target, 'active');
+
+			if ( buoy.hasClass(e.target, 'loadDeck1') ) {
+				loadDeck( store.get('deck') );
+			} else if ( buoy.hasClass(e.target, 'loadDeck2') ) {
+				loadDeck( store.get('deck2') );
+			} else if ( buoy.hasClass(e.target, 'loadDeck3') ) {
+				loadDeck( store.get('deck3') );
+			}
+		});
 	});
 
 	function countShare(target,count,plus) {
@@ -94,16 +113,25 @@ document.addEventListener('DOMContentLoaded', function(){
 	}
 
 	function loadDeck(deck) {
+		if (!deck) { 
+			notify('red', 'No Deck Found Here, Create a new one!');
+			clearDeck();
+			return false; 
+		}
+
+		console.log('Loading deck...');
 		clearDeck();
 
-		for (var i=0;i<deck.length;i++) {
-			if (!deck[i].supply) {
-				cardCounter( document.querySelector('div[data-type="'+deck[i].type+'"] .add') );
+		window.requestAnimationFrame( function() {
+			for (var i=0;i<deck.length;i++) {
+				if (!deck[i].supply) {
+					cardCounter( document.querySelector('div[data-type="'+deck[i].type+'"] .add') );
+				}
 			}
-		}
+		});
 	}
 
-	function saveDeck() {
+	function saveDeck(deckSlot) {
 		if ( document.querySelector('.u').getAttribute('data-total') != '20' || document.querySelector('.k').getAttribute('data-total') != '25' || document.querySelector('.co').getAttribute('data-total') != '2' ) {
 			notify('red', 'Deck Incomplete, Not Saved!'); return false;
 		}
@@ -141,9 +169,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 
 		if (newDeck.length === 72) {
-			store.set('deck', newDeck);
+			store.set(deckSlot, newDeck);
 			deck = newDeck;
-			notify('green', 'New Deck Saved!');
+			notify('green', 'Saved! Using new deck');
 		} else {
 			notify('red', 'Deck Not Saved!');
 		}
@@ -266,7 +294,10 @@ document.addEventListener('DOMContentLoaded', function(){
 				card.querySelector('.del').addEventListener('click', cardDecounter);
 			});
 
-			window.setTimeout( function() { loadDeck(deck); }, 1200);
+			window.setTimeout( function() { 
+				buoy.addClass( document.querySelector('.loadDeck1'), 'active'); 
+				loadDeck( store.get('deck') ); 
+			}, 1200);
 		}
 		// Tutorial
 		else if ( buoy.hasClass(this, 'howto') ) {

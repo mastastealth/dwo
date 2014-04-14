@@ -514,6 +514,11 @@ footer {
   content: attr(data-total);
 }
 
+.builder button.active {
+  background: green;
+  color: white;
+}
+
 /* --------------------------
 
 	The actual game styles
@@ -1384,7 +1389,7 @@ button {
   background: green;
 }
 
-.menu {
+button.menu {
   background: #CCC;
   border: 1px solid #999;
   height: 30px;
@@ -1397,7 +1402,7 @@ button {
   z-index: 100;
 }
 
-.menu:hover {
+button.menu:hover {
   background: #E44141;
   border-color: darkred;
   color: white;
