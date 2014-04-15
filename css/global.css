@@ -1320,6 +1320,14 @@ button {
   transform: scale(1.05);
 }
 
+.notifyList {
+  position: fixed;
+  top: 10px;
+  left: 10%;
+  width: 80%;
+  z-index: 99;
+}
+
 .notify {
   -webkit-animation: bubble 4s ease forwards;
   animation: bubble 4s ease forwards;
@@ -1328,12 +1336,12 @@ button {
   font-size: 24px;
   line-height: 80px;
   pointer-events: none;
-  position: fixed;
-  top: 10px;
-  left: 10%;
   text-align: center;
-  width: 80%;
   z-index: 99;
+}
+
+.notify:not(:last-child) {
+  margin-bottom: 10px;
 }
 
 .notify.green {
@@ -1358,7 +1366,7 @@ button {
 
 .notify.grd,
 .notify.air,
-.notify.unit {
+.notify.u {
   background: rgba(137, 215, 72, 0.8);
 }
 
@@ -1377,6 +1385,9 @@ button {
   min-height: 40px;
   padding: 10px 90px 10px 10px;
   pointer-events: all;
+  position: fixed;
+  left: 10%;
+  width: 80%;
   bottom: 32%;
   top: auto;
 }
@@ -1490,12 +1501,14 @@ button.menu:hover {
 @-webkit-keyframes bubble {
   0%, 100% {
     opacity: 0;
-    -webkit-transform: translateY(-150%);
-    transform: translateY(-150%);
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    transform: translateY(-15%);
   }
 
-  5%, 95% {
+  10%, 95% {
     opacity: 1;
+    max-height: 150px;
     -webkit-transform: translateY(0%);
     transform: translateY(0%);
   }
@@ -1504,13 +1517,15 @@ button.menu:hover {
 @keyframes bubble {
   0%, 100% {
     opacity: 0;
-    -webkit-transform: translateY(-150%);
-    -ms-transform: translateY(-150%);
-    transform: translateY(-150%);
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    -ms-transform: translateY(-15%);
+    transform: translateY(-15%);
   }
 
-  5%, 95% {
+  10%, 95% {
     opacity: 1;
+    max-height: 150px;
     -webkit-transform: translateY(0%);
     -ms-transform: translateY(0%);
     transform: translateY(0%);

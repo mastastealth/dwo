@@ -3,6 +3,7 @@ buoy.addClass(document.querySelector('.game'), 'active');
 buoy.addClass(document.querySelector('.game'), 'tut');
 buoy.addClass(document.querySelector('.player'), 'attacker');
 buoy.addClass(document.querySelector('.player'), 'myturn');
+buoy.removeClass(document.querySelector('.hand'), 'disable');
 
 // Add Saptiva to field
 var comm = document.querySelector('.player').appendChild( document.createElement('div') );
@@ -29,7 +30,9 @@ function introSupply() {
 	bubbleP.textContent = "Here we have a supply card. Supplies are the single resource for Deck Wars, and most other cards require supplies before \
 	you're able to play them. Go ahead and play the supply card.";
 	bubbleBtn.setAttribute('disabled',true);
-	document.querySelector('.hand .card').setAttribute('onclick', 'introSupply2()') ;
+	window.setTimeout( function() {
+		document.querySelector('.hand .card').setAttribute('onclick', 'introSupply2()') ;
+	},110);
 }
 
 // Explain + Play Supply
@@ -40,7 +43,9 @@ function introSupply2() {
 
 	// Draw Infantry
 	drawCardConfirmed( {'type': 'infantry', 'id' : 'inf1', 'unit' : 1 } );
-	buoy.addClass( document.querySelector('.hand .card'), 'disable' );
+	window.setTimeout( function() {
+		buoy.addClass( document.querySelector('.hand .card'), 'disable' );
+	},110);
 
 	bubbleP.textContent = "Whenever you play a supply card, you automatically draw a new card. Although this sounds like an easy way to draw cards \
 	one thing to remember is supplies ARE limited. Each player only has 25 of them, so you have to play your cards carefully. If you run out of supplies, you lose!";
@@ -93,7 +98,9 @@ function opponent() {
 	notify('red', 'Ended Turn');
 	buoy.removeClass(document.querySelector('.player'), 'myturn');
 	drawCardConfirmed( {'type': 'at', 'id' : 'combo1', 'combo' : 1 } );
-	buoy.addClass( document.querySelector('.hand .card'), 'disable' );
+	window.setTimeout( function() {
+		buoy.addClass( document.querySelector('.hand .card'), 'disable' );
+	},110);
 
 	bubbleP.textContent = "At the end of your turn, you will always auto draw a certain amount of cards (in a normal game, your hand will always \
 		have at least 8 cards when you end your turn). We'll check out our new card after our opponent plays though."
@@ -115,10 +122,13 @@ function opponent2() {
 function opponent3() {
 	sfx_slide.play();
 	drawCardConfirmed( {'type': 'recon', 'id' : 'recon', 'combo' : 1 } );
-	var rec = document.querySelector('.opponent li:nth-child(3)').appendChild( document.getElementById('recon') );
-	buoy.addClass( rec, 'unit' );
 
-	notify('unit', "<img src='images/cards/unit_recon.png'> Unit was played");
+	window.setTimeout( function() {
+		var rec = document.querySelector('.opponent li:nth-child(3)').appendChild( document.getElementById('recon') );
+		buoy.addClass( rec, 'unit' );
+	},110);
+
+	notify('u', "<img src='images/cards/unit_recon.png'> Unit was played");
 	document.querySelector('.opponent .atk').textContent = '3';
 	document.querySelector('.opponent .def').textContent = '2';
 	document.querySelector('.opponent .sup').textContent = '1/3';
@@ -192,20 +202,26 @@ function opponent5() {
 		drawCardConfirmed( {'type': 'coverage', 'id' : 'coverage', 'unit' : 1 } );
 		drawCardConfirmed( {'type': 'infantry', 'id' : 'infantry2', 'combo' : 1 } );
 
-		[].forEach.call(document.querySelectorAll('.card'), function(card) {
-			buoy.addClass(card, 'disable');
-		});
+		window.setTimeout( function() {
+			[].forEach.call(document.querySelectorAll('.card'), function(card) {
+				buoy.addClass(card, 'disable');
+			});
+		},110);
+		
 	});
 }
 
 // Opponent plays Helo
 function opponent6() {
 	drawCardConfirmed( {'type': 'helo', 'id' : 'helo', 'combo' : 1 } );
+	var helo;
 
-	var helo = document.querySelector('.opponent li:nth-child(2)').appendChild( document.getElementById('helo') );
-	buoy.addClass( helo, 'unit' );
+	window.setTimeout( function() {
+		helo = document.querySelector('.opponent li:nth-child(2)').appendChild( document.getElementById('helo') );
+		buoy.addClass( helo, 'unit' );
+	},110);
 
-	notify('unit', "<img src='images/cards/unit_helo.png'> Unit was played");
+	notify('u', "<img src='images/cards/unit_helo.png'> Unit was played");
 	document.querySelector('.opponent .atk').textContent = '5';
 	document.querySelector('.opponent .def').textContent = '4';
 	document.querySelector('.opponent .sup').textContent = '3/3';
@@ -253,10 +269,12 @@ function swapTime2() {
 		bubbleP.textContent = "Sweet, we got some new cards, and these are actually useful! Thanks to the opponent's helo, your AA unit's bonus will activate \
 		when played. However, look at your cards carefully. We want to play ALL 3 this turn for maximum power, can you figure out the correct order?";
 
-		document.querySelector('#supply').setAttribute('onclick', 'swapTime3("s")') ;
-		document.querySelector('#aa').setAttribute('onclick', 'swapTime3("a")') ;
-		document.querySelector('#tank').setAttribute('onclick', 'swapTime3("t")') ;
-
+		window.setTimeout( function() {
+			document.querySelector('#supply').setAttribute('onclick', 'swapTime3("s")') ;
+			document.querySelector('#aa').setAttribute('onclick', 'swapTime3("a")') ;
+			document.querySelector('#tank').setAttribute('onclick', 'swapTime3("t")') ;
+		},110);
+		
 		bubbleBtn.setAttribute('disabled', true) ;
 	} else {
 		notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.');
@@ -277,7 +295,11 @@ function swapTime3(e) {
 
 		document.querySelector('#aa').setAttribute('onclick', 'swapTime4("aa")') ;
 		document.querySelector('#tank').setAttribute('onclick', 'swapTime4("tank")') ;
-		document.querySelector('#shell').setAttribute('onclick', 'notify("red","Combo doesn\'t match any units in play! Check stars for formation/required traits.")') ;
+
+		window.setTimeout( function() {
+			document.querySelector('#shell').setAttribute('onclick', 'notify("red","Combo doesn\'t match any units in play! Check stars for formation/required traits.")') ;
+		},110);
+		
 	} else if (e==="a") {
 		bubbleP.textContent = "Nope! Look carefully. The AA costs 1 supplies to play. If you play this now, your attack will go up to 6 (thanks to bonus), which means you'll \
 		have to end your turn. You can't play the tank since you lack supplies, so you'd be left playing the supplies and waiting your next turn to play tank! Choose again.";
@@ -373,9 +395,12 @@ function swapTime4(e) {
 function opponent7() {
 	drawCardConfirmed( {'type': 'saptiva', 'id' : 'saptiva', 'co' : 1 } );
 
-	[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
-		buoy.addClass(el, 'disable');
-	});
+	window.setTimeout( function() {
+		[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+			buoy.addClass(el, 'disable');
+		});
+	},110);
+	
 
 	bubbleBtn.setAttribute('onclick', 'opponent8()') ;
 	bubbleBtn.removeAttribute('disabled') ;
@@ -402,10 +427,14 @@ function opponent8() {
 	bubbleBtn.setAttribute('onclick', 'finalPlay()') ;
 
 	drawCardConfirmed( {'type': 'a2g', 'id' : 'a2g', 'combo' : 1 } );
-	var a2g = document.querySelector('.opponent li:nth-child(4)').appendChild( document.getElementById('a2g') );
-	buoy.addClass( a2g, 'unit' );
+	var a2g;
+	window.setTimeout( function() {
+		a2g = document.querySelector('.opponent li:nth-child(4)').appendChild( document.getElementById('a2g') );
+		buoy.addClass( a2g, 'unit' );
+	},110);
+	
 
-	notify('unit', "<img src='images/cards/unit_a2g.png'> Unit was played");
+	notify('u', "<img src='images/cards/unit_a2g.png'> Unit was played");
 	document.querySelector('.opponent .atk').textContent = '9';
 	document.querySelector('.opponent .def').textContent = '8';
 	document.querySelector('.opponent .sup').textContent = '6/6';

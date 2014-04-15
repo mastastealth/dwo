@@ -1,4 +1,5 @@
 var conn;
+var peer;
 var opponentDeck;
 var playerDeck;
 var myTurn;
@@ -67,8 +68,9 @@ var cardType = {
 var properCards;
 
 // Starts off the game and all the other functions
-function playInit(connection, deck, atkr) {
+function playInit(connection, deck, atkr,p) {
 	// Attacker/Defebder
+	peer = p;
 	var attacker = atkr;
 
 	if (attacker) {
@@ -124,10 +126,13 @@ function playInit(connection, deck, atkr) {
 		// Only possible to end round on your turn
 		if (myTurn) {
 			var points;
+			var mine = document.querySelectorAll('.player .unit').length;
+			var his = document.querySelectorAll('.player .unit').length;
 
-			if (document.querySelectorAll('.opponent .unit').length <= 3) {
+			// Need a better check if you JUST started your turn or not
+			if ( mine <= 3 ) {
 				points = 1;
-			} else if (document.querySelectorAll('.opponent .unit').length===4) {
+			} else if (mine===4) {
 				points = 2;
 			} else { points = 3; }
 
@@ -435,7 +440,7 @@ function reshuffleCheck() {
 	}
 }
 
-function testCard(card,action) {
+function testCard(card,action,who,time) {
 	// Test a card against the hashed deck list
 	// Return true if it exists
 	if (!card) return false;
@@ -445,7 +450,8 @@ function testCard(card,action) {
 			conn.send({ 
 				'func': 'drawCardConfirmed', 
 				'card' : card,
-				'who' : 'origin'
+				'who' : 'origin',
+				'time': time
 			});
 		}
 		else if (action === 'play') {
@@ -493,7 +499,8 @@ function drawCard(deck,n,origin) {
 				'func'  : 'testCard', 
 				'card'  : wannaplay,
 				'who'   : 'origin',
-				'action': 'draw'
+				'action': 'draw',
+				'time' : i*100
 			});
 		}
 	}
@@ -521,26 +528,28 @@ function redeckCard(deck,cards,redraw) {
 }
 
 // Actually draw a real card
-function drawCardConfirmed(card) {
-	// Image
-	var pre = '';
-	if ( cardType.unit[card.type] ) { pre = 'unit_'; }
-	else if ( cardType.co[card.type] ) { pre = 'co_'; }
+function drawCardConfirmed(card,time) {
+	window.setTimeout( function() {
+		// Image
+		var pre = '';
+		if ( cardType.unit[card.type] ) { pre = 'unit_'; }
+		else if ( cardType.co[card.type] ) { pre = 'co_'; }
 
-	// DOM Stuff
-	var newcard = document.querySelector('.hand .cardContainer').appendChild( document.createElement('div') );
-	var img = newcard.appendChild( document.createElement('img') );
-	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
-	buoy.addClass(newcard, 'card');
-	buoy.addClass(newcard, 'new');
-	sfx_deal.play();
-	window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
-	newcard.cardProps = card;
-	newcard.setAttribute('id', card.id);
-	newcard.setAttribute('data-type',card.type);
-	if ( cardType.unit[card.type] ) newcard.setAttribute('data-isunit', true);
+		// DOM Stuff
+		var newcard = document.querySelector('.hand .cardContainer').appendChild( document.createElement('div') );
+		var img = newcard.appendChild( document.createElement('img') );
+		img.setAttribute('src','images/cards/'+pre+card.type+'.png');
+		buoy.addClass(newcard, 'card');
+		buoy.addClass(newcard, 'new');
+		sfx_deal.play();
+		window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
+		newcard.cardProps = card;
+		newcard.setAttribute('id', card.id);
+		newcard.setAttribute('data-type',card.type);
+		if ( cardType.unit[card.type] ) newcard.setAttribute('data-isunit', true);
 
-	newcard.addEventListener('click', playListener);
+		newcard.addEventListener('click', playListener);
+	},time);
 }
 
 function playListener(e) {
@@ -851,7 +860,6 @@ function specialCombo(card,who,v) {
 			}
 			break;
 		case "retreat":
-			document.getElementById(card.id).remove()
 			function retreat(e) {
 				// Remove unit
 				var unit = e.target.querySelector('.unit').cardProps.id
@@ -888,6 +896,8 @@ function specialCombo(card,who,v) {
 			}
 
 			if (who==='player') {
+				document.getElementById(card.id).remove();
+
 				// Make all cards active
 				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(unit) {
 					var slot = unit.parentNode;
@@ -1116,13 +1126,10 @@ function smartShift(who) {
 
 // Notification messages within the game
 function notify(type, msg) {
-	var bubble = document.querySelector('body').appendChild( document.createElement('div') );
+	var bubble = document.querySelector('.notifyList').appendChild( document.createElement('div') );
 	bubble.innerHTML = msg;
 	buoy.addClass(bubble, 'notify');
 	buoy.addClass(bubble, type);
-
-	var notCount = document.querySelectorAll('.notify:not(.bubble)').length;
-	if (notCount > 1) bubble.style.top = (((notCount-1)*80)+(10*(notCount)))+'px';
 
 	window.setTimeout( function() { bubble.remove(); }, 5000);
 }
@@ -1189,7 +1196,7 @@ function resetField(points,loser) {
 
 		// Loser gets to save one
 		if (loser) {
-			notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck");
+			if (document.querySelectorAll('.player .unit').length > 1) notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck");
 
 			// Choose unit
 			[].forEach.call(document.querySelectorAll('.player .unit'), function(unit) {
@@ -1296,7 +1303,7 @@ function resetField(points,loser) {
 		}
 
 		// Check if 6 outposts were captured by opponent
-		if (a >= 6) { endGame('loser'); }
+		if (parseInt(document.querySelector('.opponent .outpost').textContent) >= 6) { endGame('loser'); }
 	}
 
 	wipeStats('player');
@@ -1399,6 +1406,7 @@ function endTurnListener(e) {
 	if (myTurn){
 		// If it is your turn, disable buttons and turn
 		myTurn = false;
+		buoy.removeClass( document.querySelector('.player'), 'myturn');
 		endTurn.setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
 		// AUto draw cards
@@ -1435,4 +1443,23 @@ function forceEndCheck(who) {
 			document.querySelector('.end').setAttribute('disabled','true');
 		} else if (forceEnd>1) { endTurnListener(); } 
 	}, 300);
+}
+
+function endGame(who) {
+	overlayOn();
+	var m = document.querySelector('.overlay .modal');
+
+	if (who === 'loser') {
+		m.innerHTML = "<h2>You lost the game.</h2> <button disabled>Quit Game</button>"
+		// Tell opponent they won
+		conn.send({ 'func': 'endgame', 'who': 'winner' });
+	} else {
+		m.innerHTML = "<h2>You won the game!</h2> <button disabled>Quit Game</button>"
+	}
+
+	window.setTimeout( function () { m.querySelector('button').removeAttribute('disabled') }, 2000);
+
+	m.querySelector('button').addEventListener( 'click', function() {
+		peer.destroy();
+	});
 }

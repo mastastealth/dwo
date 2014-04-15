@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					onMessage(c);
 					myTurn = false;
 					attacker = false;
-					playInit(c,deck,attacker);
+					playInit(c,deck,attacker,peer);
 					notify('yellow', "Opponent's Turn");
 					buoy.addClass(document.querySelector('.hand'),'disable');
 					// TEMPORARY: Disconnect so no one else can join
@@ -273,8 +273,20 @@ document.addEventListener('DOMContentLoaded', function(){
 							myTurn = true;
 							attacker = true;
 							buoy.addClass(document.querySelector('.player'),'myturn');
-							playInit(conn,deck,attacker);
+							playInit(conn,deck,attacker,peer);
 							notify('green', 'Your Turn');
+						});
+
+						// On player disconnect
+						conn.on('close', function(c) {
+							// Notify
+							notify('red', 'Disconnected');
+							// Kill Connection
+							cancelConn();
+							// Reset Board
+							[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+								el.remove();
+							});
 						});
 					return false;
 				}
@@ -332,13 +344,14 @@ document.addEventListener('DOMContentLoaded', function(){
 			//console.log(msg);
 			switch (msg.func) {
 				case 'testCard': 
-					testCard(msg.card, msg.action, msg.who);
+					if (msg.time) { testCard(msg.card, msg.action, msg.who, msg.time); }
+					else { testCard(msg.card, msg.action, msg.who); }
 					break;
 				case 'odeck':
 					opponentDeck = msg.deck; 
 					break;
 				case 'drawCardConfirmed':
-					drawCardConfirmed(msg.card); 
+					drawCardConfirmed(msg.card, msg.time); 
 					break;
 				case 'playCard':
 					playCard(msg.card, msg.who); 
@@ -373,6 +386,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					if (attacker || (!attacker && a > d) ) win(msg.points);
 					resetField(0,false); 
 					break;
+				case 'endgame' :
+					endGame(msg.who);
 			}
 		});
 	};
@@ -380,23 +395,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	function win(p) { 
 		victoryPts += parseInt(p); 
 		document.querySelector('.player .outpost').textContent = victoryPts;
-	}
-
-	function endGame(who) {
-		overlayOn();
-		var m = document.querySelector('.overlay .modal');
-
-		if (who === 'loser') {
-			m.innerHTML = "<h2>You lost the game.</h2> <button>Quit Game</button>"
-			// Tell opponent they won
-			conn.send({ 'func': 'endgame', 'who': 'winner' });
-		} else {
-			m.innerHTML = "<h2>You won the game!</h2> <button>Quit Game</button>"
-		}
-
-		m.querySelector('button').addEventListener( 'click', function() {
-			peer.destroy();
-		});
 	}
 
 	// Prepend function

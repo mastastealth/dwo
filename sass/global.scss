@@ -123,6 +123,13 @@ button { outline: none; }
 	}
 }
 
+.notifyList {
+	position: fixed;
+	top: 10px; left: 10%;
+	width: 80%;
+	z-index: 99;
+}
+
 .notify {
 	animation: bubble 4s ease forwards;
 	background: rgba(255,255,255,0.7);
@@ -130,11 +137,10 @@ button { outline: none; }
 	font-size: 24px;
 	line-height: 80px;
 	pointer-events: none;
-	position: fixed;
-	top: 10px; left: 10%;
 	text-align: center;
-	width: 80%;
 	z-index: 99;
+
+	&:not(:last-child) { margin-bottom: 10px; }
 
 	&.green { background: transparentize(#01FF70,0.2); }
 	&.red { background: transparentize(#E44141,0.2); }
@@ -142,7 +148,7 @@ button { outline: none; }
 	&.blue { background: transparentize(#4178E4,0.2); }
 	&.purple { background: transparentize(#8B41E4,0.2); }
 	
-	&.grd, &.air, &.unit { background: transparentize(#89D748,0.2); }
+	&.grd, &.air, &.u { background: transparentize(#89D748,0.2); }
 	//&.air { background: transparentize(#59C5E4,0.2); }
 
 	img { height: 70px; margin-right: 10px; vertical-align: middle; }
@@ -155,6 +161,9 @@ button { outline: none; }
 		min-height: 40px;
 		padding: 10px 90px 10px 10px;
 		pointer-events: all;
+		position: fixed;
+		left: 10%;
+		width: 80%;
 		bottom: 32%; top: auto;
 
 		button {
@@ -195,6 +204,6 @@ button.menu {
 }
 
 @keyframes bubble {
-	0%, 100% { opacity: 0; transform: translateY(-150%); }
-	5%, 95% { opacity: 1; transform: translateY(0%); }
+	0%, 100% { opacity: 0; max-height: 0; transform: translateY(-15%); }
+	10%, 95% { opacity: 1; max-height: 150px; transform: translateY(0%); }
 }
