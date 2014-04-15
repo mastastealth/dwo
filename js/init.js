@@ -350,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					forceEnd = false;
 					buoy.addClass(document.querySelector('.player'),'myturn');
 					notify('green', 'Your Turn');
+					
 					document.querySelector('.end').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);

@@ -4,8 +4,6 @@ buoy.addClass(document.querySelector('.game'), 'tut');
 buoy.addClass(document.querySelector('.player'), 'attacker');
 buoy.addClass(document.querySelector('.player'), 'myturn');
 
-// Explain Bubble Function
-
 // Add Saptiva to field
 var comm = document.querySelector('.player').appendChild( document.createElement('div') );
 buoy.addClass(comm,'commander');
@@ -36,6 +34,7 @@ function introSupply() {
 
 // Explain + Play Supply
 function introSupply2() {
+	sfx_slide.play();
 	document.querySelector('.hand .card').remove();
 	document.querySelector('.player .sup').textContent = '0/3';
 
@@ -66,6 +65,7 @@ function introUnit() {
 
 // Play Infantry
 function introUnit2() {
+	sfx_slide.play();
 	document.querySelector('.player li:nth-child(3)').appendChild(document.querySelector('.hand .card'));
 	buoy.addClass( document.querySelector('li .card'), 'unit' );
 	document.querySelector('.player .atk').textContent = '1';
@@ -103,6 +103,7 @@ function opponent() {
 
 // Opponent plays Supply
 function opponent2() {
+	sfx_slide.play();
 	notify('yellow', "<img src='images/cards/supply.png'> Supply was played");
 	document.querySelector('.opponent .sup').textContent = '0/3';
 	bubbleP.textContent = "Whenever your opponent plays a card, you'll receive a notification on top. You'll receive notifications for other things as \
@@ -112,6 +113,7 @@ function opponent2() {
 
 // Play Recon
 function opponent3() {
+	sfx_slide.play();
 	drawCardConfirmed( {'type': 'recon', 'id' : 'recon', 'combo' : 1 } );
 	var rec = document.querySelector('.opponent li:nth-child(3)').appendChild( document.getElementById('recon') );
 	buoy.addClass( rec, 'unit' );
@@ -326,6 +328,7 @@ function swapTime4(e) {
 				newUnit = el.parentNode.appendChild( document.getElementById(e) );
 				document.getElementById(e).removeAttribute('onclick');
 				buoy.addClass(newUnit,'unit');
+				sfx_slide.play();
 
 				if (e==="tank") {
 					document.querySelector('.player .atk').textContent = parseInt(document.querySelector('.player .atk').textContent)+2;
@@ -384,6 +387,7 @@ function opponent7() {
 	Lastly, by staying with 3 units we also know our opponent can only play 1 more unit, limiting his options.";
 
 	window.setTimeout( function() { 
+		sfx_slide.play();
 		notify('yellow', "<img src='images/cards/supply.png'> Supply was played") ;
 		document.querySelector('.opponent .sup').textContent = "3/6";
 	}, 600 );
@@ -422,6 +426,7 @@ function finalPlay() {
 
 // Play 1 more, End Turn
 function finalPlay2() {
+	sfx_slide.play();
 	document.getElementById('saptiva').remove();
 	notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)');
 	document.querySelector('.player .atk').textContent = '9';
@@ -456,6 +461,7 @@ function finalPlay4(e) {
 		el.removeAttribute('onclick');
 	});
 
+	sfx_slide.play();
 	window.requestAnimationFrame( function() {
 		var slot = document.getElementById(e).parentNode;
 		buoy.addClass(slot, 'combo');

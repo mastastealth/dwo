@@ -724,10 +724,11 @@ footer {
   background-repeat: no-repeat;
   -webkit-background-size: contain;
   background-size: contain;
-  height: 300px;
+  height: 400px;
   position: absolute;
   bottom: 0;
-  width: 160px;
+  width: 220px;
+  z-index: 1;
 }
 
 .game .field .player .commander {
@@ -969,9 +970,11 @@ footer {
 .game .hand {
   height: 30%;
   position: relative;
+  z-index: 2;
 }
 
-.game .hand.disable .card {
+.game .hand.disable .card,
+.game .hand.noUnit .card[data-isunit] {
   opacity: 0.5;
 }
 
@@ -1060,7 +1063,7 @@ footer {
   top: -120px;
   left: 50%;
   max-width: 150px;
-  min-width: 100px;
+  min-width: 140px;
 }
 
 .game .unit img {
@@ -1300,7 +1303,7 @@ button {
   margin-right: 5px;
   height: 200px;
   max-width: 200px;
-  min-width: 130px;
+  min-width: 140px;
   overflow: hidden;
   position: relative;
 }
@@ -1368,11 +1371,11 @@ button {
 .notify.bubble {
   -webkit-animation: none;
   animation: none;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   font-size: 18px;
   line-height: 160%;
   min-height: 40px;
-  padding: 10px 70px 10px 10px;
+  padding: 10px 90px 10px 10px;
   pointer-events: all;
   bottom: 32%;
   top: auto;

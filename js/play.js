@@ -5,6 +5,10 @@ var myTurn;
 var attacker;
 var forceEnd = 0;
 
+var sfx_deal = new Howl({ urls: ['sfx/deal.mp3'], volume: 0.35 });
+var sfx_slide = new Howl({ urls: ['sfx/slide.mp3'], volume: 0.35 });
+var sfx_shuffle = new Howl({ urls: ['sfx/shuffle.mp3'], volume: 0.35 });
+
 // Define all the cards
 var cardType = {
 	'unit' : {
@@ -241,7 +245,7 @@ function playCard(card,who) {
 
 				// Remove card from hand
 				if (who === 'player') cardEl.remove();
-
+				sfx_slide.play();
 				unitCalc('opponent');
 				unitCalc('player');
 
@@ -372,7 +376,7 @@ function playCard(card,who) {
 				drawCard(playerDeck,1);
 				cardEl.remove();
 			}
-
+			sfx_slide.play();
 			unitCalc('opponent');
 			unitCalc('player');
 
@@ -511,7 +515,7 @@ function redeckCard(deck,cards,redraw) {
 		if (i===cards.length-1) {
 			deck = shuffle(deck);
 			if (redraw && cards.length<8) { drawCard(playerDeck,cards.length) }
-			else if (redraw && cards.length>=8) { drawCard(playerDeck,8) }
+			else if (redraw && cards.length>=8) { drawCard(playerDeck,8); sfx_shuffle.play(); }
 		}
 	}
 }
@@ -529,10 +533,12 @@ function drawCardConfirmed(card) {
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	buoy.addClass(newcard, 'card');
 	buoy.addClass(newcard, 'new');
+	sfx_deal.play();
 	window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
 	newcard.cardProps = card;
 	newcard.setAttribute('id', card.id);
 	newcard.setAttribute('data-type',card.type);
+	if ( cardType.unit[card.type] ) newcard.setAttribute('data-isunit', true);
 
 	newcard.addEventListener('click', playListener);
 }
@@ -598,6 +604,11 @@ function addUnit(u,who,card) {
 	document.querySelector('.'+who+' .def').setAttribute( 'data-unit', currentDef+parseInt(u.getAttribute('data-def')) );
 	// Set supply cost
 	u.setAttribute('data-sup', cardType.unit[card].sup );
+
+	// Check slot limits
+	if (document.querySelectorAll('.player .formation .unit').length > 4) {
+		buoy.addClass(document.querySelector('.hand'),'noUnit');
+	} else { buoy.removeClass(document.querySelector('.hand'),'noUnit'); }
 }
 
 function unitCard(newUnit,card,who,id) {
@@ -610,7 +621,7 @@ function unitCard(newUnit,card,who,id) {
 	// Image
 	var img = newUnit.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/cards/unit_'+card.type+'.png');
-	
+	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 
 	unitCalc('opponent');
@@ -714,7 +725,7 @@ function comboCard(unit,card,who) {
 	var img = document.createElement("img");
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	slot.querySelector('span').appendChild(img);
-
+	sfx_slide.play();
 	slot.cardProps = card;
 
 	if (cardType.combo[card.type].atk) {
@@ -1204,7 +1215,7 @@ function resetField(points,loser) {
 
 		// Auto save 1 combo, if not, also add selectors
 		if (!loser && document.querySelectorAll('.player .combo').length === 1) {
-			console.log('2+ Units, 1 Combo');
+			//console.log('2+ Units, 1 Combo');
 
 			var onlyCombo = document.querySelector('.player .combo');
 			redeckCard(playerDeck,[onlyCombo.cardProps],false);
@@ -1217,7 +1228,7 @@ function resetField(points,loser) {
 			}, 500);
 		} 
 		else if (!loser && document.querySelectorAll('.player .combo').length > 1) {
-			console.log('Multiple units, 1+ Combo');
+			//console.log('Multiple units, 1+ Combo');
 
 			notify('yellow',"Choose <strong>1</strong> of your combos to retreat into your deck");
 
@@ -1313,6 +1324,7 @@ function swapThree(dontdoit) {
 
 	if (dontdoit) return false;
 	var count = 0;
+	var noUnit = (buoy.hasClass(document.querySelector('.hand'),'noUnit')) ? true : false;
 
 	function chooseThree(e) {
 		if (count<= 3) {
@@ -1353,6 +1365,8 @@ function swapThree(dontdoit) {
 		done.removeEventListener('click', finishSwap);
 		done.remove();
 		done = null;
+
+		if (noUnit) { buoy.addClass(document.querySelector('.hand'),'noUnit') }
 	}
 
 	[].forEach.call(document.querySelectorAll('.card'), function(card) {
@@ -1364,6 +1378,7 @@ function swapThree(dontdoit) {
 	// Add button for "DONE"
 	var done = document.querySelector('.player').appendChild( document.createElement('button') );
 	done.textContent = 'Done';
+	buoy.removeClass(document.querySelector('.hand'),'noUnit')
 	done.addEventListener('click', finishSwap);
 
 	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
