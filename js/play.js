@@ -1059,6 +1059,12 @@ function specialCombo(card,who,v) {
 // --------- UI FUNCTIONS ----------
 // =================================
 
+//Activate Overlay
+function overlayOn() {
+	var o = document.querySelector('.overlay');
+	buoy.addClass(o,'active');
+}
+
 // Places a second+ unit on the field after choosing formation spot
 function placeUnit(pos, card, who, id) {
 	var newUnit;
@@ -1276,8 +1282,8 @@ function resetField(points,loser) {
 	if (loser) {
 		var a = parseInt(document.querySelector('.opponent .atk').textContent);
 		var d = parseInt(document.querySelector('.player .def').textContent);
-		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You win round';
 
+		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You win round';
 		conn.send({ 'func':'notify', 'type':'green', 'msg': winMsg });
 		conn.send({ 'func':'win', 'points': points });
 
@@ -1288,6 +1294,9 @@ function resetField(points,loser) {
 			var currentPts = (document.querySelector('.opponent .outpost').textContent) ? parseInt(document.querySelector('.opponent .outpost').textContent) : 0;
 			document.querySelector('.opponent .outpost').textContent = currentPts + points;
 		}
+
+		// Check if 6 outposts were captured by opponent
+		if (a >= 6) { endGame('loser'); }
 	}
 
 	wipeStats('player');
@@ -1384,6 +1393,7 @@ function swapThree(dontdoit) {
 	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
 }
 
+ // Swaps player's turn
 function endTurnListener(e) {
 	var endTurn = document.querySelector('.turn');
 	if (myTurn){
@@ -1403,6 +1413,7 @@ function endTurnListener(e) {
 	}
 }
 
+// Check if match/surpass, if so play 1 more card (or auto end turn if already played)
 function forceEndCheck(who) {
 	window.setTimeout( function(){
 		if (attacker && myTurn) {

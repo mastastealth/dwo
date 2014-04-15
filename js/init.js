@@ -5,12 +5,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	var game = document.querySelector('.game');
 	var m = document.querySelector('.overlay .modal');
 
-	//Activate Overlay
-	function overlayOn() {
-		var o = document.querySelector('.overlay');
-		buoy.addClass(o,'active');
-	}
-
 	// Tlk.io Tab
 	var tlkBtn = document.getElementById('tlkio').appendChild( document.createElement('span') );
 	tlkBtn.addEventListener('click', function(e) {
@@ -189,6 +183,11 @@ document.addEventListener('DOMContentLoaded', function(){
 			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
+			if ( document.querySelector('.hand .card') ) {
+				[].forEach.call(document.querySelector('.hand .card'), function(card) {
+					card.remove();
+				});
+			}
 		}
 
 		// Create Game
@@ -350,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					forceEnd = false;
 					buoy.addClass(document.querySelector('.player'),'myturn');
 					notify('green', 'Your Turn');
-					
+
 					document.querySelector('.end').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);
@@ -381,6 +380,23 @@ document.addEventListener('DOMContentLoaded', function(){
 	function win(p) { 
 		victoryPts += parseInt(p); 
 		document.querySelector('.player .outpost').textContent = victoryPts;
+	}
+
+	function endGame(who) {
+		overlayOn();
+		var m = document.querySelector('.overlay .modal');
+
+		if (who === 'loser') {
+			m.innerHTML = "<h2>You lost the game.</h2> <button>Quit Game</button>"
+			// Tell opponent they won
+			conn.send({ 'func': 'endgame', 'who': 'winner' });
+		} else {
+			m.innerHTML = "<h2>You won the game!</h2> <button>Quit Game</button>"
+		}
+
+		m.querySelector('button').addEventListener( 'click', function() {
+			peer.destroy();
+		});
 	}
 
 	// Prepend function
