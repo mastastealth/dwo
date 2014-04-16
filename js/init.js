@@ -179,15 +179,12 @@ document.addEventListener('DOMContentLoaded', function(){
 	  el.addEventListener('click', function() {
 
 		function cancelConn() {
+			wipeGame();
+
 			peer.destroy();
 			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
-			if ( document.querySelector('.card') ) {
-				[].forEach.call(document.querySelector('.card'), function(card) {
-					card.remove();
-				});
-			}
 		}
 
 		// Create Game
@@ -213,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				conn = c;
 				c.on('open', function() {
 					buoy.removeClass(m.parentNode,'active');
+					m.innerHTML = '';
 					onMessage(c);
 					myTurn = false;
 					attacker = false;
@@ -270,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function(){
 						conn.on('open', function() {
 							buoy.removeClass(m.parentNode,'active');
 							onMessage(conn);
+							m.innerHTML = '';
 							myTurn = true;
 							attacker = true;
 							buoy.addClass(document.querySelector('.player'),'myturn');
@@ -325,23 +324,12 @@ document.addEventListener('DOMContentLoaded', function(){
 		if ( buoy.hasClass(document.querySelector('.game'), 'tut') ) {
 			endTut();
 		} else {
-			document.querySelector('.player .atk').textContent = '0';
-			document.querySelector('.player .def').textContent = '0';
-			document.querySelector('.player .sup').textContent = '0';
-
-			document.querySelector('.opponent .atk').textContent = '0';
-			document.querySelector('.opponent .def').textContent = '0';
-			document.querySelector('.opponent .sup').textContent = '0';
+			wipeGame();
 
 			peer.destroy();
 			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
-			if ( document.querySelector('.hand .card') ) {
-				[].forEach.call(document.querySelector('.hand .card'), function(card) {
-					card.remove();
-				});
-			}
 		}
 	});
 
