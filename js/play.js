@@ -805,6 +805,8 @@ function specialCombo(card,who,v) {
 	}
 
 	function snipe(e) {
+		buoy.addClass( document.querySelector('.sticky'), 'un');
+		window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
 		// Remove choice
 		[].forEach.call(document.querySelectorAll('aside:not(.'+who+') li.active'), function(slot) {
 			buoy.removeClass(slot,'active');
@@ -851,6 +853,8 @@ function specialCombo(card,who,v) {
 						u.parentNode.addEventListener('click', snipe);
 					}
 				});
+
+				notify('yellow', 'Select an enemy  ground unit to snipe a combo off from!', true);
 			} else {
 				if (v) clearCombo( document.getElementById(v).parentNode );
 				// Recalc
@@ -861,6 +865,8 @@ function specialCombo(card,who,v) {
 			break;
 		case "retreat":
 			function retreat(e) {
+				buoy.addClass( document.querySelector('.sticky'), 'un');
+				window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
 				// Remove unit
 				var unit = e.target.querySelector('.unit').cardProps.id
 				e.target.querySelector('.unit').remove();
@@ -906,7 +912,7 @@ function specialCombo(card,who,v) {
 					slot.addEventListener('click', retreat);
 				});
 
-				notify('yellow','Select a unit to retreat! (Combo will be discarded)');
+				notify('yellow','Select a unit to retreat! (Combo will be discarded)', true);
 			} else if (who!='player' && v) {
 				// Remove unit
 				console.log(v);
@@ -1049,6 +1055,7 @@ function specialCombo(card,who,v) {
 						u.parentNode.addEventListener('click', snipe);
 					}
 				});
+				notify('yellow', 'Select an enemy ground unit to strike and remove from play!', true);
 			} else {
 				if (v) {
 					clearCombo( document.getElementById(v).parentNode );
@@ -1125,13 +1132,13 @@ function smartShift(who) {
 }
 
 // Notification messages within the game
-function notify(type, msg, perma) {
+function notify(type, msg, sticky) {
 	var bubble = document.querySelector('.notifyList').appendChild( document.createElement('div') );
 	bubble.innerHTML = msg;
 	buoy.addClass(bubble, 'notify');
 	buoy.addClass(bubble, type);
 
-	if (!perma) { window.setTimeout( function() { bubble.remove(); }, 5000); }
+	if (!sticky) { window.setTimeout( function() { bubble.remove(); }, 5000); }
 	else { buoy.addClass(bubble, 'sticky'); }
 }
 
@@ -1173,6 +1180,9 @@ function resetField(points,loser) {
 	// More than one unit
 	else {
 		function chooseListener(e) {
+			buoy.addClass( document.querySelector('.sticky'), 'un');
+			window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+
 			var o = e.target;
 			var objType;
 			buoy.removeClass( document.querySelector('.hand'), 'disable');
@@ -1185,7 +1195,7 @@ function resetField(points,loser) {
 				obj.removeEventListener('click', chooseListener);
 				if(objType === 'unit') {
 					buoy.addClass(obj,'toDeck');
-					window.setTimeout({ obj.remove(); },600);
+					window.setTimeout( function() { obj.remove(); },600);
 				} else {
 					clearCombo(obj);
 				}
@@ -1200,7 +1210,7 @@ function resetField(points,loser) {
 		// Loser gets to save one
 		if (loser) {
 			buoy.addClass( document.querySelector('.hand'), 'disable');
-			if (document.querySelectorAll('.player .unit').length > 1) notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck");
+			if (document.querySelectorAll('.player .unit').length > 1) notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck", true);
 
 			// Choose unit
 			[].forEach.call(document.querySelectorAll('.player .unit'), function(unit) {
@@ -1247,7 +1257,7 @@ function resetField(points,loser) {
 		else if (!loser && document.querySelectorAll('.player .combo').length > 1) {
 			//console.log('Multiple units, 1+ Combo');
 
-			notify('yellow',"Choose <strong>1</strong> of your combos to retreat into your deck");
+			notify('yellow',"Choose <strong>1</strong> of your combos to retreat into your deck", true);
 
 			[].forEach.call(document.querySelectorAll('.player .combo'), function(combo) {
 				buoy.addClass(combo, 'active');
@@ -1360,6 +1370,9 @@ function swapThree(dontdoit) {
 	}
 
 	function finishSwap() {
+		buoy.addClass( document.querySelector('.sticky'), 'un');
+		window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+
 		[].forEach.call(document.querySelectorAll('.card'), function(card) {
 			card.removeEventListener('click', chooseThree);
 			buoy.removeClass(card, 'choose');
@@ -1401,7 +1414,7 @@ function swapThree(dontdoit) {
 	buoy.removeClass(document.querySelector('.hand'),'noUnit')
 	done.addEventListener('click', finishSwap);
 
-	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
+	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.', true)
 }
 
  // Swaps player's turn

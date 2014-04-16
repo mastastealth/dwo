@@ -396,7 +396,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					specialCombo(msg.card, msg.who, v);
 					break;
 				case 'notify':
-					notify(msg.type, msg.msg);
+					var v = (msg['var']) ? msg['var'] : false;
+					notify(msg.type, msg.msg, v);
 					break;
 				case 'win' :
 					var a = parseInt(document.querySelector('.player .atk').textContent);

@@ -1444,6 +1444,8 @@ button {
   line-height: 70px;
   pointer-events: none;
   text-align: center;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
   z-index: 99;
 }
 
@@ -1475,6 +1477,28 @@ button {
 .notify.air,
 .notify.u {
   background: rgba(137, 215, 72, 0.8);
+}
+
+.notify.sticky {
+  -webkit-animation: bubbleSticky 4s ease forwards;
+  animation: bubbleSticky 4s ease forwards;
+  overflow: hidden;
+}
+
+.notify.sticky:before {
+  content: '❗';
+  color: rgba(0, 0, 0, 0.4);
+  margin-right: 20px;
+}
+
+.notify.un.sticky {
+  -webkit-animation: none;
+  animation: none;
+  opacity: 0;
+  max-height: 0;
+  -webkit-transform: translateY(-25%);
+  -ms-transform: translateY(-25%);
+  transform: translateY(-25%);
 }
 
 .notify img {
@@ -1631,6 +1655,40 @@ button.menu:hover {
   }
 
   10%, 95% {
+    opacity: 1;
+    max-height: 150px;
+    -webkit-transform: translateY(0%);
+    -ms-transform: translateY(0%);
+    transform: translateY(0%);
+  }
+}
+
+@-webkit-keyframes bubbleSticky {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    transform: translateY(-15%);
+  }
+
+  10% {
+    opacity: 1;
+    max-height: 150px;
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+  }
+}
+
+@keyframes bubbleSticky {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    -ms-transform: translateY(-15%);
+    transform: translateY(-15%);
+  }
+
+  10% {
     opacity: 1;
     max-height: 150px;
     -webkit-transform: translateY(0%);
