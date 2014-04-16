@@ -511,7 +511,7 @@ function redeckCard(deck,cards,redraw) {
 	var count = 0;
 	for (var i=0;i<cards.length;i++) {
 		deck.push( cards[i] );
-		console.log('Redecking: ',cards[i]);
+		//console.log('Redecking: ',cards[i]);
 		count++;
 		// Delete unit/cards and not li.combo's
 		if (document.getElementById(cards[i].id)) {
@@ -589,6 +589,8 @@ function playListener(e) {
 			'who'   : 'origin',
 			'action': 'play'
 		});
+	} else {
+		notify('red', 'Not Your Turn');
 	}
 }
 
@@ -1175,7 +1177,7 @@ function resetField(points,loser) {
 		window.setTimeout( function() {
 			unitCalc('player');
 			unitCalc('opponent');
-		}, 500);
+		}, 300);
 	} 
 	// More than one unit
 	else {
@@ -1195,7 +1197,7 @@ function resetField(points,loser) {
 				obj.removeEventListener('click', chooseListener);
 				if(objType === 'unit') {
 					buoy.addClass(obj,'toDeck');
-					window.setTimeout( function() { obj.remove(); },600);
+					window.setTimeout( function() { obj.remove(); },200);
 				} else {
 					clearCombo(obj);
 				}
@@ -1204,7 +1206,7 @@ function resetField(points,loser) {
 			window.setTimeout( function() {
 				unitCalc('player');
 				unitCalc('opponent');
-			}, 500);
+			}, 300);
 		}
 
 		// Loser gets to save one
@@ -1231,13 +1233,12 @@ function resetField(points,loser) {
 				saveUnits.push(el.cardProps);
 			});
 
-			console.log(saveUnits);
 			redeckCard(playerDeck,saveUnits,false);
 
 			window.setTimeout( function() {
 				unitCalc('player');
 				unitCalc('opponent');
-			}, 500);
+			}, 300);
 		}
 
 		// Auto save 1 combo, if not, also add selectors
@@ -1252,7 +1253,7 @@ function resetField(points,loser) {
 			window.setTimeout( function() {
 				unitCalc('player');
 				unitCalc('opponent');
-			}, 500);
+			}, 300);
 		} 
 		else if (!loser && document.querySelectorAll('.player .combo').length > 1) {
 			//console.log('Multiple units, 1+ Combo');
@@ -1301,15 +1302,15 @@ function resetField(points,loser) {
 
 	// Declare Loss
 	if (loser) {
+		console.log('Lost');
 		var a = parseInt(document.querySelector('.opponent .atk').textContent);
 		var d = parseInt(document.querySelector('.player .def').textContent);
 
-		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You win round';
+		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You defended successfully, you win round';
 		conn.send({ 'func':'notify', 'type':'green', 'msg': winMsg });
 		conn.send({ 'func':'win', 'points': points });
 
 		if (!attacker || (attacker && a > d) ) {
-			console.log('lost');
 			if (attacker && a>d) { notify('red', 'Lost Round AND Counter-attacked! Opponent gets points!'); }
 			else { notify('red', 'Lost Round'); }
 			var currentPts = (document.querySelector('.opponent .outpost').textContent) ? parseInt(document.querySelector('.opponent .outpost').textContent) : 0;
@@ -1338,10 +1339,11 @@ function resetField(points,loser) {
 		notify('yellow', "Opponent's Turn as Attacker");
 		document.querySelector('.turn').setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
-		//document.querySelector('.shuf').setAttribute('disabled','true');
+
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn', 'var' : true } );
 		myTurn = false;
+		buoy.removeClass(document.querySelector('.player'),'myturn');
 		buoy.addClass(document.querySelector('.hand'),'disable');
 	}
 }
@@ -1419,6 +1421,10 @@ function swapThree(dontdoit) {
 
  // Swaps player's turn
 function endTurnListener(e) {
+	console.log('Ending Turn');
+	buoy.addClass( document.querySelector('.sticky'), 'un');
+	window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+
 	// Check slot limits
 	if (document.querySelectorAll('.player .formation .unit').length > 4) {
 		buoy.addClass(document.querySelector('.hand'),'noUnit');
@@ -1445,26 +1451,33 @@ function endTurnListener(e) {
 
 // Check if match/surpass, if so play 1 more card (or auto end turn if already played)
 function forceEndCheck(who) {
-	window.setTimeout( function(){
-		if (attacker && myTurn) {
-			// Attacker's atk is greater than Defenders def
-			if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
-				forceEnd += 1;
-				if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)');
+	if (myTurn) {
+		window.setTimeout( function(){
+			console.log('Checking if end needs to be force...');
+			console.log('Player ATK/DEF: '+document.querySelector('.player .atk').textContent+'/'+document.querySelector('.player .def').textContent);
+			console.log('Opponent ATK/DEF: '+document.querySelector('.opponent .atk').textContent+'/'+document.querySelector('.opponent .def').textContent);
+			if (attacker) {
+				// Attacker's atk is greater than Defenders def
+				if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
+					forceEnd += 1;
+					if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)', true);
+				}
+			} else {
+				// Defenders def is greater than or equal to Attacker's atk
+				if (parseInt(document.querySelector('.'+who+' .def').textContent) >= parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
+					forceEnd += 1;
+					if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card & your turn will end (or end it now)', true);
+				}
 			}
-		} else if (!attacker && myTurn) {
-			// Defenders def is greater than or equal to Attacker's atk
-			if (parseInt(document.querySelector('.'+who+' .def').textContent) >= parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
-				forceEnd += 1;
-				if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card & your turn will end (or end it now)');
-			}
-		}
-		//console.log(forceEnd);
-		if (forceEnd===1) {
-			document.querySelector('.turn').removeAttribute('disabled');
-			document.querySelector('.end').setAttribute('disabled','true');
-		} else if (forceEnd>1) { endTurnListener(); } 
-	}, 300);
+			console.log('Force End now at: '+forceEnd);
+			if (forceEnd===1) {
+				document.querySelector('.turn').removeAttribute('disabled');
+				document.querySelector('.end').setAttribute('disabled','true');
+			} else if (forceEnd>1) { 
+				endTurnListener(); 
+			} 
+		}, 350);
+	}
 }
 
 function endGame(who) {

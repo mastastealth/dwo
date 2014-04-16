@@ -30,7 +30,7 @@
 		}
 
 		aside { 
-			background: tan;
+			background: tan url(../images/bg/bg_sand.png);
 			height: 100%;
 			overflow: hidden;
 			padding-top: 50px;
@@ -52,6 +52,9 @@
 				text-align: center;
 				transition: opacity 0.3s;
 			}
+
+			li:first-child:nth-last-child(5),
+			li:last-child:nth-last-child(1) { opacity: 0.25; }
 		}
 
 		.player:not(.myturn), .player.myturn + .opponent {
@@ -109,6 +112,8 @@
 			.sup {
 				background: #EED84F;
 				height: 30px;
+				font-size: 18px;
+				font-weight: bold;
 				line-height: 30px;
 				position: absolute;;
 				top: 10px; right: 10px;

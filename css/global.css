@@ -557,7 +557,7 @@ footer {
 }
 
 .game .field aside {
-  background: tan;
+  background: tan url(../images/bg/bg_sand.png);
   height: 100%;
   overflow: hidden;
   padding-top: 50px;
@@ -581,6 +581,11 @@ footer {
   text-align: center;
   -webkit-transition: opacity 0.3s;
   transition: opacity 0.3s;
+}
+
+.game .field aside li:first-child:nth-last-child(5),
+.game .field aside li:last-child:nth-last-child(1) {
+  opacity: 0.25;
 }
 
 .game .field .player:not(.myturn),
@@ -678,6 +683,8 @@ footer {
 .game .field h1 .sup {
   background: #EED84F;
   height: 30px;
+  font-size: 18px;
+  font-weight: bold;
   line-height: 30px;
   position: absolute;
   top: 10px;
