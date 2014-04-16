@@ -149,10 +149,11 @@
 			background-position: center bottom;
 			background-repeat: no-repeat;
 			background-size: contain;
-			height: 300px;
+			height: 400px;
 			position: absolute;
 			bottom: 0;
-			width: 160px;
+			width: 220px;
+			z-index: 1;
 		}
 			.player .commander {
 				left: 0;
@@ -312,8 +313,9 @@
 	.hand {
 		height: 30%;
 		position: relative;
+		z-index: 2;
 
-		&.disable .card { opacity: 0.5; }
+		&.disable .card, &.noUnit .card[data-isunit] { opacity: 0.5;}
 
 		button {
 			background: transparentize(green,0.9);
@@ -363,7 +365,7 @@
 		position: absolute;
 		top: -120px; left: 50%;
 		max-width: 150px;
-		min-width: 100px;
+		min-width: 140px;
 
 		img { height: 100%; width: auto; }
 

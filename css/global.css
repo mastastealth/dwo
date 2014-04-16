@@ -514,6 +514,11 @@ footer {
   content: attr(data-total);
 }
 
+.builder button.active {
+  background: green;
+  color: white;
+}
+
 /* --------------------------
 
 	The actual game styles
@@ -719,10 +724,11 @@ footer {
   background-repeat: no-repeat;
   -webkit-background-size: contain;
   background-size: contain;
-  height: 300px;
+  height: 400px;
   position: absolute;
   bottom: 0;
-  width: 160px;
+  width: 220px;
+  z-index: 1;
 }
 
 .game .field .player .commander {
@@ -964,9 +970,11 @@ footer {
 .game .hand {
   height: 30%;
   position: relative;
+  z-index: 2;
 }
 
-.game .hand.disable .card {
+.game .hand.disable .card,
+.game .hand.noUnit .card[data-isunit] {
   opacity: 0.5;
 }
 
@@ -1055,7 +1063,7 @@ footer {
   top: -120px;
   left: 50%;
   max-width: 150px;
-  min-width: 100px;
+  min-width: 140px;
 }
 
 .game .unit img {
@@ -1295,7 +1303,7 @@ button {
   margin-right: 5px;
   height: 200px;
   max-width: 200px;
-  min-width: 130px;
+  min-width: 140px;
   overflow: hidden;
   position: relative;
 }
@@ -1312,6 +1320,14 @@ button {
   transform: scale(1.05);
 }
 
+.notifyList {
+  position: fixed;
+  top: 10px;
+  left: 10%;
+  width: 80%;
+  z-index: 99;
+}
+
 .notify {
   -webkit-animation: bubble 4s ease forwards;
   animation: bubble 4s ease forwards;
@@ -1320,12 +1336,12 @@ button {
   font-size: 24px;
   line-height: 80px;
   pointer-events: none;
-  position: fixed;
-  top: 10px;
-  left: 10%;
   text-align: center;
-  width: 80%;
   z-index: 99;
+}
+
+.notify:not(:last-child) {
+  margin-bottom: 10px;
 }
 
 .notify.green {
@@ -1350,7 +1366,7 @@ button {
 
 .notify.grd,
 .notify.air,
-.notify.unit {
+.notify.u {
   background: rgba(137, 215, 72, 0.8);
 }
 
@@ -1363,12 +1379,15 @@ button {
 .notify.bubble {
   -webkit-animation: none;
   animation: none;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   font-size: 18px;
   line-height: 160%;
   min-height: 40px;
-  padding: 10px 70px 10px 10px;
+  padding: 10px 90px 10px 10px;
   pointer-events: all;
+  position: fixed;
+  left: 10%;
+  width: 80%;
   bottom: 32%;
   top: auto;
 }
@@ -1384,7 +1403,7 @@ button {
   background: green;
 }
 
-.menu {
+button.menu {
   background: #CCC;
   border: 1px solid #999;
   height: 30px;
@@ -1397,7 +1416,7 @@ button {
   z-index: 100;
 }
 
-.menu:hover {
+button.menu:hover {
   background: #E44141;
   border-color: darkred;
   color: white;
@@ -1482,12 +1501,14 @@ button {
 @-webkit-keyframes bubble {
   0%, 100% {
     opacity: 0;
-    -webkit-transform: translateY(-150%);
-    transform: translateY(-150%);
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    transform: translateY(-15%);
   }
 
-  5%, 95% {
+  10%, 95% {
     opacity: 1;
+    max-height: 150px;
     -webkit-transform: translateY(0%);
     transform: translateY(0%);
   }
@@ -1496,13 +1517,15 @@ button {
 @keyframes bubble {
   0%, 100% {
     opacity: 0;
-    -webkit-transform: translateY(-150%);
-    -ms-transform: translateY(-150%);
-    transform: translateY(-150%);
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    -ms-transform: translateY(-15%);
+    transform: translateY(-15%);
   }
 
-  5%, 95% {
+  10%, 95% {
     opacity: 1;
+    max-height: 150px;
     -webkit-transform: translateY(0%);
     -ms-transform: translateY(0%);
     transform: translateY(0%);

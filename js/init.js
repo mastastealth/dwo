@@ -5,12 +5,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	var game = document.querySelector('.game');
 	var m = document.querySelector('.overlay .modal');
 
-	//Activate Overlay
-	function overlayOn() {
-		var o = document.querySelector('.overlay');
-		buoy.addClass(o,'active');
-	}
-
 	// Tlk.io Tab
 	var tlkBtn = document.getElementById('tlkio').appendChild( document.createElement('span') );
 	tlkBtn.addEventListener('click', function(e) {
@@ -36,11 +30,30 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 
 	document.querySelector('.saveDeck').addEventListener('click', function() {
-		saveDeck();
+		if ( document.querySelector('.loadDeck1.active') ) {
+			saveDeck( 'deck' );
+		} else if ( document.querySelector('.loadDeck2.active') ) {
+			saveDeck( 'deck2' );
+		} else if ( document.querySelector('.loadDeck3.active') ) {
+			saveDeck( 'deck3' );
+		}
 	});
 
-	document.querySelector('.loadDeck').addEventListener('click', function() {
-		loadDeck( store.get('deck') );
+	[].forEach.call(document.querySelectorAll('.loadDeck'), function(btn) {
+		btn.addEventListener('click', function(e) {
+			console.log(e.target);
+
+			buoy.removeClass( document.querySelector('.loadDeck.active'), 'active');
+			buoy.addClass(e.target, 'active');
+
+			if ( buoy.hasClass(e.target, 'loadDeck1') ) {
+				loadDeck( store.get('deck') );
+			} else if ( buoy.hasClass(e.target, 'loadDeck2') ) {
+				loadDeck( store.get('deck2') );
+			} else if ( buoy.hasClass(e.target, 'loadDeck3') ) {
+				loadDeck( store.get('deck3') );
+			}
+		});
 	});
 
 	function countShare(target,count,plus) {
@@ -93,17 +106,27 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	}
 
-	function loadDeck(deck) {
-		clearDeck();
-
-		for (var i=0;i<deck.length;i++) {
-			if (!deck[i].supply) {
-				cardCounter( document.querySelector('div[data-type="'+deck[i].type+'"] .add') );
-			}
+	function loadDeck(loadedDeck) {
+		if (!loadedDeck) { 
+			notify('red', 'No Deck Found Here, Create a new one!');
+			clearDeck();
+			return false; 
 		}
+
+		notify('green', 'Loaded Deck!');
+		clearDeck();
+		deck = loadedDeck;
+
+		window.requestAnimationFrame( function() {
+			for (var i=0;i<loadedDeck.length;i++) {
+				if (!loadedDeck[i].supply) {
+					cardCounter( document.querySelector('div[data-type="'+loadedDeck[i].type+'"] .add') );
+				}
+			}
+		});
 	}
 
-	function saveDeck() {
+	function saveDeck(deckSlot) {
 		if ( document.querySelector('.u').getAttribute('data-total') != '20' || document.querySelector('.k').getAttribute('data-total') != '25' || document.querySelector('.co').getAttribute('data-total') != '2' ) {
 			notify('red', 'Deck Incomplete, Not Saved!'); return false;
 		}
@@ -141,9 +164,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 
 		if (newDeck.length === 72) {
-			store.set('deck', newDeck);
+			store.set(deckSlot, newDeck);
 			deck = newDeck;
-			notify('green', 'New Deck Saved!');
+			notify('green', 'Saved! Using new deck');
 		} else {
 			notify('red', 'Deck Not Saved!');
 		}
@@ -160,6 +183,11 @@ document.addEventListener('DOMContentLoaded', function(){
 			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
+			if ( document.querySelector('.hand .card') ) {
+				[].forEach.call(document.querySelector('.hand .card'), function(card) {
+					card.remove();
+				});
+			}
 		}
 
 		// Create Game
@@ -188,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					onMessage(c);
 					myTurn = false;
 					attacker = false;
-					playInit(c,deck,attacker);
+					playInit(c,deck,attacker,peer);
 					notify('yellow', "Opponent's Turn");
 					buoy.addClass(document.querySelector('.hand'),'disable');
 					// TEMPORARY: Disconnect so no one else can join
@@ -245,8 +273,20 @@ document.addEventListener('DOMContentLoaded', function(){
 							myTurn = true;
 							attacker = true;
 							buoy.addClass(document.querySelector('.player'),'myturn');
-							playInit(conn,deck,attacker);
+							playInit(conn,deck,attacker,peer);
 							notify('green', 'Your Turn');
+						});
+
+						// On player disconnect
+						conn.on('close', function(c) {
+							// Notify
+							notify('red', 'Disconnected');
+							// Kill Connection
+							cancelConn();
+							// Reset Board
+							[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
+								el.remove();
+							});
 						});
 					return false;
 				}
@@ -266,7 +306,10 @@ document.addEventListener('DOMContentLoaded', function(){
 				card.querySelector('.del').addEventListener('click', cardDecounter);
 			});
 
-			window.setTimeout( function() { loadDeck(deck); }, 1200);
+			window.setTimeout( function() { 
+				if (!document.querySelector('.loadDeck.active')) buoy.addClass( document.querySelector('.loadDeck1'), 'active'); 
+				loadDeck( store.get('deck') ); 
+			}, 1200);
 		}
 		// Tutorial
 		else if ( buoy.hasClass(this, 'howto') ) {
@@ -301,13 +344,14 @@ document.addEventListener('DOMContentLoaded', function(){
 			//console.log(msg);
 			switch (msg.func) {
 				case 'testCard': 
-					testCard(msg.card, msg.action, msg.who);
+					if (msg.time) { testCard(msg.card, msg.action, msg.who, msg.time); }
+					else { testCard(msg.card, msg.action, msg.who); }
 					break;
 				case 'odeck':
 					opponentDeck = msg.deck; 
 					break;
 				case 'drawCardConfirmed':
-					drawCardConfirmed(msg.card); 
+					drawCardConfirmed(msg.card, msg.time); 
 					break;
 				case 'playCard':
 					playCard(msg.card, msg.who); 
@@ -318,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					forceEnd = false;
 					buoy.addClass(document.querySelector('.player'),'myturn');
 					notify('green', 'Your Turn');
+
 					document.querySelector('.end').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);
@@ -341,6 +386,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					if (attacker || (!attacker && a > d) ) win(msg.points);
 					resetField(0,false); 
 					break;
+				case 'endgame' :
+					endGame(msg.who);
 			}
 		});
 	};

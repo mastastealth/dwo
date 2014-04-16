@@ -1,9 +1,14 @@
 var conn;
+var peer;
 var opponentDeck;
 var playerDeck;
 var myTurn;
 var attacker;
 var forceEnd = 0;
+
+var sfx_deal = new Howl({ urls: ['sfx/deal.mp3'], volume: 0.35 });
+var sfx_slide = new Howl({ urls: ['sfx/slide.mp3'], volume: 0.35 });
+var sfx_shuffle = new Howl({ urls: ['sfx/shuffle.mp3'], volume: 0.35 });
 
 // Define all the cards
 var cardType = {
@@ -63,8 +68,9 @@ var cardType = {
 var properCards;
 
 // Starts off the game and all the other functions
-function playInit(connection, deck, atkr) {
+function playInit(connection, deck, atkr,p) {
 	// Attacker/Defebder
+	peer = p;
 	var attacker = atkr;
 
 	if (attacker) {
@@ -120,10 +126,13 @@ function playInit(connection, deck, atkr) {
 		// Only possible to end round on your turn
 		if (myTurn) {
 			var points;
+			var mine = document.querySelectorAll('.player .unit').length;
+			var his = document.querySelectorAll('.player .unit').length;
 
-			if (document.querySelectorAll('.opponent .unit').length <= 3) {
+			// Need a better check if you JUST started your turn or not
+			if ( mine <= 3 ) {
 				points = 1;
-			} else if (document.querySelectorAll('.opponent .unit').length===4) {
+			} else if (mine===4) {
 				points = 2;
 			} else { points = 3; }
 
@@ -241,7 +250,7 @@ function playCard(card,who) {
 
 				// Remove card from hand
 				if (who === 'player') cardEl.remove();
-
+				sfx_slide.play();
 				unitCalc('opponent');
 				unitCalc('player');
 
@@ -372,7 +381,7 @@ function playCard(card,who) {
 				drawCard(playerDeck,1);
 				cardEl.remove();
 			}
-
+			sfx_slide.play();
 			unitCalc('opponent');
 			unitCalc('player');
 
@@ -431,7 +440,7 @@ function reshuffleCheck() {
 	}
 }
 
-function testCard(card,action) {
+function testCard(card,action,who,time) {
 	// Test a card against the hashed deck list
 	// Return true if it exists
 	if (!card) return false;
@@ -441,7 +450,8 @@ function testCard(card,action) {
 			conn.send({ 
 				'func': 'drawCardConfirmed', 
 				'card' : card,
-				'who' : 'origin'
+				'who' : 'origin',
+				'time': time
 			});
 		}
 		else if (action === 'play') {
@@ -489,7 +499,8 @@ function drawCard(deck,n,origin) {
 				'func'  : 'testCard', 
 				'card'  : wannaplay,
 				'who'   : 'origin',
-				'action': 'draw'
+				'action': 'draw',
+				'time' : i*100
 			});
 		}
 	}
@@ -511,30 +522,34 @@ function redeckCard(deck,cards,redraw) {
 		if (i===cards.length-1) {
 			deck = shuffle(deck);
 			if (redraw && cards.length<8) { drawCard(playerDeck,cards.length) }
-			else if (redraw && cards.length>=8) { drawCard(playerDeck,8) }
+			else if (redraw && cards.length>=8) { drawCard(playerDeck,8); sfx_shuffle.play(); }
 		}
 	}
 }
 
 // Actually draw a real card
-function drawCardConfirmed(card) {
-	// Image
-	var pre = '';
-	if ( cardType.unit[card.type] ) { pre = 'unit_'; }
-	else if ( cardType.co[card.type] ) { pre = 'co_'; }
+function drawCardConfirmed(card,time) {
+	window.setTimeout( function() {
+		// Image
+		var pre = '';
+		if ( cardType.unit[card.type] ) { pre = 'unit_'; }
+		else if ( cardType.co[card.type] ) { pre = 'co_'; }
 
-	// DOM Stuff
-	var newcard = document.querySelector('.hand .cardContainer').appendChild( document.createElement('div') );
-	var img = newcard.appendChild( document.createElement('img') );
-	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
-	buoy.addClass(newcard, 'card');
-	buoy.addClass(newcard, 'new');
-	window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
-	newcard.cardProps = card;
-	newcard.setAttribute('id', card.id);
-	newcard.setAttribute('data-type',card.type);
+		// DOM Stuff
+		var newcard = document.querySelector('.hand .cardContainer').appendChild( document.createElement('div') );
+		var img = newcard.appendChild( document.createElement('img') );
+		img.setAttribute('src','images/cards/'+pre+card.type+'.png');
+		buoy.addClass(newcard, 'card');
+		buoy.addClass(newcard, 'new');
+		sfx_deal.play();
+		window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
+		newcard.cardProps = card;
+		newcard.setAttribute('id', card.id);
+		newcard.setAttribute('data-type',card.type);
+		if ( cardType.unit[card.type] ) newcard.setAttribute('data-isunit', true);
 
-	newcard.addEventListener('click', playListener);
+		newcard.addEventListener('click', playListener);
+	},time);
 }
 
 function playListener(e) {
@@ -598,6 +613,11 @@ function addUnit(u,who,card) {
 	document.querySelector('.'+who+' .def').setAttribute( 'data-unit', currentDef+parseInt(u.getAttribute('data-def')) );
 	// Set supply cost
 	u.setAttribute('data-sup', cardType.unit[card].sup );
+
+	// Check slot limits
+	if (document.querySelectorAll('.player .formation .unit').length > 4) {
+		buoy.addClass(document.querySelector('.hand'),'noUnit');
+	} else { buoy.removeClass(document.querySelector('.hand'),'noUnit'); }
 }
 
 function unitCard(newUnit,card,who,id) {
@@ -610,7 +630,7 @@ function unitCard(newUnit,card,who,id) {
 	// Image
 	var img = newUnit.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/cards/unit_'+card.type+'.png');
-	
+	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 
 	unitCalc('opponent');
@@ -714,7 +734,7 @@ function comboCard(unit,card,who) {
 	var img = document.createElement("img");
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	slot.querySelector('span').appendChild(img);
-
+	sfx_slide.play();
 	slot.cardProps = card;
 
 	if (cardType.combo[card.type].atk) {
@@ -738,7 +758,7 @@ function comboCard(unit,card,who) {
 
 		// Special combo color slots
 		if (card.type==='support') buoy.addClass(slot,'sup');
-		if (card.type==='sniper') buoy.addClass(slot,'atk');
+		if (card.type==='sniper' || card.type==='tstrike') buoy.addClass(slot,'atk');
 		if (card.type==='intel' || card.type==='stealth') { 
 			buoy.addClass(slot,'atk'); 
 			buoy.addClass(slot,'def'); 
@@ -754,6 +774,62 @@ function comboCard(unit,card,who) {
 }
 
 function specialCombo(card,who,v) {
+	function extraUnit(u) {
+		// Add .unit inf (with li?) to support combos
+		var extra;
+		if (!document.querySelector('.'+who+' ul.extra')) {
+			extra = document.createElement('ul');
+			buoy.addClass(extra,'extra');
+			document.querySelector('.'+who).appendChild(extra);
+		} else { extra = document.querySelector('.'+who+' ul.extra'); }
+
+		// Add elements
+		var extraSlot = extra.appendChild( document.createElement('li') );
+		var unit = extraSlot.appendChild( document.createElement('div') );
+		var uid = document.querySelector('.'+who+' ul.extra li').length;
+		unit.cardProps = { 'id' : u+'_extra'+uid, 'type' : u };
+		unit.setAttribute('id',u+'_extra'+uid);
+		buoy.addClass(unit,'unit');
+		unit.setAttribute('data-type', u);
+
+		// Image
+		var img = unit.appendChild( document.createElement('img') );
+		img.setAttribute('src','images/cards/unit_'+u+'.png');
+
+		addUnit(unit,who,u);
+
+		unitCalc('opponent');
+		unitCalc('player');
+
+		forceEndCheck(who);
+	}
+
+	function snipe(e) {
+		// Remove choice
+		[].forEach.call(document.querySelectorAll('aside:not(.'+who+') li.active'), function(slot) {
+			buoy.removeClass(slot,'active');
+			slot.removeEventListener('click', snipe);
+		});
+
+		// Kill Card(s)
+		clearCombo( e.target );
+		var uid = e.target.querySelector('.unit').cardProps.id;
+		if ( e.target.querySelector('.unit').killUnit ) e.target.querySelector('.unit').remove();
+
+		// Recalc
+		unitCalc('player');
+		unitCalc('opponent');
+		if (forceEnd!=1) forceEndCheck(who);
+
+		// Send kill
+		conn.send( { 
+			'func':'specialCombo', 
+			'card' : card, 
+			'who' : 'opponent', 
+			'var' : uid
+		});
+	}
+
 	console.log('Special Combo!');
 	switch (card.type) {
 		// One Star Combos
@@ -768,32 +844,10 @@ function specialCombo(card,who,v) {
 		case "sniper":
 			// Add listener to kill
 			if (who==='player') {
-				function snipe(e) {
-					// Remove choice
-					[].forEach.call(document.querySelectorAll('aside:not(.'+who+') li.active'), function(slot) {
-						buoy.removeClass(slot,'active');
-						slot.removeEventListener('click', snipe);
-					});
-
-					// Kill Card
-					clearCombo( e.target );
-					// Recalc
-					unitCalc('player');
-					unitCalc('opponent');
-					forceEndCheck(who);
-
-					// Send kill
-					conn.send( { 
-						'func':'specialCombo', 
-						'card' : card, 
-						'who' : 'opponent', 
-						'var' : e.target.querySelector('.unit').cardProps.id
-					});
-				}
-
 				[].forEach.call(document.querySelectorAll('aside:not(.'+who+') .combo .unit'), function(u) {
 					if ( cardType.unit[ u.cardProps.type ].trait.indexOf('inf') != -1 ) {
 						buoy.addClass(u.parentNode,'active');
+						u.killUnit = true;
 						u.parentNode.addEventListener('click', snipe);
 					}
 				});
@@ -806,7 +860,6 @@ function specialCombo(card,who,v) {
 			}
 			break;
 		case "retreat":
-			document.getElementById(card.id).remove()
 			function retreat(e) {
 				// Remove unit
 				var unit = e.target.querySelector('.unit').cardProps.id
@@ -843,6 +896,8 @@ function specialCombo(card,who,v) {
 			}
 
 			if (who==='player') {
+				document.getElementById(card.id).remove();
+
 				// Make all cards active
 				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(unit) {
 					var slot = unit.parentNode;
@@ -972,34 +1027,7 @@ function specialCombo(card,who,v) {
 			}
 			break;
 		case "stealth":
-			// Add .unit inf (with li?) to support combos
-			var extra;
-			if (!document.querySelector('.'+who+' ul.extra')) {
-				extra = document.createElement('ul');
-				buoy.addClass(extra,'extra');
-				document.querySelector('.'+who).appendChild(extra);
-			} else { extra = document.querySelector('.'+who+' ul.extra'); }
-
-			// Add elements
-			var extraSlot = extra.appendChild( document.createElement('li') );
-			var unit = extraSlot.appendChild( document.createElement('div') );
-			var uid = document.querySelector('.'+who+' ul.extra li').length;
-			unit.cardProps = { 'id' : 'infantry_extra'+uid, 'type' : 'infantry' };
-			unit.setAttribute('id','infantry_extra'+uid);
-			buoy.addClass(unit,'unit');
-			unit.setAttribute('data-type', "infantry");
-
-			// Image
-			var img = unit.appendChild( document.createElement('img') );
-			img.setAttribute('src','images/cards/unit_infantry.png');
-
-			addUnit(unit,who,'infantry');
-
-			unitCalc('opponent');
-			unitCalc('player');
-
-			forceEndCheck(who);
-
+			extraUnit('infantry');
 			break;
 		// 3 Star Combo
 		case "barrier":
@@ -1009,11 +1037,28 @@ function specialCombo(card,who,v) {
 			// Might need to rework this card to just extra def...
 			break;
 		case "bigguns":
-			// Add .unit arm (with li?) to support combos
-			// Position similar to and beside Commander
+			extraUnit('tank');
 			break;
 		case "tstrike":
-			// Same as sniper, works for GRD
+			// Add listener to kill
+			if (who==='player') {
+				[].forEach.call(document.querySelectorAll('aside:not(.'+who+') .unit'), function(u) {
+					if ( cardType.unit[ u.cardProps.type ].trait.indexOf('grd') != -1 ) {
+						buoy.addClass(u.parentNode,'active');
+						u.killUnit = true;
+						u.parentNode.addEventListener('click', snipe);
+					}
+				});
+			} else {
+				if (v) {
+					clearCombo( document.getElementById(v).parentNode );
+					document.getElementById(v).remove();
+				}
+				// Recalc
+				unitCalc('player');
+				unitCalc('opponent');
+				forceEndCheck(who);
+			}
 			break;
 	}
 
@@ -1023,6 +1068,12 @@ function specialCombo(card,who,v) {
 // =================================
 // --------- UI FUNCTIONS ----------
 // =================================
+
+//Activate Overlay
+function overlayOn() {
+	var o = document.querySelector('.overlay');
+	buoy.addClass(o,'active');
+}
 
 // Places a second+ unit on the field after choosing formation spot
 function placeUnit(pos, card, who, id) {
@@ -1042,46 +1093,43 @@ function placeUnit(pos, card, who, id) {
 
 // Shifts unit formation up or down depending if close to the edge
 function smartShift(who) {
-	if (document.querySelectorAll('.'+who+' .unit').length === 3) {
+	if (document.querySelectorAll('.'+who+' .formation .unit').length === 3) {
 		// Unit was added on the top side, bring bottom, empty li to top to center formation
-		if ( document.querySelector('.'+who+' li:first-child').children.length > 1 ) {
-			var lastLi = document.querySelector('.'+who+' li:last-child');
-			document.querySelector('.'+who+' ul').prependChild(lastLi);
+		if ( document.querySelector('.'+who+' .formation li:first-child').children.length > 1 ) {
+			var lastLi = document.querySelector('.'+who+' .formation li:last-child');
+			document.querySelector('.'+who+' ul.formation').prependChild(lastLi);
 		} 
 		// or do the opposite for bottom
-		else if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
-			var firstLi = document.querySelector('.'+who+' li:first-child');
-			document.querySelector('.'+who+' ul').appendChild(firstLi);
+		else if ( document.querySelector('.'+who+' .formation li:last-child').children.length > 1 ) {
+			var firstLi = document.querySelector('.'+who+' .formation li:first-child');
+			document.querySelector('.'+who+' ul.formation').appendChild(firstLi);
 		}
 	} 
 	// Add empty li to opposite side of end with unit
-	else if (document.querySelectorAll('.'+who+' .unit').length === 4) {
+	else if (document.querySelectorAll('.'+who+' .formation .unit').length === 4) {
 		var li = document.createElement('li');
-		if ( document.querySelector('.'+who+' li:first-child').children.length > 1 ) {
+		if ( document.querySelector('.'+who+' .formation li:first-child').children.length > 1 ) {
 			console.log('Prepending...', li);
-			document.querySelector('.'+who+' ul').prependChild( li );
+			document.querySelector('.'+who+' ul.formation').prependChild( li );
 		}
-		else if ( document.querySelector('.'+who+' li:last-child').children.length > 1 ) {
+		else if ( document.querySelector('.'+who+' .formation li:last-child').children.length > 1 ) {
 			console.log('Appending...', li);
-			document.querySelector('.'+who+' ul').appendChild( li );
+			document.querySelector('.'+who+' ul.formation').appendChild( li );
 		}
 		li.appendChild( document.createElement('span') );
 
-	} else if (document.querySelectorAll('.'+who+' .unit').length === 5) {
-		var emptyLi = document.querySelector('.'+who+' li span:only-child').parentNode;
+	} else if (document.querySelectorAll('.'+who+' .formation .unit').length === 5) {
+		var emptyLi = document.querySelector('.'+who+' .formation li span:only-child').parentNode;
 		emptyLi.parentNode.removeChild(emptyLi);
 	}
 }
 
 // Notification messages within the game
 function notify(type, msg) {
-	var bubble = document.querySelector('body').appendChild( document.createElement('div') );
+	var bubble = document.querySelector('.notifyList').appendChild( document.createElement('div') );
 	bubble.innerHTML = msg;
 	buoy.addClass(bubble, 'notify');
 	buoy.addClass(bubble, type);
-
-	var notCount = document.querySelectorAll('.notify:not(.bubble)').length;
-	if (notCount > 1) bubble.style.top = (((notCount-1)*80)+(10*(notCount)))+'px';
 
 	window.setTimeout( function() { bubble.remove(); }, 5000);
 }
@@ -1148,7 +1196,7 @@ function resetField(points,loser) {
 
 		// Loser gets to save one
 		if (loser) {
-			notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck");
+			if (document.querySelectorAll('.player .unit').length > 1) notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck");
 
 			// Choose unit
 			[].forEach.call(document.querySelectorAll('.player .unit'), function(unit) {
@@ -1180,7 +1228,7 @@ function resetField(points,loser) {
 
 		// Auto save 1 combo, if not, also add selectors
 		if (!loser && document.querySelectorAll('.player .combo').length === 1) {
-			console.log('2+ Units, 1 Combo');
+			//console.log('2+ Units, 1 Combo');
 
 			var onlyCombo = document.querySelector('.player .combo');
 			redeckCard(playerDeck,[onlyCombo.cardProps],false);
@@ -1193,7 +1241,7 @@ function resetField(points,loser) {
 			}, 500);
 		} 
 		else if (!loser && document.querySelectorAll('.player .combo').length > 1) {
-			console.log('Multiple units, 1+ Combo');
+			//console.log('Multiple units, 1+ Combo');
 
 			notify('yellow',"Choose <strong>1</strong> of your combos to retreat into your deck");
 
@@ -1241,8 +1289,8 @@ function resetField(points,loser) {
 	if (loser) {
 		var a = parseInt(document.querySelector('.opponent .atk').textContent);
 		var d = parseInt(document.querySelector('.player .def').textContent);
-		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You win round';
 
+		var winMsg = (attacker && a > d) ? '<img src="images/cards/outpost.png"> You win round AND counter-attacked! You take points!' : 'You win round';
 		conn.send({ 'func':'notify', 'type':'green', 'msg': winMsg });
 		conn.send({ 'func':'win', 'points': points });
 
@@ -1253,6 +1301,9 @@ function resetField(points,loser) {
 			var currentPts = (document.querySelector('.opponent .outpost').textContent) ? parseInt(document.querySelector('.opponent .outpost').textContent) : 0;
 			document.querySelector('.opponent .outpost').textContent = currentPts + points;
 		}
+
+		// Check if 6 outposts were captured by opponent
+		if (parseInt(document.querySelector('.opponent .outpost').textContent) >= 6) { endGame('loser'); }
 	}
 
 	wipeStats('player');
@@ -1289,6 +1340,7 @@ function swapThree(dontdoit) {
 
 	if (dontdoit) return false;
 	var count = 0;
+	var noUnit = (buoy.hasClass(document.querySelector('.hand'),'noUnit')) ? true : false;
 
 	function chooseThree(e) {
 		if (count<= 3) {
@@ -1329,6 +1381,8 @@ function swapThree(dontdoit) {
 		done.removeEventListener('click', finishSwap);
 		done.remove();
 		done = null;
+
+		if (noUnit) { buoy.addClass(document.querySelector('.hand'),'noUnit') }
 	}
 
 	[].forEach.call(document.querySelectorAll('.card'), function(card) {
@@ -1340,21 +1394,24 @@ function swapThree(dontdoit) {
 	// Add button for "DONE"
 	var done = document.querySelector('.player').appendChild( document.createElement('button') );
 	done.textContent = 'Done';
+	buoy.removeClass(document.querySelector('.hand'),'noUnit')
 	done.addEventListener('click', finishSwap);
 
 	notify('yellow', 'Choose 3 cards to swap out, or choose none, and hit done.')
 }
 
+ // Swaps player's turn
 function endTurnListener(e) {
 	var endTurn = document.querySelector('.turn');
 	if (myTurn){
 		// If it is your turn, disable buttons and turn
 		myTurn = false;
+		buoy.removeClass( document.querySelector('.player'), 'myturn');
 		endTurn.setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
 		// AUto draw cards
-		if (document.querySelectorAll('.card').length<8) {
-			drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+		if (document.querySelectorAll('.hand .card').length<8) {
+			drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
 		} else { drawCard(playerDeck,1); }
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn', 'var' : false } );
@@ -1364,6 +1421,7 @@ function endTurnListener(e) {
 	}
 }
 
+// Check if match/surpass, if so play 1 more card (or auto end turn if already played)
 function forceEndCheck(who) {
 	window.setTimeout( function(){
 		if (attacker && myTurn) {
@@ -1385,4 +1443,23 @@ function forceEndCheck(who) {
 			document.querySelector('.end').setAttribute('disabled','true');
 		} else if (forceEnd>1) { endTurnListener(); } 
 	}, 300);
+}
+
+function endGame(who) {
+	overlayOn();
+	var m = document.querySelector('.overlay .modal');
+
+	if (who === 'loser') {
+		m.innerHTML = "<h2>You lost the game.</h2> <button disabled>Quit Game</button>"
+		// Tell opponent they won
+		conn.send({ 'func': 'endgame', 'who': 'winner' });
+	} else {
+		m.innerHTML = "<h2>You won the game!</h2> <button disabled>Quit Game</button>"
+	}
+
+	window.setTimeout( function () { m.querySelector('button').removeAttribute('disabled') }, 2000);
+
+	m.querySelector('button').addEventListener( 'click', function() {
+		peer.destroy();
+	});
 }

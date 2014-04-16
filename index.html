@@ -9,6 +9,7 @@
 </head>
 <body>
 	<div class="game">
+		<div class="notifyList"></div>
 		<button class="menu">QUIT</button>
 		<div class="field">
 			<aside class="player">
@@ -52,7 +53,9 @@
 		<div class="menu">
 			<button class="returnToMenu">Back to Menu</button>
 			<button class="saveDeck">Save</button>
-			<button class="loadDeck">Load</button>
+			<button class="loadDeck1 loadDeck">Load Deck 1</button>
+			<button class="loadDeck2 loadDeck">Load Deck 2</button>
+			<button class="loadDeck3 loadDeck">Load Deck 3</button>
 		</div>
 
 		<section>
@@ -218,6 +221,46 @@
 				<div class="del"></div>
 				<img src="images/cards/stealth.png" alt="">
 			</div>
+			<!-- div class="card" data-count="0" data-type="barrier" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/barrier.png" alt="">
+			</div-->
+			<div class="card" data-count="0" data-type="squad" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/squad.png" alt="">
+			</div>
+			<div class="card" data-count="0" data-type="patrol" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/patrol.png" alt="">
+			</div>
+			<!-- div class="card" data-count="0" data-type="acover" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/acover.png" alt="">
+			</div-->
+			<div class="card" data-count="0" data-type="column" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/column.png" alt="">
+			</div>
+			<div class="card" data-count="0" data-type="bigguns" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/bigguns.png" alt="">
+			</div>
+			<div class="card" data-count="0" data-type="evasion" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/evasion.png" alt="">
+			</div>
+			<div class="card" data-count="0" data-type="tstrike" >
+				<div class="add"></div>
+				<div class="del"></div>
+				<img src="images/cards/tstrike.png" alt="">
+			</div>
 		</section>
 
 		<section>
@@ -274,6 +317,7 @@
 	<script src="//cdn.peerjs.com/0.3.8/peer.min.js"></script>
 	<script src="js/min/md5.min.js"></script>
 	<script src="js/min/store.min.js"></script>
+	<script src="js/min/howler.min.js"></script>
 	<script src="js/min/game.min.js"></script>
 </body>
 </html>
