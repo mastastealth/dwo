@@ -376,6 +376,11 @@ document.addEventListener('DOMContentLoaded', function(){
 					buoy.addClass(document.querySelector('.player'),'myturn');
 					notify('green', 'Your Turn');
 
+					// Check slot limits
+					if (document.querySelectorAll('.player .formation .unit').length > 4) {
+						buoy.addClass(document.querySelector('.hand'),'noUnit');
+					} else { buoy.removeClass(document.querySelector('.hand'),'noUnit'); }
+
 					document.querySelector('.end').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);

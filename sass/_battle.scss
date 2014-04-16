@@ -57,7 +57,7 @@
 		.player:not(.myturn), .player.myturn + .opponent {
 			background: transparentize(tan,0.25);
 
-			.card img { opacity: 0.5; }
+			.card img, .unit img { opacity: 0.5; }
 		}
 
 		.player.myturn, .player:not(.myturn) + .opponent {
@@ -69,6 +69,7 @@
 			}
 		}
 			.player:not(.myturn) + .opponent:after {
+				background: #666;
 				content: "Their Turn";
 				right: auto; left: 20px;
 			}
@@ -411,6 +412,10 @@
 			cursor: pointer;
 
 			img { pointer-events: none; }
+		}
+
+		&.toDeck {
+			transform: scale(0.5) translate(-60%,100%) rotateY(0);
 		}
 	}
 		.player .unit { transform: scale(0.8) translateX(-60%) rotateY(15deg); }

@@ -187,7 +187,6 @@ function opponent5() {
 	var slot = document.querySelector('.player li.active');
 	buoy.addClass( slot, 'combo' );
 	buoy.addClass( slot, 'atk' );
-	slot.appendChild( document.createElement('span') );
 
 	window.requestAnimationFrame( function() {
 		var img = document.createElement("img");
@@ -564,11 +563,18 @@ function endTut() {
 	buoy.removeClass(document.querySelector('.game'), 'active');
 	buoy.removeClass(document.querySelector('.game'), 'tut');
 	buoy.removeClass(document.querySelector('.player'), 'myturn');
+
+	if ( document.querySelector('.combo') ) {
+		document.querySelector('.combo img').remove();
+		document.querySelector('.combo').setAttribute('class','');
+	}
+
 	document.querySelector('.commander').remove();
 	document.querySelector('.bubble').remove();
+	buoy.removeClass(document.querySelector('.attacker'), 'attacker');
 
-	if ( document.querySelector('.hand .card') ) {
-		[].forEach.call(document.querySelector('.hand .card'), function(card) {
+	if ( document.querySelector('.card') ) {
+		[].forEach.call(document.querySelectorAll('.card'), function(card) {
 			card.remove();
 		});
 	}

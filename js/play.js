@@ -1125,13 +1125,14 @@ function smartShift(who) {
 }
 
 // Notification messages within the game
-function notify(type, msg) {
+function notify(type, msg, perma) {
 	var bubble = document.querySelector('.notifyList').appendChild( document.createElement('div') );
 	bubble.innerHTML = msg;
 	buoy.addClass(bubble, 'notify');
 	buoy.addClass(bubble, type);
 
-	window.setTimeout( function() { bubble.remove(); }, 5000);
+	if (!perma) { window.setTimeout( function() { bubble.remove(); }, 5000); }
+	else { buoy.addClass(bubble, 'sticky'); }
 }
 
 // Clear a slot of its combo
@@ -1174,6 +1175,7 @@ function resetField(points,loser) {
 		function chooseListener(e) {
 			var o = e.target;
 			var objType;
+			buoy.removeClass( document.querySelector('.hand'), 'disable');
 			if (o.nodeName==='DIV') { objType = 'unit' } else { objType = 'combo' }
 
 			redeckCard(playerDeck,[o.cardProps],false);
@@ -1182,7 +1184,8 @@ function resetField(points,loser) {
 				// Kill Listeners
 				obj.removeEventListener('click', chooseListener);
 				if(objType === 'unit') {
-					obj.remove();
+					buoy.addClass(obj,'toDeck');
+					window.setTimeout({ obj.remove(); },600);
 				} else {
 					clearCombo(obj);
 				}
@@ -1196,6 +1199,7 @@ function resetField(points,loser) {
 
 		// Loser gets to save one
 		if (loser) {
+			buoy.addClass( document.querySelector('.hand'), 'disable');
 			if (document.querySelectorAll('.player .unit').length > 1) notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck");
 
 			// Choose unit
@@ -1402,6 +1406,11 @@ function swapThree(dontdoit) {
 
  // Swaps player's turn
 function endTurnListener(e) {
+	// Check slot limits
+	if (document.querySelectorAll('.player .formation .unit').length > 4) {
+		buoy.addClass(document.querySelector('.hand'),'noUnit');
+	} else { buoy.removeClass(document.querySelector('.hand'),'noUnit'); }
+	
 	var endTurn = document.querySelector('.turn');
 	if (myTurn){
 		// If it is your turn, disable buttons and turn

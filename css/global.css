@@ -589,7 +589,9 @@ footer {
 }
 
 .game .field .player:not(.myturn) .card img,
-.game .field .player.myturn + .opponent .card img {
+.game .field .player:not(.myturn) .unit img,
+.game .field .player.myturn + .opponent .card img,
+.game .field .player.myturn + .opponent .unit img {
   opacity: 0.5;
 }
 
@@ -604,6 +606,7 @@ footer {
 }
 
 .game .field .player:not(.myturn) + .opponent:after {
+  background: #666;
   content: "Their Turn";
   right: auto;
   left: 20px;
@@ -1130,6 +1133,12 @@ footer {
   pointer-events: none;
 }
 
+.game .unit.toDeck {
+  -webkit-transform: scale(0.5) translate(-60%, 100%) rotateY(0);
+  -ms-transform: scale(0.5) translate(-60%, 100%) rotateY(0);
+  transform: scale(0.5) translate(-60%, 100%) rotateY(0);
+}
+
 .game .player .unit {
   -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
   -ms-transform: scale(0.8) translateX(-60%) rotateY(15deg);
@@ -1423,7 +1432,7 @@ button {
   top: 10px;
   left: 10%;
   width: 80%;
-  z-index: 99;
+  z-index: 100;
 }
 
 .notify {
@@ -1432,7 +1441,7 @@ button {
   background: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   font-size: 24px;
-  line-height: 80px;
+  line-height: 70px;
   pointer-events: none;
   text-align: center;
   z-index: 99;
