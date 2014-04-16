@@ -183,8 +183,8 @@ document.addEventListener('DOMContentLoaded', function(){
 			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
-			if ( document.querySelector('.hand .card') ) {
-				[].forEach.call(document.querySelector('.hand .card'), function(card) {
+			if ( document.querySelector('.card') ) {
+				[].forEach.call(document.querySelector('.card'), function(card) {
 					card.remove();
 				});
 			}

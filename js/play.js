@@ -58,7 +58,7 @@ var cardType = {
 		'patrol' : { 'atk' : 0, 'def' : 4, 'sup' : 2, 'canuse' : ['grd','air','grd']},
 		'acover' : { 'special' : true, 'sup' : 0, 'canuse' : ['air','as','air']},
 		'column' : { 'atk' : 2, 'def' : 2, 'sup' : 1, 'canuse' : ['arm','arm','arm']},
-		'bigguns' : { 'special' : true, 'sup' : 1, 'canuse' : ['inf','arm','lr']},
+		'bigguns' : { 'special' : true, 'sup' : 2, 'canuse' : ['inf','arm','lr']},
 		'evasion' : { 'atk' : 0, 'def' : 3,'sup' : 1, 'canuse' : ['air','air','air']},
 		'tstrike' : { 'special' : true, 'sup' : 1, 'canuse' : ['inf','lr','air']}
 	},
@@ -126,8 +126,8 @@ function playInit(connection, deck, atkr,p) {
 		// Only possible to end round on your turn
 		if (myTurn) {
 			var points;
-			var mine = document.querySelectorAll('.player .unit').length;
-			var his = document.querySelectorAll('.player .unit').length;
+			var mine = document.querySelectorAll('.player .formation .unit').length;
+			var his = document.querySelectorAll('.player .formation .unit').length;
 
 			// Need a better check if you JUST started your turn or not
 			if ( mine <= 3 ) {
@@ -589,7 +589,7 @@ function playListener(e) {
 			'who'   : 'origin',
 			'action': 'play'
 		});
-	} else {
+	} else if (!myTurn && canAfford(e.target) ) {
 		notify('red', 'Not Your Turn');
 	}
 }
@@ -690,6 +690,9 @@ function unitCalc(who) {
 		}
 
 		unitTraits.push(cardType.unit[el.getAttribute('data-type')].trait);
+	});
+
+	[].forEach.call(document.querySelectorAll('.'+who+' .formation .unit'), function(el) {
 		// Add supply cost
 		currentSupUse += parseInt(cardType.unit[el.getAttribute('data-type')].sup);
 	});
@@ -761,7 +764,7 @@ function comboCard(unit,card,who) {
 		// Special combo color slots
 		if (card.type==='support') buoy.addClass(slot,'sup');
 		if (card.type==='sniper' || card.type==='tstrike') buoy.addClass(slot,'atk');
-		if (card.type==='intel' || card.type==='stealth') { 
+		if (card.type==='intel' || card.type==='stealth' || card.type==='bigguns') { 
 			buoy.addClass(slot,'atk'); 
 			buoy.addClass(slot,'def'); 
 		}
@@ -776,7 +779,7 @@ function comboCard(unit,card,who) {
 }
 
 function specialCombo(card,who,v) {
-	function extraUnit(u) {
+	function extraUnit(u,who) {
 		// Add .unit inf (with li?) to support combos
 		var extra;
 		if (!document.querySelector('.'+who+' ul.extra')) {
@@ -799,11 +802,10 @@ function specialCombo(card,who,v) {
 		img.setAttribute('src','images/cards/unit_'+u+'.png');
 
 		addUnit(unit,who,u);
-
 		unitCalc('opponent');
 		unitCalc('player');
 
-		forceEndCheck(who);
+		if (who==='player') forceEndCheck(who);
 	}
 
 	function snipe(e) {
@@ -834,7 +836,7 @@ function specialCombo(card,who,v) {
 		});
 	}
 
-	console.log('Special Combo!');
+	console.log('Special Combo! Played by: '+who);
 	switch (card.type) {
 		// One Star Combos
 		case "support":
@@ -862,7 +864,7 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
-				forceEndCheck(who);
+				//forceEndCheck(who);
 			}
 			break;
 		case "retreat":
@@ -1035,7 +1037,7 @@ function specialCombo(card,who,v) {
 			}
 			break;
 		case "stealth":
-			extraUnit('infantry');
+			extraUnit('infantry',who);
 			break;
 		// 3 Star Combo
 		case "barrier":
@@ -1045,7 +1047,7 @@ function specialCombo(card,who,v) {
 			// Might need to rework this card to just extra def...
 			break;
 		case "bigguns":
-			extraUnit('tank');
+			extraUnit('tank',who);
 			break;
 		case "tstrike":
 			// Add listener to kill
@@ -1066,7 +1068,7 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
-				forceEndCheck(who);
+				//forceEndCheck(who);
 			}
 			break;
 	}
@@ -1451,8 +1453,8 @@ function endTurnListener(e) {
 
 // Check if match/surpass, if so play 1 more card (or auto end turn if already played)
 function forceEndCheck(who) {
-	if (myTurn) {
-		window.setTimeout( function(){
+	window.setTimeout( function(){
+		if (myTurn) {
 			console.log('Checking if end needs to be force...');
 			console.log('Player ATK/DEF: '+document.querySelector('.player .atk').textContent+'/'+document.querySelector('.player .def').textContent);
 			console.log('Opponent ATK/DEF: '+document.querySelector('.opponent .atk').textContent+'/'+document.querySelector('.opponent .def').textContent);
@@ -1476,8 +1478,8 @@ function forceEndCheck(who) {
 			} else if (forceEnd>1) { 
 				endTurnListener(); 
 			} 
-		}, 350);
-	}
+		}
+	}, 350);
 }
 
 function endGame(who) {
