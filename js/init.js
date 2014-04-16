@@ -325,10 +325,23 @@ document.addEventListener('DOMContentLoaded', function(){
 		if ( buoy.hasClass(document.querySelector('.game'), 'tut') ) {
 			endTut();
 		} else {
+			document.querySelector('.player .atk').textContent = '0';
+			document.querySelector('.player .def').textContent = '0';
+			document.querySelector('.player .sup').textContent = '0';
+
+			document.querySelector('.opponent .atk').textContent = '0';
+			document.querySelector('.opponent .def').textContent = '0';
+			document.querySelector('.opponent .sup').textContent = '0';
+
 			peer.destroy();
 			if (buoy.hasClass(m.parentNode,'active')) buoy.removeClass(m.parentNode,'active');
 			buoy.removeClass(game,'active');
 			m.innerHTML = '';
+			if ( document.querySelector('.hand .card') ) {
+				[].forEach.call(document.querySelector('.hand .card'), function(card) {
+					card.remove();
+				});
+			}
 		}
 	});
 
@@ -363,6 +376,11 @@ document.addEventListener('DOMContentLoaded', function(){
 					buoy.addClass(document.querySelector('.player'),'myturn');
 					notify('green', 'Your Turn');
 
+					// Check slot limits
+					if (document.querySelectorAll('.player .formation .unit').length > 4) {
+						buoy.addClass(document.querySelector('.hand'),'noUnit');
+					} else { buoy.removeClass(document.querySelector('.hand'),'noUnit'); }
+
 					document.querySelector('.end').removeAttribute('disabled');
 					buoy.removeClass(document.querySelector('.hand'),'disable'); 
 					swapThree(v);
@@ -378,7 +396,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					specialCombo(msg.card, msg.who, v);
 					break;
 				case 'notify':
-					notify(msg.type, msg.msg);
+					var v = (msg['var']) ? msg['var'] : false;
+					notify(msg.type, msg.msg, v);
 					break;
 				case 'win' :
 					var a = parseInt(document.querySelector('.player .atk').textContent);

@@ -12,8 +12,12 @@ Flexbox and WebRTC DataChannels, so for now browser support is limited to:
 - Latest Chrome
 - Latest Opera
 
+You *can* play the tutorial in IE10+ or Safari though.
+
 ### Basic Rules
 
 Opponents face off against one another with their decks. One is attacker, the other 
-defender. They alternate playing cards, trying to have the stronger squad on field. Full rules 
+defender. They alternate playing cards, trying to have the stronger squad on field for each
+round they play. You play as many rounds as needed until one of the players either gets 6 points (win) or
+runs out of supply cards (loses). Full rules 
 are available [here](https://docs.google.com/document/d/1_F8nJnIw4iQ41A3Ck53LpAcom_8wTxXLTzWX6hG-8XA/edit?usp=sharing).

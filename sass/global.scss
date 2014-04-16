@@ -127,7 +127,7 @@ button { outline: none; }
 	position: fixed;
 	top: 10px; left: 10%;
 	width: 80%;
-	z-index: 99;
+	z-index: 100;
 }
 
 .notify {
@@ -135,9 +135,10 @@ button { outline: none; }
 	background: rgba(255,255,255,0.7);
 	border-radius: 10px;
 	font-size: 24px;
-	line-height: 80px;
+	line-height: 70px;
 	pointer-events: none;
 	text-align: center;
+	transition: all 0.4s;
 	z-index: 99;
 
 	&:not(:last-child) { margin-bottom: 10px; }
@@ -149,6 +150,21 @@ button { outline: none; }
 	&.purple { background: transparentize(#8B41E4,0.2); }
 	
 	&.grd, &.air, &.u { background: transparentize(#89D748,0.2); }
+	&.sticky { 
+		animation: bubbleSticky 4s ease forwards; 
+		overflow: hidden;
+
+		&:before { 
+			content: '❗'; color: rgba(0,0,0,0.4); 
+			margin-right: 20px;
+			//position: absolute; 
+			//top: 0; left: 20px;
+		}
+	}
+	&.un.sticky { 
+		animation: none; opacity: 0; 
+		max-height: 0; transform: translateY(-25%); 
+	}
 	//&.air { background: transparentize(#59C5E4,0.2); }
 
 	img { height: 70px; margin-right: 10px; vertical-align: middle; }
@@ -206,4 +222,9 @@ button.menu {
 @keyframes bubble {
 	0%, 100% { opacity: 0; max-height: 0; transform: translateY(-15%); }
 	10%, 95% { opacity: 1; max-height: 150px; transform: translateY(0%); }
+}
+
+@keyframes bubbleSticky {
+	0% { opacity: 0; max-height: 0; transform: translateY(-15%); }
+	10% { opacity: 1; max-height: 150px; transform: translateY(0%); }
 }
