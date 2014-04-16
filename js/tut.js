@@ -547,35 +547,5 @@ function finalPlay6() {
 	bubbleP.innerHTML = "Nice job! That wraps up the tutorial. Good luck on the battlefield soldier! Feel free to report any bugs you find ingame on <a href='https://github.com/mastastealth/dwo/issues'>Github</a> \
 	or tweet them to <a href='http://twitter.com/brianfranco'>@brianfranco</a>, thanks!";
 	bubbleBtn.textContent = "Finish";
-	bubbleBtn.setAttribute('onclick','endTut()');
-}
-
-function endTut() {
-	// Reset Stats
-	document.querySelector('.player .atk').textContent = '0';
-	document.querySelector('.player .def').textContent = '0';
-	document.querySelector('.player .sup').textContent = '0';
-
-	document.querySelector('.opponent .atk').textContent = '0';
-	document.querySelector('.opponent .def').textContent = '0';
-	document.querySelector('.opponent .sup').textContent = '0';
-
-	buoy.removeClass(document.querySelector('.game'), 'active');
-	buoy.removeClass(document.querySelector('.game'), 'tut');
-	buoy.removeClass(document.querySelector('.player'), 'myturn');
-
-	if ( document.querySelector('.combo') ) {
-		document.querySelector('.combo img').remove();
-		document.querySelector('.combo').setAttribute('class','');
-	}
-
-	document.querySelector('.commander').remove();
-	document.querySelector('.bubble').remove();
-	buoy.removeClass(document.querySelector('.attacker'), 'attacker');
-
-	if ( document.querySelector('.card') ) {
-		[].forEach.call(document.querySelectorAll('.card'), function(card) {
-			card.remove();
-		});
-	}
+	bubbleBtn.setAttribute('onclick','wipeGame()');
 }

@@ -254,7 +254,7 @@ function playCard(card,who) {
 				unitCalc('opponent');
 				unitCalc('player');
 
-				forceEndCheck(who);
+				if (who === 'player') forceEndCheck(who);
 
 				if (who != 'player') notify('purple', "<img src='images/cards/co_"+card.type+".png'> Commander was played");
 			}
@@ -385,7 +385,7 @@ function playCard(card,who) {
 			unitCalc('opponent');
 			unitCalc('player');
 
-			forceEndCheck(who);
+			if (who === 'player') forceEndCheck(who);
 
 			if (who != 'player') notify('yellow', "<img src='images/cards/supply.png'> Supply was played");
 		}
@@ -638,7 +638,7 @@ function unitCard(newUnit,card,who,id) {
 	unitCalc('opponent');
 	unitCalc('player');
 
-	forceEndCheck(who);
+	if (who === 'player') forceEndCheck(who);
 
 	if (who!="player") notify(cardType.unit[card.type].trait[0], "<img src='images/cards/unit_"+card.type+".png'> Unit was played");
 }
@@ -773,7 +773,7 @@ function comboCard(unit,card,who) {
 		unitCalc('player');
 	}
 
-	forceEndCheck(who);
+	if (who === 'player') forceEndCheck(who);
 
 	if (who!='player' && !cardType.combo[card.type].special) notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }
@@ -1499,4 +1499,53 @@ function endGame(who) {
 	m.querySelector('button').addEventListener( 'click', function() {
 		peer.destroy();
 	});
+}
+
+function wipeGame() {
+	// Reset Stats
+	document.querySelector('.player .atk').textContent = '0';
+	document.querySelector('.player .def').textContent = '0';
+	document.querySelector('.player .sup').textContent = '0';
+
+	document.querySelector('.opponent .atk').textContent = '0';
+	document.querySelector('.opponent .def').textContent = '0';
+	document.querySelector('.opponent .sup').textContent = '0';
+
+	[].forEach.call(document.querySelectorAll('span[data-unit]'), function(span) {
+		span.setAttribute('data-unit', 0);
+	});
+
+	[].forEach.call(document.querySelectorAll('span[data-bonus]'), function(span) {
+		span.setAttribute('data-bonus', 0);
+	});
+
+	[].forEach.call(document.querySelectorAll('span[data-sup]'), function(span) {
+		span.setAttribute('data-sup', 0);
+	});
+
+	[].forEach.call(document.querySelectorAll('span[data-supuse]'), function(span) {
+		span.setAttribute('data-supuse', 0);
+	});
+
+	// Clear game variables
+	document.querySelector('.game').setAttribute('class', 'game');
+	document.querySelector('.player').setAttribute('class', 'player');
+	document.querySelector('.opponent').setAttribute('class', 'opponent');
+
+	// Remove units, cards, combos, etc.
+	[].forEach.call(document.querySelectorAll('.card'), function(card) {
+		card.remove();
+	});
+
+	[].forEach.call(document.querySelectorAll('.unit'), function(unit) {
+		unit.remove();
+	});
+
+	[].forEach.call(document.querySelectorAll('.combo'), function(slot) {
+		slot.setAttribute('class','');
+		slot.querySelector('img').remove();
+	});
+
+	if (document.querySelector('.commander')) document.querySelector('.commander').remove();
+	if (document.querySelector('.sticky')) document.querySelector('.sticky').remove();
 }
