@@ -562,12 +562,51 @@ footer {
   overflow: hidden;
   padding-top: 50px;
   position: relative;
+  -webkit-transition: background 0.3s;
+  transition: background 0.3s;
   width: 50%;
+}
+
+.game .field aside:after {
+  background: #3D9970;
+  border-radius: 4px;
+  color: white;
+  content: '';
+  display: inline-block;
+  font-size: 12px;
+  line-height: 30px;
+  padding: 0 5px;
+  position: absolute;
+  opacity: 0;
+  text-align: center;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
 }
 
 .game .field .player:not(.myturn),
 .game .field .player.myturn + .opponent {
-  background: rgba(210, 180, 140, 0.85);
+  background: rgba(210, 180, 140, 0.75);
+}
+
+.game .field .player:not(.myturn) .card img,
+.game .field .player.myturn + .opponent .card img {
+  opacity: 0.5;
+}
+
+.game .field .player.myturn:after,
+.game .field .player:not(.myturn) + .opponent:after {
+  -webkit-animation: statPulse 1s alternate infinite;
+  animation: statPulse 1s alternate infinite;
+  content: 'Your Turn';
+  opacity: 0.8;
+  top: 50px;
+  right: 20px;
+}
+
+.game .field .player:not(.myturn) + .opponent:after {
+  content: "Their Turn";
+  right: auto;
+  left: 20px;
 }
 
 .game .field aside:first-child {
@@ -692,7 +731,7 @@ footer {
 
 .game .field aside.attacker h1 .atk,
 .game .field aside:not(.attacker) h1 .def {
-  animation: statPulse 2s alternate infinite;
+  animation: statPulse 1s alternate infinite;
   -webkit-animation: none;
   border-radius: 0;
   margin: 0 5px;
@@ -724,7 +763,8 @@ footer {
   background-repeat: no-repeat;
   -webkit-background-size: contain;
   background-size: contain;
-  height: 400px;
+  height: 350px;
+  pointer-events: none;
   position: absolute;
   bottom: 0;
   width: 220px;
@@ -732,10 +772,14 @@ footer {
 }
 
 .game .field .player .commander {
+  -webkit-animation: slideInLeft 1s ease forwards;
+  animation: slideInLeft 1s ease forwards;
   left: 0;
 }
 
 .game .field .opponent .commander {
+  -webkit-animation: slideInRight 1s ease forwards;
+  animation: slideInRight 1s ease forwards;
   right: 0;
   -webkit-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
@@ -804,6 +848,8 @@ footer {
 }
 
 .game li.active {
+  -webkit-animation: borderPulse 0.5s infinite alternate;
+  animation: borderPulse 0.5s infinite alternate;
   background: rgba(0, 128, 0, 0.4);
   border-color: green;
   cursor: pointer;
@@ -844,8 +890,8 @@ footer {
 }
 
 .game li.combo.active {
-  -webkit-animation: borderPulse 0.5s infinite alternate;
-  animation: borderPulse 0.5s infinite alternate;
+  -webkit-box-shadow: 0 0 6px green;
+  box-shadow: 0 0 6px green;
   opacity: 1;
 }
 
@@ -1147,6 +1193,58 @@ footer {
     -webkit-transform: scale(1.5);
     -ms-transform: scale(1.5);
     transform: scale(1.5);
+  }
+}
+
+@-webkit-keyframes slideInLeft {
+  from {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+
+  to {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    -webkit-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+
+  to {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+@-webkit-keyframes slideInRight {
+  from {
+    -webkit-transform: translateX(100%) rotateY(180deg);
+    transform: translateX(100%) rotateY(180deg);
+  }
+
+  to {
+    -webkit-transform: translateX(0) rotateY(180deg);
+    transform: translateX(0) rotateY(180deg);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    -webkit-transform: translateX(100%) rotateY(180deg);
+    -ms-transform: translateX(100%) rotateY(180deg);
+    transform: translateX(100%) rotateY(180deg);
+  }
+
+  to {
+    -webkit-transform: translateX(0) rotateY(180deg);
+    -ms-transform: translateX(0) rotateY(180deg);
+    transform: translateX(0) rotateY(180deg);
   }
 }
 

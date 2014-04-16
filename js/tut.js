@@ -552,9 +552,24 @@ function finalPlay6() {
 }
 
 function endTut() {
+	// Reset Stats
+	document.querySelector('.player .atk').textContent = '0';
+	document.querySelector('.player .def').textContent = '0';
+	document.querySelector('.player .sup').textContent = '0';
+
+	document.querySelector('.opponent .atk').textContent = '0';
+	document.querySelector('.opponent .def').textContent = '0';
+	document.querySelector('.opponent .sup').textContent = '0';
+
 	buoy.removeClass(document.querySelector('.game'), 'active');
 	buoy.removeClass(document.querySelector('.game'), 'tut');
 	buoy.removeClass(document.querySelector('.player'), 'myturn');
 	document.querySelector('.commander').remove();
 	document.querySelector('.bubble').remove();
+
+	if ( document.querySelector('.hand .card') ) {
+		[].forEach.call(document.querySelector('.hand .card'), function(card) {
+			card.remove();
+		});
+	}
 }
