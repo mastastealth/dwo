@@ -565,6 +565,29 @@ footer {
   width: 50%;
 }
 
+.game .field aside:after {
+  background: #3D9970;
+  border-radius: 4px;
+  color: white;
+  content: '';
+  display: inline-block;
+  font-size: 12px;
+  line-height: 30px;
+  padding: 0 5px;
+  position: absolute;
+  opacity: 0;
+  text-align: center;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+
+.game .field aside li:first-child:nth-last-child(5),
+.game .field aside li:last-child:nth-child(5),
+.game .field aside li:first-child:nth-last-child(6),
+.game .field aside li:last-child:nth-child(6) {
+  border-color: rgba(178, 132, 70, 0.4);
+}
+
 .game .field .player:not(.myturn),
 .game .field .player.myturn + .opponent {
   background: rgba(210, 180, 140, 0.85);
@@ -575,7 +598,8 @@ footer {
   float: left;
 }
 
-.game .field aside:first-child li:nth-child(3) {
+.game .field aside:first-child li:nth-child(3),
+.game .field aside:first-child li:nth-child(4):nth-last-child(3) {
   -webkit-transform: translateX(80px) scale(0.9);
   -ms-transform: translateX(80px) scale(0.9);
   transform: translateX(80px) scale(0.9);
@@ -593,7 +617,8 @@ footer {
   float: right;
 }
 
-.game .field aside:last-child li:nth-child(3) {
+.game .field aside:last-child li:nth-child(3),
+.game .field aside:last-child li:nth-child(4):nth-last-child(3) {
   -webkit-transform: translateX(-80px) scale(0.9);
   -ms-transform: translateX(-80px) scale(0.9);
   transform: translateX(-80px) scale(0.9);
@@ -1370,6 +1395,32 @@ button {
   background: rgba(137, 215, 72, 0.8);
 }
 
+<<<<<<< HEAD
+=======
+.notify.sticky {
+  -webkit-animation: bubbleSticky 4s ease forwards;
+  animation: bubbleSticky 4s ease forwards;
+  overflow: hidden;
+}
+
+.notify.sticky:before {
+  content: '❗';
+  color: rgba(0, 0, 0, 0.4);
+  margin-right: 20px;
+}
+
+.notify.un.sticky {
+  -webkit-animation: none;
+  animation: none;
+  opacity: 0;
+  overflow: hidden;
+  max-height: 0;
+  -webkit-transform: translateY(-25%);
+  -ms-transform: translateY(-25%);
+  transform: translateY(-25%);
+}
+
+>>>>>>> master
 .notify img {
   height: 70px;
   margin-right: 10px;

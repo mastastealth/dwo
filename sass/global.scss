@@ -162,7 +162,7 @@ button { outline: none; }
 		}
 	}
 	&.un.sticky { 
-		animation: none; opacity: 0; 
+		animation: none; opacity: 0; overflow: hidden;
 		max-height: 0; transform: translateY(-25%); 
 	}
 	//&.air { background: transparentize(#59C5E4,0.2); }
