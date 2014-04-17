@@ -1573,4 +1573,5 @@ function wipeGame() {
 
 	if (document.querySelector('.commander')) document.querySelector('.commander').remove();
 	if (document.querySelector('.sticky')) document.querySelector('.sticky').remove();
+	if (document.querySelector('.bubble')) document.querySelector('.bubble').remove();
 }
