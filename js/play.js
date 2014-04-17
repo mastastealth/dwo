@@ -602,7 +602,7 @@ function playListener(e) {
 			'who'   : 'origin',
 			'action': 'play'
 		});
-	} else if (!myTurn && canAfford(e.target) ) {
+	} else if (!myTurn) {
 		notify('red', 'Not Your Turn');
 	}
 }

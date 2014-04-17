@@ -207,6 +207,60 @@
 			}
 	}
 
+	&:not(.tut) .hand {
+		padding-left: 160px;
+
+		&:before {
+			background: url(../images/cards/back.png) no-repeat;
+			background-size: cover;
+			box-shadow: 
+				0 3px 0 rgba(0,0,0,0.2), 
+				0 6px 0 rgba(0,0,0,0.2), 
+				0 9px 0 rgba(0,0,0,0.2),
+				0 12px 3px rgba(0,0,0,0.2);
+			content: '';
+			display: block;
+			height: 190px;
+			position: absolute;
+			transition: all 0.3s;
+			top: 5px; left: 5px;
+			width: 140px;
+		}
+
+		&:after {
+			background: #C5EBA3;
+			border-radius: 10px;
+			color: black;
+			content: attr(data-count);
+			font-size: 20px;
+			line-height: 30px;
+			padding: 0 10px; 
+			text-shadow: none;
+			position: absolute;
+			top: 15px; left: 115px;
+		}
+
+		&.low.er.est:before {
+			box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+			transform: translateY(9px);
+		}
+
+		&.low.er:before {
+			box-shadow: 
+				0 3px 0 rgba(0,0,0,0.2), 
+				0 6px 3px rgba(0,0,0,0.2);
+			transform: translateY(6px);
+		}
+
+		&.low:before {
+			box-shadow: 
+				0 3px 0 rgba(0,0,0,0.2), 
+				0 6px 0 rgba(0,0,0,0.2), 
+				0 9px 3px rgba(0,0,0,0.2);
+			transform: translateY(3px);
+		}
+	}
+
 	.formation {
 		//align-items: center;
 		align-content: stretch;
@@ -356,59 +410,8 @@
 
 	.hand {
 		height: 30%;
-		padding-left: 160px;
 		position: relative;
 		z-index: 2;
-
-		&:before {
-			background: url(../images/cards/back.png) no-repeat;
-			background-size: cover;
-			box-shadow: 
-				0 3px 0 rgba(0,0,0,0.2), 
-				0 6px 0 rgba(0,0,0,0.2), 
-				0 9px 0 rgba(0,0,0,0.2),
-				0 12px 3px rgba(0,0,0,0.2);
-			content: '';
-			display: block;
-			height: 190px;
-			position: absolute;
-			transition: all 0.3s;
-			top: 5px; left: 5px;
-			width: 140px;
-		}
-
-		&:after {
-			background: #C5EBA3;
-			border-radius: 10px;
-			color: black;
-			content: attr(data-count);
-			font-size: 20px;
-			line-height: 30px;
-			padding: 0 10px; 
-			text-shadow: none;
-			position: absolute;
-			top: 15px; left: 115px;
-		}
-
-		&.low.er.est:before {
-			box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-			transform: translateY(9px);
-		}
-
-		&.low.er:before {
-			box-shadow: 
-				0 3px 0 rgba(0,0,0,0.2), 
-				0 6px 3px rgba(0,0,0,0.2);
-			transform: translateY(6px);
-		}
-
-		&.low:before {
-			box-shadow: 
-				0 3px 0 rgba(0,0,0,0.2), 
-				0 6px 0 rgba(0,0,0,0.2), 
-				0 9px 3px rgba(0,0,0,0.2);
-			transform: translateY(3px);
-		}
 
 		&.disable .card, &.noUnit .card[data-isunit] { opacity: 0.5;}
 
@@ -453,6 +456,7 @@
 		}
 	}
 
+	
 	.unit {
 		background: #333;
 		border-radius: 0;

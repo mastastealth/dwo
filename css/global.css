@@ -800,6 +800,65 @@ footer {
   transform: rotateY(180deg);
 }
 
+.game:not(.tut) .hand {
+  padding-left: 160px;
+}
+
+.game:not(.tut) .hand:before {
+  background: url(../images/cards/back.png) no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
+  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 0 rgba(0, 0, 0, 0.2), 0 12px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 0 rgba(0, 0, 0, 0.2), 0 12px 3px rgba(0, 0, 0, 0.2);
+  content: '';
+  display: block;
+  height: 190px;
+  position: absolute;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  top: 5px;
+  left: 5px;
+  width: 140px;
+}
+
+.game:not(.tut) .hand:after {
+  background: #C5EBA3;
+  border-radius: 10px;
+  color: black;
+  content: attr(data-count);
+  font-size: 20px;
+  line-height: 30px;
+  padding: 0 10px;
+  text-shadow: none;
+  position: absolute;
+  top: 15px;
+  left: 115px;
+}
+
+.game:not(.tut) .hand.low.er.est:before {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  -webkit-transform: translateY(9px);
+  -ms-transform: translateY(9px);
+  transform: translateY(9px);
+}
+
+.game:not(.tut) .hand.low.er:before {
+  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
+  -webkit-transform: translateY(6px);
+  -ms-transform: translateY(6px);
+  transform: translateY(6px);
+}
+
+.game:not(.tut) .hand.low:before {
+  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
+  -webkit-transform: translateY(3px);
+  -ms-transform: translateY(3px);
+  transform: translateY(3px);
+}
+
 .game .formation {
   -webkit-align-content: stretch;
   -ms-flex-line-pack: stretch;
@@ -1030,64 +1089,8 @@ footer {
 
 .game .hand {
   height: 30%;
-  padding-left: 160px;
   position: relative;
   z-index: 2;
-}
-
-.game .hand:before {
-  background: url(../images/cards/back.png) no-repeat;
-  -webkit-background-size: cover;
-  background-size: cover;
-  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 0 rgba(0, 0, 0, 0.2), 0 12px 3px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 0 rgba(0, 0, 0, 0.2), 0 12px 3px rgba(0, 0, 0, 0.2);
-  content: '';
-  display: block;
-  height: 190px;
-  position: absolute;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  top: 5px;
-  left: 5px;
-  width: 140px;
-}
-
-.game .hand:after {
-  background: #C5EBA3;
-  border-radius: 10px;
-  color: black;
-  content: attr(data-count);
-  font-size: 20px;
-  line-height: 30px;
-  padding: 0 10px;
-  text-shadow: none;
-  position: absolute;
-  top: 15px;
-  left: 115px;
-}
-
-.game .hand.low.er.est:before {
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  -webkit-transform: translateY(9px);
-  -ms-transform: translateY(9px);
-  transform: translateY(9px);
-}
-
-.game .hand.low.er:before {
-  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
-  -webkit-transform: translateY(6px);
-  -ms-transform: translateY(6px);
-  transform: translateY(6px);
-}
-
-.game .hand.low:before {
-  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
-  -webkit-transform: translateY(3px);
-  -ms-transform: translateY(3px);
-  transform: translateY(3px);
 }
 
 .game .hand.disable .card,
