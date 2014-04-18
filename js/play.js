@@ -549,12 +549,14 @@ function drawCardConfirmed(card,time) {
 		window.setTimeout( function() { buoy.removeClass(newcard, 'new'); },300);
 		// Deck Graphic
 		var hand = document.querySelector('.hand');
-		hand.setAttribute('data-count',playerDeck.length);
-		if (playerDeck.length>32 && playerDeck.length<49 && !buoy.hasClass(hand,'low') ) {
-			buoy.addClass(hand,'low');
-		} else if (playerDeck.length>16 && playerDeck.length<33 && !buoy.hasClass(hand,'er')) {
-			buoy.addClass(hand,'er')
-		} else if (playerDeck.length<17 && !buoy.hasClass(hand,'est') ) { buoy.addClass(hand,'est') }
+		if (playerDeck) {
+			hand.setAttribute('data-count',playerDeck.length);
+			if (playerDeck.length>32 && playerDeck.length<49 && !buoy.hasClass(hand,'low') ) {
+				buoy.addClass(hand,'low');
+			} else if (playerDeck.length>16 && playerDeck.length<33 && !buoy.hasClass(hand,'er')) {
+				buoy.addClass(hand,'er')
+			} else if (playerDeck.length<17 && !buoy.hasClass(hand,'est') ) { buoy.addClass(hand,'est') }
+		}
 
 		newcard.cardProps = card;
 		newcard.setAttribute('id', card.id);
@@ -602,7 +604,7 @@ function playListener(e) {
 			'who'   : 'origin',
 			'action': 'play'
 		});
-	} else if (!myTurn && canAfford(e.target) ) {
+	} else if (!myTurn && !buoy.hasClass(document.querySelector('.game'),'tut')) {
 		notify('red', 'Not Your Turn');
 	}
 }
@@ -1165,7 +1167,7 @@ function notify(type, msg, sticky) {
 	buoy.addClass(bubble, 'notify');
 	buoy.addClass(bubble, type);
 
-	if (!sticky) { window.setTimeout( function() { bubble.remove(); }, 5000); }
+	if (!sticky) { window.setTimeout( function() { bubble.remove(); }, 4200); }
 	else { buoy.addClass(bubble, 'sticky'); }
 }
 
@@ -1573,4 +1575,5 @@ function wipeGame() {
 
 	if (document.querySelector('.commander')) document.querySelector('.commander').remove();
 	if (document.querySelector('.sticky')) document.querySelector('.sticky').remove();
+	if (document.querySelector('.bubble')) document.querySelector('.bubble').remove();
 }
