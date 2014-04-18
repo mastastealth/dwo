@@ -207,7 +207,7 @@
 			}
 	}
 
-	&:not(.tut) .hand {
+	&:not(.tut) .hand, &.tut.showDeck .hand {
 		padding-left: 160px;
 
 		&:before {

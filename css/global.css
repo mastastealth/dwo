@@ -800,11 +800,13 @@ footer {
   transform: rotateY(180deg);
 }
 
-.game:not(.tut) .hand {
+.game:not(.tut) .hand,
+.game.tut.showDeck .hand {
   padding-left: 160px;
 }
 
-.game:not(.tut) .hand:before {
+.game:not(.tut) .hand:before,
+.game.tut.showDeck .hand:before {
   background: url(../images/cards/back.png) no-repeat;
   -webkit-background-size: cover;
   background-size: cover;
@@ -821,7 +823,8 @@ footer {
   width: 140px;
 }
 
-.game:not(.tut) .hand:after {
+.game:not(.tut) .hand:after,
+.game.tut.showDeck .hand:after {
   background: #C5EBA3;
   border-radius: 10px;
   color: black;
@@ -835,7 +838,8 @@ footer {
   left: 115px;
 }
 
-.game:not(.tut) .hand.low.er.est:before {
+.game:not(.tut) .hand.low.er.est:before,
+.game.tut.showDeck .hand.low.er.est:before {
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   -webkit-transform: translateY(9px);
@@ -843,7 +847,8 @@ footer {
   transform: translateY(9px);
 }
 
-.game:not(.tut) .hand.low.er:before {
+.game:not(.tut) .hand.low.er:before,
+.game.tut.showDeck .hand.low.er:before {
   -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
   -webkit-transform: translateY(6px);
@@ -851,7 +856,8 @@ footer {
   transform: translateY(6px);
 }
 
-.game:not(.tut) .hand.low:before {
+.game:not(.tut) .hand.low:before,
+.game.tut.showDeck .hand.low:before {
   -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
   -webkit-transform: translateY(3px);
@@ -1513,6 +1519,8 @@ button {
   border-radius: 10px;
   font-size: 24px;
   line-height: 70px;
+  max-height: 70px;
+  overflow: hidden;
   pointer-events: none;
   text-align: center;
   -webkit-transition: all 0.4s;
@@ -1553,7 +1561,6 @@ button {
 .notify.sticky {
   -webkit-animation: bubbleSticky 4s ease forwards;
   animation: bubbleSticky 4s ease forwards;
-  overflow: hidden;
 }
 
 .notify.sticky:before {
@@ -1566,7 +1573,6 @@ button {
   -webkit-animation: none;
   animation: none;
   opacity: 0;
-  overflow: hidden;
   max-height: 0;
   -webkit-transform: translateY(-25%);
   -ms-transform: translateY(-25%);
@@ -1574,7 +1580,7 @@ button {
 }
 
 .notify img {
-  height: 70px;
+  height: 60px;
   margin-right: 10px;
   vertical-align: middle;
 }
@@ -1585,6 +1591,7 @@ button {
   background: rgba(255, 255, 255, 0.85);
   font-size: 18px;
   line-height: 160%;
+  max-height: 200px;
   min-height: 40px;
   padding: 10px 90px 10px 10px;
   pointer-events: all;

@@ -136,6 +136,8 @@ button { outline: none; }
 	border-radius: 10px;
 	font-size: 24px;
 	line-height: 70px;
+	max-height: 70px;
+	overflow: hidden;
 	pointer-events: none;
 	text-align: center;
 	transition: all 0.4s;
@@ -152,7 +154,7 @@ button { outline: none; }
 	&.grd, &.air, &.u { background: transparentize(#89D748,0.2); }
 	&.sticky { 
 		animation: bubbleSticky 4s ease forwards; 
-		overflow: hidden;
+		
 
 		&:before { 
 			content: '❗'; color: rgba(0,0,0,0.4); 
@@ -162,18 +164,19 @@ button { outline: none; }
 		}
 	}
 	&.un.sticky { 
-		animation: none; opacity: 0; overflow: hidden;
+		animation: none; opacity: 0;
 		max-height: 0; transform: translateY(-25%); 
 	}
 	//&.air { background: transparentize(#59C5E4,0.2); }
 
-	img { height: 70px; margin-right: 10px; vertical-align: middle; }
+	img { height: 60px; margin-right: 10px; vertical-align: middle; }
 
 	&.bubble {
 		animation: none;
 		background: rgba(255,255,255,0.85);
 		font-size: 18px;
 		line-height: 160%;
+		max-height: 200px;
 		min-height: 40px;
 		padding: 10px 90px 10px 10px;
 		pointer-events: all;
