@@ -289,6 +289,18 @@ function playCard(card,who) {
 					}
 				}
 
+				// Special function for barrier combo
+				function barrierCheck(u) {
+					var prevSlot = (u.parentNode.previousElementSibling) ? u.parentNode.previousElementSibling : document.querySelector('body');
+					var nextSlot = (u.parentNode.nextElementSibling) ? u.parentNode.nextElementSibling : document.querySelector('body');
+
+					if (prevSlot.getAttribute('data-type')==='barrier' || nextSlot.getAttribute('data-type')==='barrier') {
+						if ( !u.parentNode.getAttribute('data-type2') ) { 
+							return true; 
+						} else { return false; }
+					} else { return false; }
+				}
+
 				// Some variables
 				var field = [];
 				var notified = 0;
@@ -307,16 +319,19 @@ function playCard(card,who) {
 				if (comboStars.length === 1) {
 					// Check for a single match
 					for (var i=0;i<field.length;i++) {
-						if (field[i].t.indexOf(comboStars[0]) != -1 && !buoy.hasClass(document.getElementById(field[i].id).parentNode,'combo') ) {
-							comboMatch = true;
-							// Remove card from hand
-							if (cardEl) cardEl.remove();
+						if (field[i].t.indexOf(comboStars[0]) != -1) {
+							var u = document.getElementById(field[i].id);
+							if (!buoy.hasClass(u.parentNode,'combo') || barrierCheck(u)) {
+								comboMatch = true;
+								// Remove card from hand
+								if (cardEl) cardEl.remove();
 
-							var unit = document.getElementById(field[i].id);
-							// Make unit slot combo-attachable
-							buoy.addClass(unit.parentNode,'active');
-							unit.parentNode.addEventListener('click', clickListener);
-							unit.parentNode.arg = [card,who];
+								var unit = document.getElementById(field[i].id);
+								// Make unit slot combo-attachable
+								buoy.addClass(unit.parentNode,'active');
+								unit.parentNode.addEventListener('click', clickListener);
+								unit.parentNode.arg = [card,who];
+							}
 						}
 					}
 				} else if (comboStars.length === 2) {
@@ -348,21 +363,29 @@ function playCard(card,who) {
 						if (field[i].t.indexOf(comboStars[0]) != -1) {
 							if (field[i+1] && field[i+2]) {
 								if ( field[i+1].t.indexOf(comboStars[1]) != -1 && field[i+2].t.indexOf(comboStars[2]) != -1) {
-									comboMatch = true;
-									if (cardEl) cardEl.remove();
-
 									var unit = document.getElementById(field[i].id);
 									var unit2 = document.getElementById(field[i+1].id);
 									var unit3 = document.getElementById(field[i+2].id);
 
 									if (!buoy.hasClass(unit.parentNode,'combo')) buoy.addClass(unit.parentNode,'active');
-									if (!buoy.hasClass(unit2.parentNode,'combo')) buoy.addClass(unit2.parentNode,'active');
+									// Special check for Barrier
+									if (!buoy.hasClass(unit2.parentNode,'combo') || barrierCheck(unit2) ) {
+										buoy.addClass(unit2.parentNode,'active');
+									}
 									if (!buoy.hasClass(unit3.parentNode,'combo')) buoy.addClass(unit3.parentNode,'active');
 
 									[].forEach.call(document.querySelectorAll('.'+who+' li.active'), function(slot) {
 										slot.addEventListener('click', clickListener);
 										slot.arg = [card,who];
 									});
+
+									if (!document.querySelector('.'+who+' li.active')) {
+										notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
+										return false;
+									}
+
+									comboMatch = true;
+									if (cardEl) cardEl.remove();
 								}
 							} else { break; }
 						}
@@ -754,7 +777,9 @@ function comboCard(unit,card,who) {
 	if ( cardType.unit[card.type] ) { pre = 'unit_'; }
 	else if ( cardType.co[card.type] ) { pre = 'co_'; }
 
-	slot.setAttribute('data-type', card.type);
+	if (!slot.getAttribute('data-type')) {
+		slot.setAttribute('data-type', card.type);
+	} else { slot.setAttribute('data-type2', card.type); }
 	// Image?
 	var img = document.createElement("img");
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
@@ -764,19 +789,22 @@ function comboCard(unit,card,who) {
 
 	if (cardType.combo[card.type].atk) {
 		var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
-		slot.setAttribute('data-atk', cardType.combo[card.type].atk );
+		var currentSlotAtk = (slot.getAttribute('data-atk')) ? parseInt( slot.getAttribute('data-atk') ) : 0;
+		slot.setAttribute('data-atk', currentSlotAtk+cardType.combo[card.type].atk );
 		if (cardType.combo[card.type].atk>0) buoy.addClass(slot,'atk');
 	}
 
 	if (cardType.combo[card.type].def) {
 		var unitDef = parseInt(document.querySelector('.'+who+' .def').getAttribute('data-unit') );
-		slot.setAttribute('data-def', cardType.combo[card.type].def );
+		var currentSlotDef = (slot.getAttribute('data-def')) ? parseInt( slot.getAttribute('data-def') ) : 0;
+		slot.setAttribute('data-def', currentSlotDef+cardType.combo[card.type].def );
 		if (cardType.combo[card.type].def>0) buoy.addClass(slot,'def');
 	}
 
+	var currentSlotSup = (slot.getAttribute('data-sup')) ? parseInt( slot.getAttribute('data-sup') ) : 0;
 	if (cardType.combo[card.type].sup) {
-		slot.setAttribute('data-sup', cardType.combo[card.type].sup );
-	} else { slot.setAttribute('data-sup', "0") }
+		slot.setAttribute('data-sup', currentSlotSup+cardType.combo[card.type].sup );
+	} else { slot.setAttribute('data-sup', currentSlotSup) }
 
 	if (cardType.combo[card.type].special) {
 		specialCombo(card,who);
@@ -784,7 +812,7 @@ function comboCard(unit,card,who) {
 		// Special combo color slots
 		if (card.type==='support') buoy.addClass(slot,'sup');
 		if (card.type==='sniper' || card.type==='tstrike') buoy.addClass(slot,'atk');
-		if (card.type==='intel' || card.type==='stealth' || card.type==='bigguns') { 
+		if (card.type==='intel' || card.type==='stealth' || card.type==='bigguns' || card.type==='barrier') { 
 			buoy.addClass(slot,'atk'); 
 			buoy.addClass(slot,'def'); 
 		}
@@ -1178,6 +1206,10 @@ function clearCombo(el) {
 	el.removeAttribute('data-def');
 	el.removeAttribute('data-sup');
 	el.removeAttribute('data-type');
+	if (el.getAttribute('data-type2')) el.removeAttribute('data-type2');
+
+	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
+	// Double check for a 2nd combo (Barrier)
 	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
 	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
 	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove();
@@ -1507,6 +1539,7 @@ function forceEndCheck(who) {
 	}, 350);
 }
 
+// Call out winner/loser
 function endGame(who,sup) {
 	overlayOn();
 	var m = document.querySelector('.overlay .modal');
@@ -1527,6 +1560,7 @@ function endGame(who,sup) {
 	});
 }
 
+// Manually wipe everything
 function wipeGame() {
 	// Reset Stats
 	document.querySelector('.player .atk').textContent = '0';

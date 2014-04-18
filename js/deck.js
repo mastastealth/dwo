@@ -82,4 +82,8 @@ var deck = [
 ];
 
 if (!store.get('deck')) { store.set('deck',deck); }
-else { deck = store.get('deck'); }
+else { 
+	if ( store.get('lastDeck') ) {
+		deck = store.get( store.get('lastDeck') );
+	} else { deck = store.get( 'deck' ); store.set('lastDeck','deck') }
+}

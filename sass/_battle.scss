@@ -282,7 +282,7 @@
 		perspective: 300px;
 		position: relative;
 		transform: scale(0.9);
-		transition: all 0.3s, border-color 0s -0.1s;
+		transition: all 0.3s;
 
 		&:empty { background: white; opacity: 0.1; }
 

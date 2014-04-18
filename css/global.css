@@ -905,8 +905,8 @@ footer {
   -webkit-transform: scale(0.9);
   -ms-transform: scale(0.9);
   transform: scale(0.9);
-  -webkit-transition: all 0.3s, border-color 0s -0.1s;
-  transition: all 0.3s, border-color 0s -0.1s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
 }
 
 .game li:empty {

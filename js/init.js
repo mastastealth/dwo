@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded', function(){
 			buoy.addClass(e.target, 'active');
 
 			if ( buoy.hasClass(e.target, 'loadDeck1') ) {
-				loadDeck( store.get('deck') );
+				loadDeck( store.get('deck'), 'deck' );
 			} else if ( buoy.hasClass(e.target, 'loadDeck2') ) {
-				loadDeck( store.get('deck2') );
+				loadDeck( store.get('deck2'), 'deck2' );
 			} else if ( buoy.hasClass(e.target, 'loadDeck3') ) {
-				loadDeck( store.get('deck3') );
+				loadDeck( store.get('deck3'), 'deck3' );
 			}
 		});
 	});
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	}
 
-	function loadDeck(loadedDeck) {
+	function loadDeck(loadedDeck,slot) {
 		if (!loadedDeck) { 
 			notify('red', 'No Deck Found Here, Create a new one!');
 			clearDeck();
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		notify('green', 'Loaded Deck!');
 		clearDeck();
 		deck = loadedDeck;
+		store.set('lastDeck', slot);
 
 		window.requestAnimationFrame( function() {
 			for (var i=0;i<loadedDeck.length;i++) {
@@ -165,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		if (newDeck.length === 72) {
 			store.set(deckSlot, newDeck);
+			store.set('lastDeck', deckSlot);
 			deck = newDeck;
 			notify('green', 'Saved! Using new deck');
 		} else {
@@ -312,8 +314,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			});
 
 			window.setTimeout( function() { 
-				if (!document.querySelector('.loadDeck.active')) buoy.addClass( document.querySelector('.loadDeck1'), 'active'); 
-				loadDeck( store.get('deck') ); 
+				if (!document.querySelector('.loadDeck.active')) {
+					if (store.get('lastDeck') === 'deck') buoy.addClass( document.querySelector('.loadDeck1'), 'active'); 
+					if (store.get('lastDeck') === 'deck2') buoy.addClass( document.querySelector('.loadDeck2'), 'active'); 
+					if (store.get('lastDeck') === 'deck3') buoy.addClass( document.querySelector('.loadDeck3'), 'active'); 
+				}
+
+				loadDeck( store.get( store.get('lastDeck') ), store.get('lastDeck') ); 
 			}, 1200);
 		}
 		// Tutorial
