@@ -1419,6 +1419,11 @@ function resetField(points,loser) {
 	wipeStats('player');
 	wipeStats('opponent');
 
+	// Auto draw cards
+	if (document.querySelectorAll('.hand .card').length<8) {
+		drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
+	} else { drawCard(playerDeck,1); }
+
 	// Check hand
 	reshuffleCheck();
 
@@ -1532,7 +1537,7 @@ function endTurnListener(e) {
 		buoy.removeClass( document.querySelector('.player'), 'myturn');
 		endTurn.setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
-		// AUto draw cards
+		// Auto draw cards
 		if (document.querySelectorAll('.hand .card').length<8) {
 			drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
 		} else { drawCard(playerDeck,1); }
@@ -1555,18 +1560,23 @@ function forceEndCheck(who) {
 				// Attacker's atk is greater than Defenders def
 				if (parseInt(document.querySelector('.'+who+' .atk').textContent) > parseInt(document.querySelector('aside:not(.'+who+') .def').textContent)) {
 					forceEnd += 1;
-					if (forceEnd===1) notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)', true);
+					if (forceEnd===1) { 
+						notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)', true);
+						document.querySelector('.turn').removeAttribute('disabled');
+					}
 				}
 			} else {
 				// Defenders def is greater than or equal to Attacker's atk
 				if (parseInt(document.querySelector('.'+who+' .def').textContent) >= parseInt(document.querySelector('aside:not(.'+who+') .atk').textContent)) {
 					forceEnd += 1;
-					if (forceEnd===1) notify('blue', 'You matched/surpassed their attack! Play 1 more card & your turn will end (or end it now)', true);
+					if (forceEnd===1) { 
+						notify('blue', 'You matched/surpassed their attack! Play 1 more card & your turn will end (or end it now)', true);
+						document.querySelector('.turn').removeAttribute('disabled');
+					}
 				}
 			}
-			console.log('Force End now at: '+forceEnd);
+			//console.log('Force End now at: '+forceEnd);
 			if (forceEnd===1) {
-				document.querySelector('.turn').removeAttribute('disabled');
 				document.querySelector('.end').setAttribute('disabled','true');
 			} else if (forceEnd>1) { 
 				endTurnListener(); 
@@ -1630,15 +1640,15 @@ function wipeGame() {
 	document.querySelector('.hand').setAttribute('class', 'hand');
 
 	// Remove units, cards, combos, etc.
-	[].forEach.call(document.querySelectorAll('.card'), function(card) {
+	[].forEach.call(document.querySelectorAll('.game .card'), function(card) {
 		card.remove();
 	});
 
-	[].forEach.call(document.querySelectorAll('.unit'), function(unit) {
+	[].forEach.call(document.querySelectorAll('.game .unit'), function(unit) {
 		unit.remove();
 	});
 
-	[].forEach.call(document.querySelectorAll('.combo'), function(slot) {
+	[].forEach.call(document.querySelectorAll('.game .combo'), function(slot) {
 		slot.setAttribute('class','');
 		slot.removeAttribute('id');
 		if (slot.mBonus) slot.mBonus = null;
