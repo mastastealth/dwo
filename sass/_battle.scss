@@ -104,19 +104,6 @@
 			width: 100%;
 			z-index: 99;
 
-			&.addSup {
-				&:before {
-					animation: supplyAdd 0.8s ease forwards;
-					color: #F87702;
-					content: url(../images/cards/supply.png);
-					display: inline-block;
-					font-size: 40px;
-					height: auto;
-					position: absolute;
-					top: 0; left: 0;
-				}
-			}
-
 			.atk { 
 				background: #E44141; border-radius: 15px; 
 				color: white; line-height: 30px; width: 30px; }
@@ -170,6 +157,19 @@
 
 			.player .sup { left: 10px; }
 			.opponent .outpost { left: 10px; }
+
+			h1.addSup:before {
+				animation: supplyAdd 0.8s ease forwards;
+				background: #333 url(../images/cards/supply.png) no-repeat;
+				background-size: cover;
+				content: '';
+				display: inline-block;
+				height: 100px;
+				position: fixed;
+				width: 72px;
+			}
+			.player h1.addSup:before { top: 0; left: 5px; }
+			.opponent h1.addSup:before { top: 0; left: auto; right: 60px; }
 
 			aside.attacker h1 .atk, 
 			aside:not(.attacker) h1 .def {
@@ -537,7 +537,7 @@
 }
 
 @keyframes supplyAdd {
-	0% { opacity: 0; transform: scale(0.3) translate(-90%,30%); }
+	0% { opacity: 0; transform: translate(0%,100%); }
 	15%, 80% { opacity: 1; }
-	100% { opacity: 0; transform: scale(0.3) translate(-90%,-100%); }
+	100% { opacity: 0; transform: translate(0%,-50%); }
 }

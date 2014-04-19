@@ -927,6 +927,8 @@ function specialCombo(card,who,v) {
 			unitCalc('opponent');
 			unitCalc('player');
 
+			if (who==='player') forceEndCheck(who);
+
 			break;
 		case "sniper":
 			// Add listener to kill
@@ -934,7 +936,6 @@ function specialCombo(card,who,v) {
 				[].forEach.call(document.querySelectorAll('aside:not(.'+who+') .combo .unit'), function(u) {
 					if ( cardType.unit[ u.cardProps.type ].trait.indexOf('inf') != -1 ) {
 						buoy.addClass(u.parentNode,'active');
-						u.killUnit = true;
 						u.parentNode.addEventListener('click', snipe);
 					}
 				});
@@ -945,7 +946,6 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
-				//forceEndCheck(who);
 			}
 			break;
 		case "retreat":
@@ -1101,6 +1101,7 @@ function specialCombo(card,who,v) {
 			if (who==='player') {
 				document.getElementById(card.id).remove();
 				drawCard(playerDeck,3);
+				forceEndCheck(who);
 			}
 			break;
 		// 2 Star Combo
@@ -1131,9 +1132,11 @@ function specialCombo(card,who,v) {
 			break;
 		case "squad":
 			multiplier(card, 1,'atk','player','inf');
+			if (who==='player') forceEndCheck(who);
 			break;
 		case "acover":
 			multiplier(card, 2,'def','opponent','air');
+			if (who==='player') forceEndCheck(who);
 			break;
 		case "bigguns":
 			extraUnit('tank',who);
@@ -1157,7 +1160,6 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
-				//forceEndCheck(who);
 			}
 			break;
 	}
@@ -1256,6 +1258,7 @@ function clearCombo(el) {
 
 // Animate a redecked card
 function cardToDeck(card) {
+	if (card.nodeName != 'DIV') return false;
 	buoy.addClass(card,'toDeck');
 	window.setTimeout( function() { card.remove(); }, 1500);
 }
@@ -1631,10 +1634,12 @@ function wipeGame() {
 	document.querySelector('.player .atk').textContent = '0';
 	document.querySelector('.player .def').textContent = '0';
 	document.querySelector('.player .sup').textContent = '0';
+	document.querySelector('.player .outpost').textContent = '0';
 
 	document.querySelector('.opponent .atk').textContent = '0';
 	document.querySelector('.opponent .def').textContent = '0';
 	document.querySelector('.opponent .sup').textContent = '0';
+	document.querySelector('.opponent .outpost').textContent = '0';
 
 	[].forEach.call(document.querySelectorAll('span[data-unit]'), function(span) {
 		span.setAttribute('data-unit', 0);
