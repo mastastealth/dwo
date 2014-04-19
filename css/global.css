@@ -557,11 +557,13 @@ footer {
 }
 
 .game .field aside {
-  background: tan;
+  background: tan url(../images/bg/bg_sand.png);
   height: 100%;
   overflow: hidden;
   padding-top: 50px;
   position: relative;
+  -webkit-transition: background 0.3s;
+  transition: background 0.3s;
   width: 50%;
 }
 
@@ -590,7 +592,31 @@ footer {
 
 .game .field .player:not(.myturn),
 .game .field .player.myturn + .opponent {
-  background: rgba(210, 180, 140, 0.85);
+  background: rgba(210, 180, 140, 0.75);
+}
+
+.game .field .player:not(.myturn) .card img,
+.game .field .player:not(.myturn) .unit img,
+.game .field .player.myturn + .opponent .card img,
+.game .field .player.myturn + .opponent .unit img {
+  opacity: 0.5;
+}
+
+.game .field .player.myturn:after,
+.game .field .player:not(.myturn) + .opponent:after {
+  -webkit-animation: statPulse 1s alternate infinite;
+  animation: statPulse 1s alternate infinite;
+  content: 'Your Turn';
+  opacity: 0.8;
+  top: 50px;
+  right: 20px;
+}
+
+.game .field .player:not(.myturn) + .opponent:after {
+  background: #666;
+  content: "Their Turn";
+  right: auto;
+  left: 20px;
 }
 
 .game .field aside:first-child {
@@ -661,6 +687,8 @@ footer {
 .game .field h1 .sup {
   background: #EED84F;
   height: 30px;
+  font-size: 18px;
+  font-weight: bold;
   line-height: 30px;
   position: absolute;
   top: 10px;
@@ -741,7 +769,7 @@ footer {
 
 .game .field aside.attacker h1 .atk,
 .game .field aside:not(.attacker) h1 .def {
-  animation: statPulse 2s alternate infinite;
+  animation: statPulse 1s alternate infinite;
   -webkit-animation: none;
   border-radius: 0;
   margin: 0 5px;
@@ -773,7 +801,8 @@ footer {
   background-repeat: no-repeat;
   -webkit-background-size: contain;
   background-size: contain;
-  height: 400px;
+  height: 350px;
+  pointer-events: none;
   position: absolute;
   bottom: 0;
   width: 220px;
@@ -781,10 +810,14 @@ footer {
 }
 
 .game .field .player .commander {
+  -webkit-animation: slideInLeft 1s ease forwards;
+  animation: slideInLeft 1s ease forwards;
   left: 0;
 }
 
 .game .field .opponent .commander {
+  -webkit-animation: slideInRight 1s ease forwards;
+  animation: slideInRight 1s ease forwards;
   right: 0;
   -webkit-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
@@ -919,6 +952,8 @@ footer {
 }
 
 .game li.active {
+  -webkit-animation: borderPulse 0.5s infinite alternate;
+  animation: borderPulse 0.5s infinite alternate;
   background: rgba(0, 128, 0, 0.4);
   border-color: green;
   cursor: pointer;
@@ -959,8 +994,8 @@ footer {
 }
 
 .game li.combo.active {
-  -webkit-animation: borderPulse 0.5s infinite alternate;
-  animation: borderPulse 0.5s infinite alternate;
+  -webkit-box-shadow: 0 0 6px green;
+  box-shadow: 0 0 6px green;
   opacity: 1;
 }
 
@@ -1576,7 +1611,7 @@ button {
   top: 10px;
   left: 10%;
   width: 80%;
-  z-index: 99;
+  z-index: 100;
 }
 
 .notify {
@@ -1590,6 +1625,8 @@ button {
   overflow: hidden;
   pointer-events: none;
   text-align: center;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
   z-index: 99;
 }
 
@@ -1799,6 +1836,40 @@ button.menu:hover {
   }
 
   10%, 95% {
+    opacity: 1;
+    max-height: 150px;
+    -webkit-transform: translateY(0%);
+    -ms-transform: translateY(0%);
+    transform: translateY(0%);
+  }
+}
+
+@-webkit-keyframes bubbleSticky {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    transform: translateY(-15%);
+  }
+
+  10% {
+    opacity: 1;
+    max-height: 150px;
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+  }
+}
+
+@keyframes bubbleSticky {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    -webkit-transform: translateY(-15%);
+    -ms-transform: translateY(-15%);
+    transform: translateY(-15%);
+  }
+
+  10% {
     opacity: 1;
     max-height: 150px;
     -webkit-transform: translateY(0%);
