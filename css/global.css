@@ -1197,8 +1197,6 @@ footer {
   pointer-events: none;
 }
 
-<<<<<<< HEAD
-=======
 .game .unit.toDeck {
   opacity: 0;
   -webkit-transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
@@ -1206,7 +1204,6 @@ footer {
   transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
 }
 
->>>>>>> master
 .game .player .unit {
   -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
   -ms-transform: scale(0.8) translateX(-60%) rotateY(15deg);
