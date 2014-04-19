@@ -1249,6 +1249,7 @@ function clearCombo(el) {
 	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
 	// Double check for a 2nd combo (Barrier)
 	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
+	// Remove extra side units?
 	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
 	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove();
 }
@@ -1291,7 +1292,7 @@ function resetField(points,loser) {
 		window.setTimeout( function() {
 			unitCalc('player');
 			unitCalc('opponent');
-		}, 300);
+		}, 1600);
 	} 
 	// More than one unit
 	else {
@@ -1319,7 +1320,7 @@ function resetField(points,loser) {
 			window.setTimeout( function() {
 				unitCalc('player');
 				unitCalc('opponent');
-			}, 300);
+			}, 1600);
 		}
 
 		// Loser gets to save one
@@ -1351,7 +1352,7 @@ function resetField(points,loser) {
 			window.setTimeout( function() {
 				unitCalc('player');
 				unitCalc('opponent');
-			}, 300);
+			}, 1600);
 		}
 
 		// Auto save 1 combo, if not, also add selectors
@@ -1366,7 +1367,7 @@ function resetField(points,loser) {
 			window.setTimeout( function() {
 				unitCalc('player');
 				unitCalc('opponent');
-			}, 300);
+			}, 1600);
 		} 
 		else if (!loser && document.querySelectorAll('.player .combo').length > 1) {
 			//console.log('Multiple units, 1+ Combo');
@@ -1564,9 +1565,6 @@ function endTurnListener(e) {
 		buoy.addClass(document.querySelector('.hand'),'disable');
 		notify('red', 'Ended Turn');
 		forceEnd = 0;
-
-		unitCalc('player');
-		unitCalc('opponent');
 	}
 }
 
