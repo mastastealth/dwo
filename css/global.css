@@ -668,19 +668,6 @@ footer {
   z-index: 99;
 }
 
-.game .field h1.addSup:before {
-  -webkit-animation: supplyAdd 0.8s ease forwards;
-  animation: supplyAdd 0.8s ease forwards;
-  color: #F87702;
-  content: url(../images/cards/supply.png);
-  display: inline-block;
-  font-size: 40px;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 .game .field h1 .atk {
   background: #E44141;
   border-radius: 15px;
@@ -754,6 +741,30 @@ footer {
 
 .game .field .opponent .outpost {
   left: 10px;
+}
+
+.game .field h1.addSup:before {
+  -webkit-animation: supplyAdd 0.8s ease forwards;
+  animation: supplyAdd 0.8s ease forwards;
+  background: #333333 url(../images/cards/supply.png) no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
+  content: '';
+  display: inline-block;
+  height: 100px;
+  position: fixed;
+  width: 72px;
+}
+
+.game .field .player h1.addSup:before {
+  top: 0;
+  left: 5px;
+}
+
+.game .field .opponent h1.addSup:before {
+  top: 0;
+  left: auto;
+  right: 60px;
 }
 
 .game .field aside.attacker h1 .atk,
@@ -1390,8 +1401,8 @@ footer {
 @-webkit-keyframes supplyAdd {
   0% {
     opacity: 0;
-    -webkit-transform: scale(0.3) translate(-90%, 30%);
-    transform: scale(0.3) translate(-90%, 30%);
+    -webkit-transform: translate(0%, 100%);
+    transform: translate(0%, 100%);
   }
 
   15%, 80% {
@@ -1400,17 +1411,17 @@ footer {
 
   100% {
     opacity: 0;
-    -webkit-transform: scale(0.3) translate(-90%, -100%);
-    transform: scale(0.3) translate(-90%, -100%);
+    -webkit-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
   }
 }
 
 @keyframes supplyAdd {
   0% {
     opacity: 0;
-    -webkit-transform: scale(0.3) translate(-90%, 30%);
-    -ms-transform: scale(0.3) translate(-90%, 30%);
-    transform: scale(0.3) translate(-90%, 30%);
+    -webkit-transform: translate(0%, 100%);
+    -ms-transform: translate(0%, 100%);
+    transform: translate(0%, 100%);
   }
 
   15%, 80% {
@@ -1419,9 +1430,9 @@ footer {
 
   100% {
     opacity: 0;
-    -webkit-transform: scale(0.3) translate(-90%, -100%);
-    -ms-transform: scale(0.3) translate(-90%, -100%);
-    transform: scale(0.3) translate(-90%, -100%);
+    -webkit-transform: translate(0%, -50%);
+    -ms-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
   }
 }
 

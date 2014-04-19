@@ -934,7 +934,6 @@ function specialCombo(card,who,v) {
 				[].forEach.call(document.querySelectorAll('aside:not(.'+who+') .combo .unit'), function(u) {
 					if ( cardType.unit[ u.cardProps.type ].trait.indexOf('inf') != -1 ) {
 						buoy.addClass(u.parentNode,'active');
-						u.killUnit = true;
 						u.parentNode.addEventListener('click', snipe);
 					}
 				});
@@ -1256,6 +1255,7 @@ function clearCombo(el) {
 
 // Animate a redecked card
 function cardToDeck(card) {
+	if (card.nodeName != 'DIV') return false;
 	buoy.addClass(card,'toDeck');
 	window.setTimeout( function() { card.remove(); }, 1500);
 }
@@ -1631,10 +1631,12 @@ function wipeGame() {
 	document.querySelector('.player .atk').textContent = '0';
 	document.querySelector('.player .def').textContent = '0';
 	document.querySelector('.player .sup').textContent = '0';
+	document.querySelector('.player .outpost').textContent = '0';
 
 	document.querySelector('.opponent .atk').textContent = '0';
 	document.querySelector('.opponent .def').textContent = '0';
 	document.querySelector('.opponent .sup').textContent = '0';
+	document.querySelector('.opponent .outpost').textContent = '0';
 
 	[].forEach.call(document.querySelectorAll('span[data-unit]'), function(span) {
 		span.setAttribute('data-unit', 0);
