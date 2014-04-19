@@ -927,6 +927,8 @@ function specialCombo(card,who,v) {
 			unitCalc('opponent');
 			unitCalc('player');
 
+			if (who==='player') forceEndCheck(who);
+
 			break;
 		case "sniper":
 			// Add listener to kill
@@ -944,7 +946,6 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
-				//forceEndCheck(who);
 			}
 			break;
 		case "retreat":
@@ -1100,6 +1101,7 @@ function specialCombo(card,who,v) {
 			if (who==='player') {
 				document.getElementById(card.id).remove();
 				drawCard(playerDeck,3);
+				forceEndCheck(who);
 			}
 			break;
 		// 2 Star Combo
@@ -1130,9 +1132,11 @@ function specialCombo(card,who,v) {
 			break;
 		case "squad":
 			multiplier(card, 1,'atk','player','inf');
+			if (who==='player') forceEndCheck(who);
 			break;
 		case "acover":
 			multiplier(card, 2,'def','opponent','air');
+			if (who==='player') forceEndCheck(who);
 			break;
 		case "bigguns":
 			extraUnit('tank',who);
@@ -1156,7 +1160,6 @@ function specialCombo(card,who,v) {
 				// Recalc
 				unitCalc('player');
 				unitCalc('opponent');
-				//forceEndCheck(who);
 			}
 			break;
 	}
