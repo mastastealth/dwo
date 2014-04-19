@@ -1188,6 +1188,8 @@ footer {
   position: absolute;
   top: -120px;
   left: 50%;
+  -webkit-transition: all 1s;
+  transition: all 1s;
   max-width: 150px;
   min-width: 140px;
 }
@@ -1211,9 +1213,10 @@ footer {
 }
 
 .game .unit.toDeck {
-  -webkit-transform: scale(0.5) translate(-60%, 100%) rotateY(0);
-  -ms-transform: scale(0.5) translate(-60%, 100%) rotateY(0);
-  transform: scale(0.5) translate(-60%, 100%) rotateY(0);
+  opacity: 0;
+  -webkit-transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
+  -ms-transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
+  transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
 }
 
 .game .player .unit {
@@ -1226,6 +1229,36 @@ footer {
   -webkit-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
   -ms-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
   transform: scale(0.8) translateX(-60%) rotateY(-15deg);
+}
+
+@-webkit-keyframes playerUnit {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(1) translateX(-150%) rotateY(0deg);
+    transform: scale(1) translateX(-150%) rotateY(0deg);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
+    transform: scale(0.8) translateX(-60%) rotateY(15deg);
+  }
+}
+
+@keyframes playerUnit {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(1) translateX(-150%) rotateY(0deg);
+    -ms-transform: scale(1) translateX(-150%) rotateY(0deg);
+    transform: scale(1) translateX(-150%) rotateY(0deg);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
+    -ms-transform: scale(0.8) translateX(-60%) rotateY(15deg);
+    transform: scale(0.8) translateX(-60%) rotateY(15deg);
+  }
 }
 
 @-webkit-keyframes borderPulse {

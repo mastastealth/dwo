@@ -463,6 +463,7 @@
 		height: 200px;
 		position: absolute;
 		top: -120px; left: 50%;
+		transition: all 1s;
 		max-width: 150px;
 		min-width: 140px;
 
@@ -478,11 +479,20 @@
 		}
 
 		&.toDeck {
-			transform: scale(0.5) translate(-60%,100%) rotateY(0);
+			opacity: 0;
+			transform: scale(0.5) translate(-50vw,90vh) rotateY(0) !important;
 		}
 	}
-		.player .unit { transform: scale(0.8) translateX(-60%) rotateY(15deg); }
+		.player .unit { 
+			//animation: playerUnit 1s ease forwards;
+			transform: scale(0.8) translateX(-60%) rotateY(15deg); 
+		}
 		.opponent .unit { transform: scale(0.8) translateX(-60%) rotateY(-15deg); }
+}
+
+@keyframes playerUnit {
+	from { opacity: 0; transform: scale(1) translateX(-150%) rotateY(0deg)}
+	to { opacity: 1; transform: scale(0.8) translateX(-60%) rotateY(15deg) }
 }
 
 @keyframes borderPulse {
