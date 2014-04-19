@@ -232,7 +232,7 @@ function playCard(card,who) {
 				} // Otherwise, place according to the player's choice
 			}
 			// Remove card from hand
-			if (who === 'player') cardEl.remove();
+			if (who === 'player') cardToDiscard(cardEl);
 		} 
 		else if (cardType.unit[card.type] && document.querySelectorAll('.'+who+' .formation .unit').length >= 5) {
 			if (who === 'player') notify('yellow', "Can't play any more units, your field is full!");
@@ -250,7 +250,7 @@ function playCard(card,who) {
 				if (cardType.co[card.type].bonus2) comm.bonus2 = cardType.co[card.type].bonus2;
 
 				// Remove card from hand
-				if (who === 'player') cardEl.remove();
+				if (who === 'player') cardToDiscard(cardEl);
 				sfx_slide.play();
 				unitCalc('opponent');
 				unitCalc('player');
@@ -324,7 +324,7 @@ function playCard(card,who) {
 							if (!buoy.hasClass(u.parentNode,'combo') || barrierCheck(u)) {
 								comboMatch = true;
 								// Remove card from hand
-								if (cardEl) cardEl.remove();
+								if (cardEl) cardToDiscard(cardEl);
 
 								var unit = document.getElementById(field[i].id);
 								// Make unit slot combo-attachable
@@ -341,7 +341,7 @@ function playCard(card,who) {
 							if (field[i+1]) {
 								if ( field[i+1].t.indexOf(comboStars[1]) != -1 ) {
 									comboMatch = true;
-									if (cardEl) cardEl.remove();
+									if (cardEl) cardToDiscard(cardEl);
 
 									var unit = document.getElementById(field[i].id);
 									var unit2 = document.getElementById(field[i+1].id);
@@ -385,7 +385,7 @@ function playCard(card,who) {
 									}
 
 									comboMatch = true;
-									if (cardEl) cardEl.remove();
+									if (cardEl) cardToDiscard(cardEl);
 								}
 							} else { break; }
 						}
@@ -403,9 +403,11 @@ function playCard(card,who) {
 			document.querySelector('.'+who+' .sup').setAttribute('data-sup', currentSup+3);
 			if (who === 'player') {
 				drawCard(playerDeck,1);
-				cardEl.remove();
+				cardToDiscard(cardEl);
 			}
+
 			sfx_slide.play();
+			addSupply(who);
 			unitCalc('opponent');
 			unitCalc('player');
 
@@ -1253,9 +1255,19 @@ function clearCombo(el) {
 
 // Animate a redecked card
 function cardToDeck(card) {
-	console.log('Decking '+card);
 	buoy.addClass(card,'toDeck');
-	window.setTimeout( function() { card.remove(); }, 2100);
+	window.setTimeout( function() { card.remove(); }, 1500);
+}
+
+// Animate a discarded card
+function cardToDiscard(card) {
+	buoy.addClass(card,'toDiscard');
+	window.setTimeout( function() { card.remove(); }, 500);
+}
+
+function addSupply(who) {
+	buoy.addClass(document.querySelector('.'+who+' > h1'),'addSup');
+	window.setTimeout( function() { buoy.removeClass(document.querySelector('.'+who+' > h1'),'addSup'); }, 800);
 }
 
 // Use at the end of the round to wipe/add scores and reset field
