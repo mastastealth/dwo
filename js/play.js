@@ -671,7 +671,7 @@ function unitCard(newUnit,card,who,id) {
 
 	// Image
 	var img = newUnit.appendChild( document.createElement('img') );
-	img.setAttribute('src','images/cards/unit_'+card.type+'.png');
+	img.setAttribute('src','images/units/'+card.type+'.png');
 	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 

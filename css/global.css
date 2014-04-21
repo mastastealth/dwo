@@ -633,9 +633,9 @@ footer {
 
 .game .field aside:first-child li:first-child,
 .game .field aside:first-child li:last-child {
-  -webkit-transform: translateX(-50px) scale(0.9);
-  -ms-transform: translateX(-50px) scale(0.9);
-  transform: translateX(-50px) scale(0.9);
+  -webkit-transform: translateX(-60px) scale(0.9);
+  -ms-transform: translateX(-60px) scale(0.9);
+  transform: translateX(-60px) scale(0.9);
 }
 
 .game .field aside:last-child {
@@ -652,9 +652,9 @@ footer {
 
 .game .field aside:last-child li:first-child,
 .game .field aside:last-child li:last-child {
-  -webkit-transform: translateX(50px) scale(0.9);
-  -ms-transform: translateX(50px) scale(0.9);
-  transform: translateX(50px) scale(0.9);
+  -webkit-transform: translateX(60px) scale(0.9);
+  -ms-transform: translateX(60px) scale(0.9);
+  transform: translateX(60px) scale(0.9);
 }
 
 .game .field h1 {
@@ -921,7 +921,7 @@ footer {
 .game li {
   border: 2px solid #b28446;
   border-radius: 50%;
-  min-height: 16.5%;
+  min-height: 14.5%;
   -webkit-perspective: 300px;
   -ms-perspective: 300px;
   perspective: 300px;
@@ -961,8 +961,6 @@ footer {
 }
 
 .game li.active .unit {
-  -webkit-box-shadow: 0 0 15px green;
-  box-shadow: 0 0 15px green;
   opacity: 0.3;
   pointer-events: none;
 }
@@ -1092,6 +1090,12 @@ footer {
   opacity: 0.8;
 }
 
+.game .opponent li:hover:not(.active) .unit {
+  -webkit-transform: scale(1.2) translateX(-40%) rotateY(180deg);
+  -ms-transform: scale(1.2) translateX(-40%) rotateY(180deg);
+  transform: scale(1.2) translateX(-40%) rotateY(180deg);
+}
+
 .game .opponent li.combo span {
   left: -100px;
 }
@@ -1213,7 +1217,6 @@ footer {
 }
 
 .game .unit {
-  background: #333;
   border-radius: 0;
   height: 200px;
   position: absolute;
@@ -1251,15 +1254,15 @@ footer {
 }
 
 .game .player .unit {
-  -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
-  -ms-transform: scale(0.8) translateX(-60%) rotateY(15deg);
-  transform: scale(0.8) translateX(-60%) rotateY(15deg);
+  -webkit-transform: scale(0.9) translateX(-70%);
+  -ms-transform: scale(0.9) translateX(-70%);
+  transform: scale(0.9) translateX(-70%);
 }
 
 .game .opponent .unit {
-  -webkit-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
-  -ms-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
-  transform: scale(0.8) translateX(-60%) rotateY(-15deg);
+  -webkit-transform: scale(0.9) translateX(-40%) rotateY(180deg);
+  -ms-transform: scale(0.9) translateX(-40%) rotateY(180deg);
+  transform: scale(0.9) translateX(-40%) rotateY(180deg);
 }
 
 @-webkit-keyframes playerUnit {
