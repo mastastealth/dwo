@@ -946,9 +946,9 @@ footer {
 .game li:hover:not(.active) .unit {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  -webkit-transform: scale(1.2) translateX(-60%) rotateY(0deg);
-  -ms-transform: scale(1.2) translateX(-60%) rotateY(0deg);
-  transform: scale(1.2) translateX(-60%) rotateY(0deg);
+  -webkit-transform: scale(1.1) translateX(-60%) rotateY(0deg);
+  -ms-transform: scale(1.1) translateX(-60%) rotateY(0deg);
+  transform: scale(1.1) translateX(-60%) rotateY(0deg);
 }
 
 .game li.active {
@@ -1091,9 +1091,9 @@ footer {
 }
 
 .game .opponent li:hover:not(.active) .unit {
-  -webkit-transform: scale(1.2) translateX(-40%) rotateY(180deg);
-  -ms-transform: scale(1.2) translateX(-40%) rotateY(180deg);
-  transform: scale(1.2) translateX(-40%) rotateY(180deg);
+  -webkit-transform: scale(1.1) translateX(-40%) rotateY(180deg);
+  -ms-transform: scale(1.1) translateX(-40%) rotateY(180deg);
+  transform: scale(1.1) translateX(-40%) rotateY(180deg);
 }
 
 .game .opponent li.combo span {
@@ -1217,6 +1217,10 @@ footer {
 }
 
 .game .unit {
+  -webkit-animation: unitRumble 0.5s steps(3) linear infinite;
+  animation: unitRumble 0.5s steps(3) linear infinite;
+  -webkit-background-size: 256px auto;
+  background-size: 256px auto;
   border-radius: 0;
   height: 200px;
   position: absolute;
@@ -1436,6 +1440,26 @@ footer {
     -webkit-transform: translate(0%, -50%);
     -ms-transform: translate(0%, -50%);
     transform: translate(0%, -50%);
+  }
+}
+
+@-webkit-keyframes unitRumble {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 0 -768px;
+  }
+}
+
+@keyframes unitRumble {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 0 -768px;
   }
 }
 

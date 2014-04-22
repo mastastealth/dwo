@@ -305,7 +305,7 @@
 
 			&:not(.active) .unit {
 				transition: all 0.3s;
-				transform: scale(1.2) translateX(-60%) rotateY(0deg);
+				transform: scale(1.1) translateX(-60%) rotateY(0deg);
 			}
 		}
 
@@ -406,7 +406,7 @@
 			&:hover { opacity: 0.8; }
 		}
 	}	
-		.opponent li:hover:not(.active) .unit { transform: scale(1.2) translateX(-40%) rotateY(180deg); }
+		.opponent li:hover:not(.active) .unit { transform: scale(1.1) translateX(-40%) rotateY(180deg); }
 		.opponent li.combo span { left: -100px; }
 
 		.extra {
@@ -478,6 +478,8 @@
 	
 	.unit {
 		//background: #333;
+		animation: unitRumble 0.5s steps(3) linear infinite;
+		background-size: 256px auto;
 		border-radius: 0;
 		height: 200px;
 		position: absolute;
@@ -540,4 +542,9 @@
 	0% { opacity: 0; transform: translate(0%,100%); }
 	15%, 80% { opacity: 1; }
 	100% { opacity: 0; transform: translate(0%,-50%); }
+}
+
+@keyframes unitRumble {
+	from { background-position: 0 0; }
+	to { background-position: 0 -768px; }
 }

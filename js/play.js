@@ -672,6 +672,7 @@ function unitCard(newUnit,card,who,id) {
 	// Image
 	var img = newUnit.appendChild( document.createElement('img') );
 	img.setAttribute('src','images/units/'+card.type+'.png');
+	APNG.ifNeeded(function() { APNG.animateImage(img); });
 	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 
