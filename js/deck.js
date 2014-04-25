@@ -19,7 +19,7 @@ var deck = [
 	{'type': 'helo', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
 	{'type': 'apc', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
 	{'type': 'bomber', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
-	{'type': 'bomber', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
+	{'type': 'htank', 'id' : 0, 'hash' : 0, 'unit' : 1 }, 
 
 	{'type': 'at', 'id' : 0, 'hash' : 0, 'combo': 1 }, // 25 Combos
 	{'type': 'at', 'id' : 0, 'hash' : 0, 'combo': 1 },
@@ -35,7 +35,7 @@ var deck = [
 
 	{'type': 'shift', 'id' : 0, 'hash' : 0, 'combo': 1 },
 	{'type': 'shell', 'id' : 0, 'hash' : 0, 'combo': 1 },
-	{'type': 'stealth', 'id' : 0, 'hash' : 0, 'combo': 1 },
+	{'type': 'column', 'id' : 0, 'hash' : 0, 'combo': 1 },
 	{'type': 'reinforce', 'id' : 0, 'hash' : 0, 'combo': 1 },
 	{'type': 'coverage', 'id' : 0, 'hash' : 0, 'combo': 1 },
 

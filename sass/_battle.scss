@@ -38,6 +38,15 @@
 			transition: background 0.3s;
 			width: 50%; 
 
+			&:before {
+				background: linear-gradient(skyblue 70%,#D2B48C);
+				content: '';
+				height: 80px;
+				position: absolute;
+				top: 0; left: 0;
+				width: 100%;
+			}
+
 			&:after {
 				background: #3D9970;
 				border-radius: 4px;
@@ -62,6 +71,7 @@
 		.player:not(.myturn), .player.myturn + .opponent {
 			background: transparentize(tan,0.25);
 
+			&:before { opacity: 0.25 }
 			.card img, .unit img { opacity: 0.5; }
 		}
 
@@ -84,7 +94,7 @@
 			float: left;
 
 			li:nth-child(3), li:nth-child(4):nth-last-child(3) { transform: translateX(80px) scale(0.9); }
-			li:first-child, li:last-child { transform: translateX(-50px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(-60px) scale(0.9); }
 		}
 
 		aside:last-child {
@@ -92,11 +102,11 @@
 			float: right;
 
 			li:nth-child(3), li:nth-child(4):nth-last-child(3) { transform: translateX(-80px) scale(0.9); }
-			li:first-child, li:last-child { transform: translateX(50px) scale(0.9); }
+			li:first-child, li:last-child { transform: translateX(60px) scale(0.9); }
 		}
 
 		h1 {
-			background: rgba(0,0,0,0.1);
+			background: rgba(0,0,0,0.5);
 			line-height: 40px;
 			position: absolute;
 			top: 0; left: 0;
@@ -286,12 +296,17 @@
 		min-width: 180px;
 		width: 30%;
 		z-index: 1;
+
+		&:hover > li { 
+			opacity: 0.3;
+			&:hover { opacity: 1; } 
+		}
 	}
 
 	li {
 		border: 2px solid darken(#D2B48C,20%);
 		border-radius: 50%;
-		min-height: 16.5%;
+		min-height: 14.5%;
 		perspective: 300px;
 		position: relative;
 		transform: scale(0.9);
@@ -305,8 +320,10 @@
 
 			&:not(.active) .unit {
 				transition: all 0.3s;
-				transform: scale(1.2) translateX(-60%) rotateY(0deg);
+				transform: scale(1.1) translateX(-60%) rotateY(0deg);
 			}
+
+			.unit:before, .unit ul { opacity: 1; }
 		}
 
 		&.active { 
@@ -317,7 +334,7 @@
 			z-index: 1;
 
 			.unit { 
-				box-shadow: 0 0 15px green;
+				//box-shadow: 0 0 15px green;
 				opacity: 0.3; 
 				pointer-events: none; 
 			}
@@ -405,8 +422,8 @@
 
 			&:hover { opacity: 0.8; }
 		}
-	}
-
+	}	
+		.opponent li:hover:not(.active) .unit { transform: scale(1.1) translateX(-40%) rotateY(180deg); }
 		.opponent li.combo span { left: -100px; }
 
 		.extra {
@@ -477,7 +494,9 @@
 
 	
 	.unit {
-		background: #333;
+		//background: #333;
+		animation: unitRumble 0.5s steps(3) linear infinite;
+		background-size: 256px auto;
 		border-radius: 0;
 		height: 200px;
 		position: absolute;
@@ -488,10 +507,30 @@
 
 		img { height: 100%; width: auto; }
 
+		ul { 
+			opacity: 0;
+			position: absolute; 
+			bottom: 0; left: 0;
+			transition: all 0.3s; 
+			width: 100%;
+		}
+
+		li {
+			background: rgba(255,255,255,0.3);
+			border: 0 none;
+			display: inline-block;
+			font-size: 30px;
+			height: 30px;
+			line-height: 30px;
+			margin: 0 2px;
+			opacity: 1;
+			text-align: left;
+			transform: none !important;
+			width: 30px;
+		}
+
 		&.active { 
-			animation: borderPulse 0.5s infinite alternate;
-			border: 2px solid limegreen; 
-			box-shadow: 0 0 2px limegreen; 
+			animation: unitPulse 0.5s infinite alternate;
 			cursor: pointer;
 
 			img { pointer-events: none; }
@@ -501,12 +540,126 @@
 			opacity: 0;
 			transform: scale(0.5) translate(-50vw,90vh) rotateY(0) !important;
 		}
+
+		// Stats
+		$atk1: 6px 0;
+		$atk2: -37px 0;
+		$atk3: -80px 0;
+		$atk4: -123px 0;
+		$atk5: -166px 0;
+
+		$def1: 0px 70px;
+		$def2: -53px 70px;
+		$def3: -106px 70px;
+		$def4: -159px 70px;
+		$def5: -214px 70px;
+
+		$sup1: 0px 124px;
+		$sup2: -53px 124px;
+		$sup3: -107px 124px;
+		$sup4: -160px 124px;
+		$sup5: -213px 124px;
+		$sup0: -268px 124px;
+
+		&:before {
+			content: '';
+			display: block;
+			height: 170px;
+			opacity: 0;
+			position: absolute;
+			top: 0; left: -40px;
+			transition: all 0.3s;
+			transform: scale(0.7);
+			width: 47px;
+		}
+			&[data-type="a2g"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk2,
+				url(../images/misc/bar_def.png) no-repeat $def4,
+				url(../images/misc/bar_sup.png) no-repeat $sup3,;
+			}
+			&[data-type="aa"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def2,
+				url(../images/misc/bar_sup.png) no-repeat $sup1,;
+			}
+			&[data-type="apc"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def2,
+				url(../images/misc/bar_sup.png) no-repeat $sup0,;
+			}
+			&[data-type="arty"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk3,
+				url(../images/misc/bar_def.png) no-repeat $def1,
+				url(../images/misc/bar_sup.png) no-repeat $sup3,;
+			}
+			&[data-type="bomber"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def3,
+				url(../images/misc/bar_sup.png) no-repeat $sup4,;
+			}
+			&[data-type="drone"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def1,
+				url(../images/misc/bar_sup.png) no-repeat $sup1,;
+			}
+			&[data-type="hbomber"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def4,
+				url(../images/misc/bar_sup.png) no-repeat $sup5,;
+			}
+			&[data-type="helo"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk2,
+				url(../images/misc/bar_def.png) no-repeat $def2,
+				url(../images/misc/bar_sup.png) no-repeat $sup2,;
+			}
+			&[data-type="htank"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk4,
+				url(../images/misc/bar_def.png) no-repeat $def5,
+				url(../images/misc/bar_sup.png) no-repeat $sup5,;
+			}
+			&[data-type="infantry"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def1,
+				url(../images/misc/bar_sup.png) no-repeat $sup0,;
+			}
+			&[data-type="jet"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def4,
+				url(../images/misc/bar_sup.png) no-repeat $sup3,;
+			}
+			&[data-type="recon"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk1,
+				url(../images/misc/bar_def.png) no-repeat $def2,
+				url(../images/misc/bar_sup.png) no-repeat $sup1,;
+			}
+			&[data-type="tank"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk2,
+				url(../images/misc/bar_def.png) no-repeat $def2,
+				url(../images/misc/bar_sup.png) no-repeat $sup2,;
+			}
 	}
 		.player .unit { 
 			//animation: playerUnit 1s ease forwards;
-			transform: scale(0.8) translateX(-60%) rotateY(15deg); 
+			transform: scale(0.9) translateX(-70%); 
 		}
-		.opponent .unit { transform: scale(0.8) translateX(-60%) rotateY(-15deg); }
+		.opponent .unit { 
+			transform: scale(0.9) translateX(-40%) rotateY(180deg);
+			&:before { left: 140%; transform: scale(0.7) rotateY(180deg); } 
+			ul { width: 140%; text-align: right; } 
+		}
 }
 
 @keyframes playerUnit {
@@ -519,6 +672,11 @@
 			box-shadow: 0 0 2px limegreen; }
 	to { border: 2px solid white; 
 			box-shadow: 0 0 2px white; }
+}
+
+@keyframes unitPulse {
+	from { transform: scale(1) rotateY(0deg) }
+	to { transform: scale(0.7) rotateY(180deg) }
 }
 
 @keyframes statPulse {
@@ -540,4 +698,9 @@
 	0% { opacity: 0; transform: translate(0%,100%); }
 	15%, 80% { opacity: 1; }
 	100% { opacity: 0; transform: translate(0%,-50%); }
+}
+
+@keyframes unitRumble {
+	from { background-position: 0 0; }
+	to { background-position: 0 -768px; }
 }

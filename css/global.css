@@ -310,6 +310,56 @@ body {
   overflow: hidden;
 }
 
+@font-face {
+  font-family: 'icomoon';
+  src: url("../fonts/icomoon.eot?-kj0vl4");
+  src: url("../fonts/icomoon.eot?#iefix-kj0vl4") format("embedded-opentype"), url("../fonts/icomoon.woff?-kj0vl4") format("woff"), url("../fonts/icomoon.ttf?-kj0vl4") format("truetype"), url("../fonts/icomoon.svg?-kj0vl4#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-aa:before {
+  content: "\e600";
+}
+
+.icon-as:before {
+  content: "\e601";
+}
+
+.icon-lr:before {
+  content: "\e602";
+}
+
+.icon-arm:before {
+  content: "\e603";
+}
+
+.icon-air:before {
+  content: "\e604";
+}
+
+.icon-grd:before {
+  content: "\e605";
+}
+
+.icon-inf:before {
+  content: "\e606";
+}
+
 body {
   background: #92ce9a url(../images/bg/bg_table.png);
   font-family: Calibri, Tahoma, sans-serif;
@@ -567,6 +617,18 @@ footer {
   width: 50%;
 }
 
+.game .field aside:before {
+  background: -webkit-gradient(linear, top left, bottom left, from(skyblue), to(tan));
+  background: -webkit-linear-gradient(skyblue 70%, tan);
+  background: linear-gradient(skyblue 70%, tan);
+  content: '';
+  height: 80px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 .game .field aside:after {
   background: #3D9970;
   border-radius: 4px;
@@ -593,6 +655,11 @@ footer {
 .game .field .player:not(.myturn),
 .game .field .player.myturn + .opponent {
   background: rgba(210, 180, 140, 0.75);
+}
+
+.game .field .player:not(.myturn):before,
+.game .field .player.myturn + .opponent:before {
+  opacity: 0.25;
 }
 
 .game .field .player:not(.myturn) .card img,
@@ -633,9 +700,9 @@ footer {
 
 .game .field aside:first-child li:first-child,
 .game .field aside:first-child li:last-child {
-  -webkit-transform: translateX(-50px) scale(0.9);
-  -ms-transform: translateX(-50px) scale(0.9);
-  transform: translateX(-50px) scale(0.9);
+  -webkit-transform: translateX(-60px) scale(0.9);
+  -ms-transform: translateX(-60px) scale(0.9);
+  transform: translateX(-60px) scale(0.9);
 }
 
 .game .field aside:last-child {
@@ -652,13 +719,13 @@ footer {
 
 .game .field aside:last-child li:first-child,
 .game .field aside:last-child li:last-child {
-  -webkit-transform: translateX(50px) scale(0.9);
-  -ms-transform: translateX(50px) scale(0.9);
-  transform: translateX(50px) scale(0.9);
+  -webkit-transform: translateX(60px) scale(0.9);
+  -ms-transform: translateX(60px) scale(0.9);
+  transform: translateX(60px) scale(0.9);
 }
 
 .game .field h1 {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.5);
   line-height: 40px;
   position: absolute;
   top: 0;
@@ -918,10 +985,18 @@ footer {
   z-index: 1;
 }
 
+.game .formation:hover > li {
+  opacity: 0.3;
+}
+
+.game .formation:hover > li:hover {
+  opacity: 1;
+}
+
 .game li {
   border: 2px solid #b28446;
   border-radius: 50%;
-  min-height: 16.5%;
+  min-height: 14.5%;
   -webkit-perspective: 300px;
   -ms-perspective: 300px;
   perspective: 300px;
@@ -946,9 +1021,14 @@ footer {
 .game li:hover:not(.active) .unit {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  -webkit-transform: scale(1.2) translateX(-60%) rotateY(0deg);
-  -ms-transform: scale(1.2) translateX(-60%) rotateY(0deg);
-  transform: scale(1.2) translateX(-60%) rotateY(0deg);
+  -webkit-transform: scale(1.1) translateX(-60%) rotateY(0deg);
+  -ms-transform: scale(1.1) translateX(-60%) rotateY(0deg);
+  transform: scale(1.1) translateX(-60%) rotateY(0deg);
+}
+
+.game li:hover .unit:before,
+.game li:hover .unit ul {
+  opacity: 1;
 }
 
 .game li.active {
@@ -961,8 +1041,6 @@ footer {
 }
 
 .game li.active .unit {
-  -webkit-box-shadow: 0 0 15px green;
-  box-shadow: 0 0 15px green;
   opacity: 0.3;
   pointer-events: none;
 }
@@ -1092,6 +1170,12 @@ footer {
   opacity: 0.8;
 }
 
+.game .opponent li:hover:not(.active) .unit {
+  -webkit-transform: scale(1.1) translateX(-40%) rotateY(180deg);
+  -ms-transform: scale(1.1) translateX(-40%) rotateY(180deg);
+  transform: scale(1.1) translateX(-40%) rotateY(180deg);
+}
+
 .game .opponent li.combo span {
   left: -100px;
 }
@@ -1213,7 +1297,10 @@ footer {
 }
 
 .game .unit {
-  background: #333;
+  -webkit-animation: unitRumble 0.5s steps(3) linear infinite;
+  animation: unitRumble 0.5s steps(3) linear infinite;
+  -webkit-background-size: 256px auto;
+  background-size: 256px auto;
   border-radius: 0;
   height: 200px;
   position: absolute;
@@ -1230,12 +1317,35 @@ footer {
   width: auto;
 }
 
+.game .unit ul {
+  opacity: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.game .unit li {
+  background: rgba(255, 255, 255, 0.3);
+  border: 0 none;
+  display: inline-block;
+  font-size: 30px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 2px;
+  opacity: 1;
+  text-align: left;
+  -webkit-transform: none !important;
+  -ms-transform: none !important;
+  transform: none !important;
+  width: 30px;
+}
+
 .game .unit.active {
-  -webkit-animation: borderPulse 0.5s infinite alternate;
-  animation: borderPulse 0.5s infinite alternate;
-  border: 2px solid limegreen;
-  -webkit-box-shadow: 0 0 2px limegreen;
-  box-shadow: 0 0 2px limegreen;
+  -webkit-animation: unitPulse 0.5s infinite alternate;
+  animation: unitPulse 0.5s infinite alternate;
   cursor: pointer;
 }
 
@@ -1250,16 +1360,96 @@ footer {
   transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
 }
 
+.game .unit:before {
+  content: '';
+  display: block;
+  height: 170px;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: -40px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform: scale(0.7);
+  -ms-transform: scale(0.7);
+  transform: scale(0.7);
+  width: 47px;
+}
+
+.game .unit[data-type="a2g"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game .unit[data-type="aa"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game .unit[data-type="apc"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
+}
+
+.game .unit[data-type="arty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -80px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game .unit[data-type="bomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -160px 124px;
+}
+
+.game .unit[data-type="drone"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game .unit[data-type="hbomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game .unit[data-type="helo"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
+}
+
+.game .unit[data-type="htank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -123px 0, url(../images/misc/bar_def.png) no-repeat -214px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game .unit[data-type="infantry"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
+}
+
+.game .unit[data-type="jet"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game .unit[data-type="recon"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game .unit[data-type="tank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
+}
+
 .game .player .unit {
-  -webkit-transform: scale(0.8) translateX(-60%) rotateY(15deg);
-  -ms-transform: scale(0.8) translateX(-60%) rotateY(15deg);
-  transform: scale(0.8) translateX(-60%) rotateY(15deg);
+  -webkit-transform: scale(0.9) translateX(-70%);
+  -ms-transform: scale(0.9) translateX(-70%);
+  transform: scale(0.9) translateX(-70%);
 }
 
 .game .opponent .unit {
-  -webkit-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
-  -ms-transform: scale(0.8) translateX(-60%) rotateY(-15deg);
-  transform: scale(0.8) translateX(-60%) rotateY(-15deg);
+  -webkit-transform: scale(0.9) translateX(-40%) rotateY(180deg);
+  -ms-transform: scale(0.9) translateX(-40%) rotateY(180deg);
+  transform: scale(0.9) translateX(-40%) rotateY(180deg);
+}
+
+.game .opponent .unit:before {
+  left: 140%;
+  -webkit-transform: scale(0.7) rotateY(180deg);
+  -ms-transform: scale(0.7) rotateY(180deg);
+  transform: scale(0.7) rotateY(180deg);
+}
+
+.game .opponent .unit ul {
+  width: 140%;
+  text-align: right;
 }
 
 @-webkit-keyframes playerUnit {
@@ -1317,6 +1507,32 @@ footer {
     border: 2px solid white;
     -webkit-box-shadow: 0 0 2px white;
     box-shadow: 0 0 2px white;
+  }
+}
+
+@-webkit-keyframes unitPulse {
+  from {
+    -webkit-transform: scale(1) rotateY(0deg);
+    transform: scale(1) rotateY(0deg);
+  }
+
+  to {
+    -webkit-transform: scale(0.7) rotateY(180deg);
+    transform: scale(0.7) rotateY(180deg);
+  }
+}
+
+@keyframes unitPulse {
+  from {
+    -webkit-transform: scale(1) rotateY(0deg);
+    -ms-transform: scale(1) rotateY(0deg);
+    transform: scale(1) rotateY(0deg);
+  }
+
+  to {
+    -webkit-transform: scale(0.7) rotateY(180deg);
+    -ms-transform: scale(0.7) rotateY(180deg);
+    transform: scale(0.7) rotateY(180deg);
   }
 }
 
@@ -1433,6 +1649,26 @@ footer {
     -webkit-transform: translate(0%, -50%);
     -ms-transform: translate(0%, -50%);
     transform: translate(0%, -50%);
+  }
+}
+
+@-webkit-keyframes unitRumble {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 0 -768px;
+  }
+}
+
+@keyframes unitRumble {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 0 -768px;
   }
 }
 
