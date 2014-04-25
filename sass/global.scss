@@ -1,5 +1,6 @@
 @import "renorm";
 @import "flex";
+@import "fonts";
 
 @import "main";
 @import "builder";
@@ -104,14 +105,6 @@ button { outline: none; }
 	min-width: 140px;
 	overflow: hidden;
 	position: relative;
-
-	// &:before, &:after {
-	// 	position: absolute;
-	// 	top: 0; left: 0;
-	// }
-
-	// &:before { content: attr(id); display: block; }
-	// &:after { content: attr(data-type); }
 
 	img { 
 		animation: blink 0.1s;
