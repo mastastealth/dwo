@@ -1215,31 +1215,31 @@ function placeUnit(pos, card, who, id) {
 function smartShift(who) {
 	if (document.querySelectorAll('.'+who+' .formation .unit').length === 3) {
 		// Unit was added on the top side, bring bottom, empty li to top to center formation
-		if ( document.querySelector('.'+who+' .formation li:first-child').children.length > 1 ) {
-			var lastLi = document.querySelector('.'+who+' .formation li:last-child');
+		if ( document.querySelector('.'+who+' .formation > li:first-child').children.length > 1 ) {
+			var lastLi = document.querySelector('.'+who+' .formation > li:last-child');
 			document.querySelector('.'+who+' ul.formation').prependChild(lastLi);
 		} 
 		// or do the opposite for bottom
-		else if ( document.querySelector('.'+who+' .formation li:last-child').children.length > 1 ) {
-			var firstLi = document.querySelector('.'+who+' .formation li:first-child');
+		else if ( document.querySelector('.'+who+' .formation > li:last-child').children.length > 1 ) {
+			var firstLi = document.querySelector('.'+who+' .formation > li:first-child');
 			document.querySelector('.'+who+' ul.formation').appendChild(firstLi);
 		}
 	} 
 	// Add empty li to opposite side of end with unit
 	else if (document.querySelectorAll('.'+who+' .formation .unit').length === 4) {
 		var li = document.createElement('li');
-		if ( document.querySelector('.'+who+' .formation li:first-child').children.length > 1 ) {
+		if ( document.querySelector('.'+who+' .formation > li:first-child').children.length > 1 ) {
 			console.log('Prepending...', li);
 			document.querySelector('.'+who+' ul.formation').prependChild( li );
 		}
-		else if ( document.querySelector('.'+who+' .formation li:last-child').children.length > 1 ) {
+		else if ( document.querySelector('.'+who+' .formation > li:last-child').children.length > 1 ) {
 			console.log('Appending...', li);
 			document.querySelector('.'+who+' ul.formation').appendChild( li );
 		}
 		li.appendChild( document.createElement('span') );
 
-	} else if (document.querySelectorAll('.'+who+' .formation .unit').length === 5 && document.querySelector('.'+who+' .formation li span:only-child')) {
-		var emptyLi = document.querySelector('.'+who+' .formation li span:only-child').parentNode;
+	} else if (document.querySelectorAll('.'+who+' .formation .unit').length === 5 && document.querySelector('.'+who+' .formation > li span:only-child')) {
+		var emptyLi = document.querySelector('.'+who+' .formation > li span:only-child').parentNode;
 		emptyLi.parentNode.removeChild(emptyLi);
 	}
 }
@@ -1402,12 +1402,12 @@ function resetField(points,loser) {
 		} 
 	}
 
-	if (document.querySelectorAll('.player .formation li').length>5) {
-		document.querySelector('.player .formation li:first-child').remove();
+	if (document.querySelectorAll('.player .formation > li').length>5) {
+		document.querySelector('.player .formation > li:first-child').remove();
 	}
 
-	if (document.querySelectorAll('.opponent .formation li').length>5) {
-		document.querySelector('.opponent .formation li:first-child').remove();
+	if (document.querySelectorAll('.opponent .formation > li').length>5) {
+		document.querySelector('.opponent .formation > li:first-child').remove();
 	}
 
 	// Reset stats
