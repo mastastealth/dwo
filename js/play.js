@@ -670,9 +670,8 @@ function unitCard(newUnit,card,who,id) {
 	newUnit.cardProps = card;
 
 	// Image
-	var img = newUnit.appendChild( document.createElement('img') );
-	img.setAttribute('src','images/units/'+card.type+'.png');
-	//APNG.ifNeeded(function() { APNG.animateImage(img); });
+	var img = newUnit.appendChild( document.createElement('i') );
+	//img.setAttribute('src','images/units/'+card.type+'.png');
 	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 

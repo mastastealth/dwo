@@ -304,7 +304,7 @@
 	}
 
 	li {
-		border: 2px solid darken(#D2B48C,20%);
+		border: 2px dashed darken(#D2B48C,20%);
 		border-radius: 50%;
 		min-height: 14.5%;
 		perspective: 300px;
@@ -315,15 +315,16 @@
 		&:empty { background: white; opacity: 0.1; }
 
 		&:hover { 
+			background: rgba(0,0,0,0.1);
 			border-color: transparent;
 			z-index: 1; 
 
 			&:not(.active) .unit {
 				transition: all 0.3s;
-				transform: scale(1.1) translateX(-60%) rotateY(0deg);
+				transform: scale(1.1) translateX(-40%) rotateY(0deg);
 			}
 
-			.unit:before, .unit ul { opacity: 1; }
+			.unit:before, .unit:after, .unit ul { opacity: 1; }
 		}
 
 		&.active { 
@@ -334,7 +335,6 @@
 			z-index: 1;
 
 			.unit { 
-				//box-shadow: 0 0 15px green;
 				opacity: 0.3; 
 				pointer-events: none; 
 			}
@@ -494,23 +494,26 @@
 
 	
 	.unit {
-		//background: #333;
-		animation: unitRumble 0.5s steps(3) linear infinite;
-		background-size: 256px auto;
 		border-radius: 0;
-		height: 200px;
+		height: 160px;
+		pointer-events: none;
 		position: absolute;
-		top: -120px; left: 50%;
+		top: -120px; left: 45%;
 		transition: all 1.3s;
-		max-width: 150px;
-		min-width: 140px;
+		width: 160px;
 
-		img { height: 100%; width: auto; }
+		i { 
+			animation: unitRumble 0.5s steps(3) infinite;
+			background-size: 100% auto !important;
+			display: block;
+			height: 100%; 
+			width: 100%; 
+		}
 
 		ul { 
 			opacity: 0;
 			position: absolute; 
-			bottom: 0; left: 0;
+			bottom: -15px; left: 0;
 			transition: all 0.3s; 
 			width: 100%;
 		}
@@ -532,11 +535,13 @@
 		&.active { 
 			animation: unitPulse 0.5s infinite alternate;
 			cursor: pointer;
+			pointer-events: all;
 
-			img { pointer-events: none; }
+			i { pointer-events: none; }
 		}
 
 		&.toDeck {
+			animation: none;
 			opacity: 0;
 			transform: scale(0.5) translate(-50vw,90vh) rotateY(0) !important;
 		}
@@ -561,6 +566,22 @@
 		$sup5: -213px 124px;
 		$sup0: -268px 124px;
 
+		&:after {
+			background: #E44141;
+			border-radius: 6px;
+			color: white;
+			display: inline-block;
+			font-family: Calibri, Helvetica, 'icomoon';
+			font-size: 22px;
+			line-height: 30px;
+			opacity: 0;
+			padding: 0 5px;
+			position: absolute;
+			bottom: -15px; right: 0;
+			transition: all 0.3s;
+			vertical-align: middle;
+		}
+
 		&:before {
 			content: '';
 			display: block;
@@ -572,78 +593,98 @@
 			transform: scale(0.7);
 			width: 47px;
 		}
+			&[data-type="a2g"] i { background: url(../images/units/a2g.png) no-repeat; }
+			&[data-type="a2g"]:after { content: "+2 vs \e603" ; }
 			&[data-type="a2g"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk2,
 				url(../images/misc/bar_def.png) no-repeat $def4,
 				url(../images/misc/bar_sup.png) no-repeat $sup3,;
 			}
+			&[data-type="aa"] i { background: url(../images/units/aa.png) no-repeat; }
+			&[data-type="aa"]:after { content: "+2 vs \e604" ; }
 			&[data-type="aa"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def2,
 				url(../images/misc/bar_sup.png) no-repeat $sup1,;
 			}
+			&[data-type="apc"] i { background: url(../images/units/apc.png) no-repeat; }
+			&[data-type="apc"]:after { content: "+1 vs \e606 / +1 Supply" ; }
 			&[data-type="apc"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def2,
 				url(../images/misc/bar_sup.png) no-repeat $sup0,;
 			}
+			&[data-type="arty"] i { background: url(../images/units/arty.png) no-repeat; }
 			&[data-type="arty"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk3,
 				url(../images/misc/bar_def.png) no-repeat $def1,
 				url(../images/misc/bar_sup.png) no-repeat $sup3,;
 			}
+			&[data-type="bomber"] i { background: url(../images/units/bomber.png) no-repeat; }
+			&[data-type="bomber"]:after { content: "+3 vs \e603" ; }
 			&[data-type="bomber"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def3,
 				url(../images/misc/bar_sup.png) no-repeat $sup4,;
 			}
+			&[data-type="drone"] i { background: url(../images/units/drone.png) no-repeat; }
 			&[data-type="drone"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def1,
 				url(../images/misc/bar_sup.png) no-repeat $sup1,;
 			}
+			&[data-type="hbomber"] i { background: url(../images/units/hbomber.png) no-repeat; }
+			&[data-type="hbomber"]:after { content: "+4 vs \e605" ; }
 			&[data-type="hbomber"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def4,
 				url(../images/misc/bar_sup.png) no-repeat $sup5,;
 			}
+			&[data-type="helo"] i { background: url(../images/units/helo.png) no-repeat; }
 			&[data-type="helo"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk2,
 				url(../images/misc/bar_def.png) no-repeat $def2,
 				url(../images/misc/bar_sup.png) no-repeat $sup2,;
 			}
+			&[data-type="htank"] i { background: url(../images/units/htank.png) no-repeat; }
 			&[data-type="htank"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk4,
 				url(../images/misc/bar_def.png) no-repeat $def5,
 				url(../images/misc/bar_sup.png) no-repeat $sup5,;
 			}
+			&[data-type="infantry"] i { background: url(../images/units/infantry.png) no-repeat; }
 			&[data-type="infantry"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def1,
 				url(../images/misc/bar_sup.png) no-repeat $sup0,;
 			}
+			&[data-type="jet"] i { background: url(../images/units/jet.png) no-repeat; }
+			&[data-type="jet"]:after { content: "+3 vs \e604" ; }
 			&[data-type="jet"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def4,
 				url(../images/misc/bar_sup.png) no-repeat $sup3,;
 			}
+			&[data-type="recon"] i { background: url(../images/units/recon.png) no-repeat; }
+			&[data-type="recon"]:after { content: "+2 vs \e606" ; }
 			&[data-type="recon"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,
 				url(../images/misc/bar_def.png) no-repeat $def2,
 				url(../images/misc/bar_sup.png) no-repeat $sup1,;
 			}
+			&[data-type="tank"] i { background: url(../images/units/tank.png) no-repeat; }
 			&[data-type="tank"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk2,
@@ -653,12 +694,13 @@
 	}
 		.player .unit { 
 			//animation: playerUnit 1s ease forwards;
-			transform: scale(0.9) translateX(-70%); 
+			transform: translateX(-40%); 
 		}
 		.opponent .unit { 
-			transform: scale(0.9) translateX(-40%) rotateY(180deg);
-			&:before { left: 140%; transform: scale(0.7) rotateY(180deg); } 
-			ul { width: 140%; text-align: right; } 
+			transform: translateX(-40%) rotateY(180deg);
+			&:before { left: 110%; transform: scale(0.7) rotateY(180deg); } 
+			&:after { left: 0%; right: auto; transform: rotateY(180deg); }
+			ul { width: 110%; text-align: right; } 
 		}
 }
 
@@ -675,8 +717,8 @@
 }
 
 @keyframes unitPulse {
-	from { transform: scale(1) rotateY(0deg) }
-	to { transform: scale(0.7) rotateY(180deg) }
+	from { opacity: 1; transform: scale(1) translateX(-40%) rotateY(0deg) }
+	to { opacity: 0.8; transform: scale(0.9) translateX(-40%) rotateY(5deg) }
 }
 
 @keyframes statPulse {
@@ -702,5 +744,5 @@
 
 @keyframes unitRumble {
 	from { background-position: 0 0; }
-	to { background-position: 0 -768px; }
+	to { background-position: 0 150%; }
 }
