@@ -1303,7 +1303,7 @@ footer {
   height: 160px;
   pointer-events: none;
   position: absolute;
-  top: -120px;
+  top: -100px;
   left: 45%;
   -webkit-transition: all 1.3s;
   transition: all 1.3s;
@@ -1429,7 +1429,10 @@ footer {
 }
 
 .game .unit[data-type="apc"]:after {
-  content: "+1 vs \e606 / +1 Supply";
+  background: -webkit-linear-gradient(340deg, #e44141 52%, #dcc63b 52%);
+  background: linear-gradient(110deg, #e44141 52%, #dcc63b 52%);
+  content: "+1 vs \e606 / +1 Sup";
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .game .unit[data-type="apc"]:before {

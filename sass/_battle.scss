@@ -498,7 +498,7 @@
 		height: 160px;
 		pointer-events: none;
 		position: absolute;
-		top: -120px; left: 45%;
+		top: -100px; left: 45%;
 		transition: all 1.3s;
 		width: 160px;
 
@@ -610,7 +610,10 @@
 				url(../images/misc/bar_sup.png) no-repeat $sup1,;
 			}
 			&[data-type="apc"] i { background: url(../images/units/apc.png) no-repeat; }
-			&[data-type="apc"]:after { content: "+1 vs \e606 / +1 Supply" ; }
+			&[data-type="apc"]:after { 
+				background: linear-gradient(110deg, #E44141 52%, #DCC63B 52%); 
+				content: "+1 vs \e606 / +1 Sup" ; text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+			}
 			&[data-type="apc"]:before {
 				background: 
 				url(../images/misc/bar_atk.png) no-repeat $atk1,

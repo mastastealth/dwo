@@ -42,10 +42,10 @@ function introSupply2() {
 	document.querySelector('.player .sup').textContent = '0/3';
 
 	// Draw Infantry
-	drawCardConfirmed( {'type': 'infantry', 'id' : 'inf1', 'unit' : 1 } );
+	drawCardConfirmed( {'type': 'infantry', 'id' : 'inf1', 'unit' : 1 },100 );
 	window.setTimeout( function() {
 		buoy.addClass( document.querySelector('.hand .card'), 'disable' );
-	},110);
+	},600);
 
 	bubbleP.innerHTML = "Whenever you play a supply card, you automatically draw a new card from your deck. Although this <em>sounds</em> like an easy way to draw infinite cards, \
 	one thing to remember is <strong>supplies are limited</strong>. Each player only has <strong>25</strong> of them, so you have to play your cards carefully. <strong>If you run out of supplies, you lose!</strong>";
