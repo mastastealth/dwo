@@ -994,7 +994,7 @@ footer {
 }
 
 .game li {
-  border: 2px solid #b28446;
+  border: 2px dashed #b28446;
   border-radius: 50%;
   min-height: 14.5%;
   -webkit-perspective: 300px;
@@ -1014,6 +1014,7 @@ footer {
 }
 
 .game li:hover {
+  background: rgba(0, 0, 0, 0.1);
   border-color: transparent;
   z-index: 1;
 }
@@ -1021,12 +1022,13 @@ footer {
 .game li:hover:not(.active) .unit {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  -webkit-transform: scale(1.1) translateX(-60%) rotateY(0deg);
-  -ms-transform: scale(1.1) translateX(-60%) rotateY(0deg);
-  transform: scale(1.1) translateX(-60%) rotateY(0deg);
+  -webkit-transform: scale(1.1) translateX(-40%) rotateY(0deg);
+  -ms-transform: scale(1.1) translateX(-40%) rotateY(0deg);
+  transform: scale(1.1) translateX(-40%) rotateY(0deg);
 }
 
 .game li:hover .unit:before,
+.game li:hover .unit:after,
 .game li:hover .unit ul {
   opacity: 1;
 }
@@ -1297,30 +1299,31 @@ footer {
 }
 
 .game .unit {
-  -webkit-animation: unitRumble 0.5s steps(3) linear infinite;
-  animation: unitRumble 0.5s steps(3) linear infinite;
-  -webkit-background-size: 256px auto;
-  background-size: 256px auto;
   border-radius: 0;
-  height: 200px;
+  height: 160px;
+  pointer-events: none;
   position: absolute;
-  top: -120px;
-  left: 50%;
+  top: -100px;
+  left: 45%;
   -webkit-transition: all 1.3s;
   transition: all 1.3s;
-  max-width: 150px;
-  min-width: 140px;
+  width: 160px;
 }
 
-.game .unit img {
+.game .unit i {
+  -webkit-animation: unitRumble 0.5s steps(3) infinite;
+  animation: unitRumble 0.5s steps(3) infinite;
+  -webkit-background-size: 100% auto !important;
+  background-size: 100% auto !important;
+  display: block;
   height: 100%;
-  width: auto;
+  width: 100%;
 }
 
 .game .unit ul {
   opacity: 0;
   position: absolute;
-  bottom: 0;
+  bottom: -15px;
   left: 0;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
@@ -1347,17 +1350,38 @@ footer {
   -webkit-animation: unitPulse 0.5s infinite alternate;
   animation: unitPulse 0.5s infinite alternate;
   cursor: pointer;
+  pointer-events: all;
 }
 
-.game .unit.active img {
+.game .unit.active i {
   pointer-events: none;
 }
 
 .game .unit.toDeck {
+  -webkit-animation: none;
+  animation: none;
   opacity: 0;
   -webkit-transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
   -ms-transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
   transform: scale(0.5) translate(-50vw, 90vh) rotateY(0) !important;
+}
+
+.game .unit:after {
+  background: #E44141;
+  border-radius: 6px;
+  color: white;
+  display: inline-block;
+  font-family: Calibri, Helvetica, 'icomoon';
+  font-size: 22px;
+  line-height: 30px;
+  opacity: 0;
+  padding: 0 5px;
+  position: absolute;
+  bottom: -15px;
+  right: 0;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  vertical-align: middle;
 }
 
 .game .unit:before {
@@ -1376,52 +1400,135 @@ footer {
   width: 47px;
 }
 
+.game .unit[data-type="a2g"] i {
+  background: url(../images/units/a2g.png) no-repeat;
+}
+
+.game .unit[data-type="a2g"]:after {
+  content: "+2 vs \e603";
+}
+
 .game .unit[data-type="a2g"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game .unit[data-type="aa"] i {
+  background: url(../images/units/aa.png) no-repeat;
+}
+
+.game .unit[data-type="aa"]:after {
+  content: "+2 vs \e604";
 }
 
 .game .unit[data-type="aa"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
 }
 
+.game .unit[data-type="apc"] i {
+  background: url(../images/units/apc.png) no-repeat;
+}
+
+.game .unit[data-type="apc"]:after {
+  background: -webkit-linear-gradient(340deg, #e44141 52%, #dcc63b 52%);
+  background: linear-gradient(110deg, #e44141 52%, #dcc63b 52%);
+  content: "+1 vs \e606 / +1 Sup";
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
 .game .unit[data-type="apc"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
+}
+
+.game .unit[data-type="arty"] i {
+  background: url(../images/units/arty.png) no-repeat;
 }
 
 .game .unit[data-type="arty"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat -80px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
 }
 
+.game .unit[data-type="bomber"] i {
+  background: url(../images/units/bomber.png) no-repeat;
+}
+
+.game .unit[data-type="bomber"]:after {
+  content: "+3 vs \e603";
+}
+
 .game .unit[data-type="bomber"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -160px 124px;
+}
+
+.game .unit[data-type="drone"] i {
+  background: url(../images/units/drone.png) no-repeat;
 }
 
 .game .unit[data-type="drone"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
 }
 
+.game .unit[data-type="hbomber"] i {
+  background: url(../images/units/hbomber.png) no-repeat;
+}
+
+.game .unit[data-type="hbomber"]:after {
+  content: "+4 vs \e605";
+}
+
 .game .unit[data-type="hbomber"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game .unit[data-type="helo"] i {
+  background: url(../images/units/helo.png) no-repeat;
 }
 
 .game .unit[data-type="helo"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
 }
 
+.game .unit[data-type="htank"] i {
+  background: url(../images/units/htank.png) no-repeat;
+}
+
 .game .unit[data-type="htank"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat -123px 0, url(../images/misc/bar_def.png) no-repeat -214px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game .unit[data-type="infantry"] i {
+  background: url(../images/units/infantry.png) no-repeat;
 }
 
 .game .unit[data-type="infantry"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
 }
 
+.game .unit[data-type="jet"] i {
+  background: url(../images/units/jet.png) no-repeat;
+}
+
+.game .unit[data-type="jet"]:after {
+  content: "+3 vs \e604";
+}
+
 .game .unit[data-type="jet"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
 }
 
+.game .unit[data-type="recon"] i {
+  background: url(../images/units/recon.png) no-repeat;
+}
+
+.game .unit[data-type="recon"]:after {
+  content: "+2 vs \e606";
+}
+
 .game .unit[data-type="recon"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game .unit[data-type="tank"] i {
+  background: url(../images/units/tank.png) no-repeat;
 }
 
 .game .unit[data-type="tank"]:before {
@@ -1429,26 +1536,34 @@ footer {
 }
 
 .game .player .unit {
-  -webkit-transform: scale(0.9) translateX(-70%);
-  -ms-transform: scale(0.9) translateX(-70%);
-  transform: scale(0.9) translateX(-70%);
+  -webkit-transform: translateX(-40%);
+  -ms-transform: translateX(-40%);
+  transform: translateX(-40%);
 }
 
 .game .opponent .unit {
-  -webkit-transform: scale(0.9) translateX(-40%) rotateY(180deg);
-  -ms-transform: scale(0.9) translateX(-40%) rotateY(180deg);
-  transform: scale(0.9) translateX(-40%) rotateY(180deg);
+  -webkit-transform: translateX(-40%) rotateY(180deg);
+  -ms-transform: translateX(-40%) rotateY(180deg);
+  transform: translateX(-40%) rotateY(180deg);
 }
 
 .game .opponent .unit:before {
-  left: 140%;
+  left: 110%;
   -webkit-transform: scale(0.7) rotateY(180deg);
   -ms-transform: scale(0.7) rotateY(180deg);
   transform: scale(0.7) rotateY(180deg);
 }
 
+.game .opponent .unit:after {
+  left: 0%;
+  right: auto;
+  -webkit-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+
 .game .opponent .unit ul {
-  width: 140%;
+  width: 110%;
   text-align: right;
 }
 
@@ -1512,27 +1627,31 @@ footer {
 
 @-webkit-keyframes unitPulse {
   from {
-    -webkit-transform: scale(1) rotateY(0deg);
-    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+    -webkit-transform: scale(1) translateX(-40%) rotateY(0deg);
+    transform: scale(1) translateX(-40%) rotateY(0deg);
   }
 
   to {
-    -webkit-transform: scale(0.7) rotateY(180deg);
-    transform: scale(0.7) rotateY(180deg);
+    opacity: 0.8;
+    -webkit-transform: scale(0.9) translateX(-40%) rotateY(5deg);
+    transform: scale(0.9) translateX(-40%) rotateY(5deg);
   }
 }
 
 @keyframes unitPulse {
   from {
-    -webkit-transform: scale(1) rotateY(0deg);
-    -ms-transform: scale(1) rotateY(0deg);
-    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+    -webkit-transform: scale(1) translateX(-40%) rotateY(0deg);
+    -ms-transform: scale(1) translateX(-40%) rotateY(0deg);
+    transform: scale(1) translateX(-40%) rotateY(0deg);
   }
 
   to {
-    -webkit-transform: scale(0.7) rotateY(180deg);
-    -ms-transform: scale(0.7) rotateY(180deg);
-    transform: scale(0.7) rotateY(180deg);
+    opacity: 0.8;
+    -webkit-transform: scale(0.9) translateX(-40%) rotateY(5deg);
+    -ms-transform: scale(0.9) translateX(-40%) rotateY(5deg);
+    transform: scale(0.9) translateX(-40%) rotateY(5deg);
   }
 }
 
@@ -1658,7 +1777,7 @@ footer {
   }
 
   to {
-    background-position: 0 -768px;
+    background-position: 0 150%;
   }
 }
 
@@ -1668,7 +1787,7 @@ footer {
   }
 
   to {
-    background-position: 0 -768px;
+    background-position: 0 150%;
   }
 }
 

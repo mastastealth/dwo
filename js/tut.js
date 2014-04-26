@@ -38,14 +38,14 @@ function introSupply() {
 // Explain + Play Supply
 function introSupply2() {
 	sfx_slide.play();
-	document.querySelector('.hand .card').remove();
+	cardToDiscard( document.querySelector('.hand .card') );
 	document.querySelector('.player .sup').textContent = '0/3';
 
 	// Draw Infantry
-	drawCardConfirmed( {'type': 'infantry', 'id' : 'inf1', 'unit' : 1 } );
+	drawCardConfirmed( {'type': 'infantry', 'id' : 'inf1', 'unit' : 1 },100 );
 	window.setTimeout( function() {
 		buoy.addClass( document.querySelector('.hand .card'), 'disable' );
-	},110);
+	},600);
 
 	bubbleP.innerHTML = "Whenever you play a supply card, you automatically draw a new card from your deck. Although this <em>sounds</em> like an easy way to draw infinite cards, \
 	one thing to remember is <strong>supplies are limited</strong>. Each player only has <strong>25</strong> of them, so you have to play your cards carefully. <strong>If you run out of supplies, you lose!</strong>";
@@ -79,16 +79,26 @@ function introUnit() {
 
 // Play Infantry
 function introUnit2() {
+	cardToDiscard( document.querySelector('.hand .card') );
+
 	sfx_slide.play();
-	document.querySelector('.player li:nth-child(3)').appendChild(document.querySelector('.hand .card'));
-	buoy.addClass( document.querySelector('li .card'), 'unit' );
+	var newUnit = document.querySelector('.player li:nth-child(3)').appendChild( document.createElement('div') );
+	newUnit.setAttribute('data-type','infantry');
+	buoy.addClass( newUnit, 'unit' );
+	newUnit.appendChild( document.createElement('i') );
+
+	traitList = newUnit.appendChild( document.createElement('ul') );
+	for (var i=0;i<cardType.unit['infantry'].trait.length;i++) {
+		var icon = traitList.appendChild( document.createElement('li') );
+		buoy.addClass(icon,'icon-'+cardType.unit['infantry'].trait[i]);
+	}
+
 	document.querySelector('.player .atk').textContent = '1';
 	document.querySelector('.player .def').textContent = '1';
 
 	bubbleP.innerHTML = "Note that the <span style='color:#E44141'>attack</span> and <span style='color:#4178E4'>defense</span> stats on the top have been updated now! \
 	However, infantry units don't use up any supplies (as you can see in its stats). We are now at 1 <span style='color:#E44141'>ATK</span>/1 <span style='color:#4178E4'>DEF</span> vs our opponent's 0/0...";
 
-	document.querySelector('li .card').removeAttribute('onclick');
 	bubbleBtn.removeAttribute('disabled');
 	bubbleBtn.setAttribute('onclick', 'introUnit3()') ;
 }
@@ -130,12 +140,17 @@ function opponent2() {
 // Play Recon
 function opponent3() {
 	sfx_slide.play();
-	drawCardConfirmed( {'type': 'recon', 'id' : 'recon', 'combo' : 1 } );
 
-	window.setTimeout( function() {
-		var rec = document.querySelector('.opponent li:nth-child(3)').appendChild( document.getElementById('recon') );
-		buoy.addClass( rec, 'unit' );
-	},110);
+	var newUnit = document.querySelector('.opponent li:nth-child(3)').appendChild( document.createElement('div') );
+	newUnit.setAttribute('data-type','recon');
+	buoy.addClass( newUnit, 'unit' );
+	newUnit.appendChild( document.createElement('i') );
+
+	traitList = newUnit.appendChild( document.createElement('ul') );
+	for (var i=0;i<cardType.unit['recon'].trait.length;i++) {
+		var icon = traitList.appendChild( document.createElement('li') );
+		buoy.addClass(icon,'icon-'+cardType.unit['recon'].trait[i]);
+	}
 
 	notify('u', "<img src='images/cards/unit_recon.png'> Unit was played");
 	document.querySelector('.opponent .atk').textContent = '3';
@@ -221,13 +236,16 @@ function opponent5() {
 
 // Opponent plays Helo
 function opponent6() {
-	drawCardConfirmed( {'type': 'helo', 'id' : 'helo', 'combo' : 1 } );
-	var helo;
+	var newUnit = document.querySelector('.opponent li:nth-child(2)').appendChild( document.createElement('div') );
+	newUnit.setAttribute('data-type','helo');
+	buoy.addClass( newUnit, 'unit' );
+	newUnit.appendChild( document.createElement('i') );
 
-	window.setTimeout( function() {
-		helo = document.querySelector('.opponent li:nth-child(2)').appendChild( document.getElementById('helo') );
-		buoy.addClass( helo, 'unit' );
-	},110);
+	traitList = newUnit.appendChild( document.createElement('ul') );
+	for (var i=0;i<cardType.unit['helo'].trait.length;i++) {
+		var icon = traitList.appendChild( document.createElement('li') );
+		buoy.addClass(icon,'icon-'+cardType.unit['helo'].trait[i]);
+	}
 
 	notify('u', "<img src='images/cards/unit_helo.png'> Unit was played");
 	document.querySelector('.opponent .atk').textContent = '5';
@@ -358,9 +376,19 @@ function swapTime4(e) {
 				buoy.removeClass(lastUnit.parentNode, 'active');
 
 				// Add unit to correct slot
-				newUnit = el.parentNode.appendChild( document.getElementById(e) );
-				document.getElementById(e).removeAttribute('onclick');
-				buoy.addClass(newUnit,'unit');
+				cardToDiscard( document.getElementById(e) );
+				var newUnit = el.parentNode.appendChild( document.createElement('div') );
+				newUnit.setAttribute('data-type',e);
+				newUnit.setAttribute('id',e);
+				buoy.addClass( newUnit, 'unit' );
+				newUnit.appendChild( document.createElement('i') );
+
+				traitList = newUnit.appendChild( document.createElement('ul') );
+				for (var i=0;i<cardType.unit[e].trait.length;i++) {
+					var icon = traitList.appendChild( document.createElement('li') );
+					buoy.addClass(icon,'icon-'+cardType.unit[e].trait[i]);
+				}
+
 				sfx_slide.play();
 
 				if (e==="tank") {
@@ -437,12 +465,16 @@ function opponent8() {
 
 	bubbleBtn.setAttribute('onclick', 'finalPlay()') ;
 
-	drawCardConfirmed( {'type': 'a2g', 'id' : 'a2g', 'combo' : 1 } );
-	var a2g;
-	window.setTimeout( function() {
-		a2g = document.querySelector('.opponent li:nth-child(4)').appendChild( document.getElementById('a2g') );
-		buoy.addClass( a2g, 'unit' );
-	},110);
+	var newUnit = document.querySelector('.opponent li:nth-child(4)').appendChild( document.createElement('div') );
+	newUnit.setAttribute('data-type','a2g');
+	buoy.addClass( newUnit, 'unit' );
+	newUnit.appendChild( document.createElement('i') );
+
+	traitList = newUnit.appendChild( document.createElement('ul') );
+	for (var i=0;i<cardType.unit['a2g'].trait.length;i++) {
+		var icon = traitList.appendChild( document.createElement('li') );
+		buoy.addClass(icon,'icon-'+cardType.unit['a2g'].trait[i]);
+	}
 	
 
 	notify('u', "<img src='images/cards/unit_a2g.png'> Unit was played");
@@ -530,9 +562,11 @@ function finalPlay5() {
 	document.querySelector('.opponent .atk').textContent = '0';
 	document.querySelector('.opponent .sup').textContent = '0';
 
-	[].forEach.call(document.querySelectorAll('.card'), function(el) {
+	[].forEach.call(document.querySelectorAll('.unit'), function(el) {
 		el.remove();
 	});
+
+	notify('yellow',"Choose <strong>1</strong> of your combos to retreat into your deck", true);
 
 	bubbleP.innerHTML = "NOPE! Guess he had nothing left to play (or he's plotting your demise next round). Good job! One final thing for this tutorial: \
 	As the winner, you automatically get to <strong>keep all your units</strong> (they are placed back into your draw pile). You also get to <strong>choose</strong> 1 combo to save! \
@@ -547,6 +581,7 @@ function finalPlay5() {
 
 // End
 function finalPlay6() {
+	buoy.addClass( document.querySelector('.sticky'), 'un');
 	[].forEach.call(document.querySelectorAll('.player li'), function(el) {
 		if (buoy.hasClass(el,'combo')) buoy.removeClass(el,'combo');
 		if (buoy.hasClass(el,'active')) buoy.removeClass(el,'active');
