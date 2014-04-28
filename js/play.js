@@ -70,7 +70,7 @@ var properCards;
 
 // Starts off the game and all the other functions
 function playInit(connection, deck, atkr,p) {
-	// Attacker/Defebder
+	// Attacker/Defender
 	peer = p;
 	var attacker = atkr;
 
@@ -79,8 +79,9 @@ function playInit(connection, deck, atkr,p) {
 	} else { buoy.addClass(document.querySelector('.opponent'), 'attacker'); }
 
 	conn = connection;
-	properCards = md5(cardType);
 
+	// Prepare for networking stuff
+	properCards = md5(cardType);
 	var hashedDeck = {};
 	playerDeck = shuffle(deck);
 
@@ -129,9 +130,7 @@ function playInit(connection, deck, atkr,p) {
 		if (myTurn) {
 			var points;
 			var mine = document.querySelectorAll('.player .formation .unit').length;
-			var his = document.querySelectorAll('.player .formation .unit').length;
 
-			// Need a better check if you JUST started your turn or not
 			if ( mine <= 3 ) {
 				points = 1;
 			} else if (mine===4) {
@@ -255,6 +254,7 @@ function playCard(card,who) {
 				sfx_slide.play();
 				unitCalc('opponent');
 				unitCalc('player');
+				addHistory('comm',who,card.type);
 
 				if (who === 'player') forceEndCheck(who);
 
@@ -411,6 +411,8 @@ function playCard(card,who) {
 			addSupply(who);
 			unitCalc('opponent');
 			unitCalc('player');
+
+			addHistory('sup',who)
 
 			if (who === 'player') forceEndCheck(who);
 
@@ -676,6 +678,9 @@ function unitCard(newUnit,card,who,id) {
 	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 
+	// Add to history
+	addHistory('u',who,card.type);
+
 	// Attributes
 	traitList = newUnit.appendChild( document.createElement('ul') );
 	for (var i=0;i<cardType.unit[card.type].trait.length;i++) {
@@ -807,12 +812,15 @@ function comboCard(unit,card,who) {
 	if (!slot.getAttribute('data-type')) {
 		slot.setAttribute('data-type', card.type);
 	} else { slot.setAttribute('data-type2', card.type); }
+
 	// Image?
 	var img = document.createElement("img");
 	img.setAttribute('src','images/cards/'+pre+card.type+'.png');
 	slot.querySelector('span').appendChild(img);
 	sfx_slide.play();
 	slot.cardProps = card;
+
+	addHistory('ccc',who,card.type);
 
 	if (cardType.combo[card.type].atk) {
 		var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
@@ -1193,6 +1201,22 @@ function specialCombo(card,who,v) {
 function overlayOn() {
 	var o = document.querySelector('.overlay');
 	buoy.addClass(o,'active');
+}
+
+// Add to history
+
+function addHistory(v,who,type) {
+	var block = document.createElement('div');
+	document.querySelector('.history').prependChild(block);
+	buoy.addClass(block,v);
+
+	if (v==='sup') { block.style.backgroundImage = "url('images/cards/supply.png')"; }
+	else if (v==='u') { block.style.backgroundImage = "url('images/units/"+type+".png')" }
+	else if (v==='ccc') { block.style.backgroundImage = "url('images/cards/"+type+".png')" }
+	else { block.style.backgroundImage = "url('images/misc/"+type+".png')" }
+
+	block.setAttribute('data-who',who);
+	if (attacker && who === "player" || !attacker && who === "opponent") { block.setAttribute('data-atk','yes'); } else { block.setAttribute('data-atk','no'); }
 }
 
 // Places a second+ unit on the field after choosing formation spot
