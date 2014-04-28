@@ -4,6 +4,7 @@ var opponentDeck;
 var playerDeck;
 var myTurn;
 var attacker;
+var expanded = 0;
 var forceEnd = 0;
 
 var sfx_deal = new Howl({ urls: ['sfx/deal.mp3'], volume: 0.35 });
@@ -1273,6 +1274,11 @@ function clearCombo(el) {
 	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove();
 }
 
+
+// -------------------
+// Card Animations
+// -------------------
+
 // Animate a redecked card
 function cardToDeck(card) {
 	if (card.nodeName != 'DIV') return false;
@@ -1290,6 +1296,8 @@ function addSupply(who) {
 	buoy.addClass(document.querySelector('.'+who+' > h1'),'addSup');
 	window.setTimeout( function() { buoy.removeClass(document.querySelector('.'+who+' > h1'),'addSup'); }, 800);
 }
+
+// -------------------
 
 // Use at the end of the round to wipe/add scores and reset field
 function resetField(points,loser) {
@@ -1457,6 +1465,7 @@ function resetField(points,loser) {
 
 	wipeStats('player');
 	wipeStats('opponent');
+	expanded = 0;
 
 	// Auto draw cards
 	if (document.querySelectorAll('.hand .card').length<8) {
@@ -1576,10 +1585,12 @@ function endTurnListener(e) {
 		buoy.removeClass( document.querySelector('.player'), 'myturn');
 		endTurn.setAttribute('disabled','true');
 		document.querySelector('.end').setAttribute('disabled','true');
+
 		// Auto draw cards
 		if (document.querySelectorAll('.hand .card').length<8) {
 			drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
 		} else { drawCard(playerDeck,1); }
+
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn', 'var' : false } );
 		buoy.addClass(document.querySelector('.hand'),'disable');

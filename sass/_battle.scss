@@ -444,14 +444,16 @@
 		z-index: 2;
 
 		&.disable .card, &.noUnit .card[data-isunit] { opacity: 0.5;}
+		&.noBtn button:not(.xopt) { opacity: 0; transform: translateY(150%); }
 
 		button {
 			background: transparentize(green,0.9);
 			position: absolute;
 			top: -60px; left: 10px;
+			transition: 0.3s all;
 
-			&.shuf { left: calc(50% - 110px); }
-			&.end { 
+			&.shuf, &.continue { left: calc(50% - 110px); }
+			&.end, &.retreat { 
 				background: transparentize(red,0.9);
 				border-color: darkred;
 				left: calc(50% + 10px); 
@@ -577,7 +579,7 @@
 			opacity: 0;
 			padding: 0 5px;
 			position: absolute;
-			bottom: -15px; right: 0;
+			bottom: -15px; right: -30px;
 			transition: all 0.3s;
 			vertical-align: middle;
 		}
@@ -702,7 +704,7 @@
 		.opponent .unit { 
 			transform: translateX(-40%) rotateY(180deg);
 			&:before { left: 110%; transform: scale(0.7) rotateY(180deg); } 
-			&:after { left: 0%; right: auto; transform: rotateY(180deg); }
+			&:after { left: -30%; right: auto; transform: rotateY(180deg); }
 			ul { width: 110%; text-align: right; } 
 		}
 }
