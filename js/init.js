@@ -375,16 +375,28 @@ document.addEventListener('DOMContentLoaded', function(){
 					myTurn = true; 
 					forceEnd = false;
 					buoy.addClass(document.querySelector('.player'),'myturn');
-					notify('green', 'Your Turn');
+
+					// Expansion Check
+					if (document.querySelectorAll('.opponent .formation .unit').length === 4 && attacker === false && expanded === 0) {
+						notify('yellow', 'Attacker has expanded field! You can retreat all units & give up 1 point, or risk playing for 2.',true);
+						expanded = 1;
+						expandChoice(v);
+					} else if (document.querySelectorAll('.opponent .formation .unit').length === 5 && attacker === false && expanded === 1) {
+						notify('yellow', 'Attacker has expanded field! You can retreat all units & give up 2 points, or risk playing for 3.',true);
+						expanded = 2;
+						expandChoice(v);
+					} else {
+						notify('green', 'Your Turn');
+						document.querySelector('.end').removeAttribute('disabled');
+						buoy.removeClass(document.querySelector('.hand'),'disable'); 
+						swapThree(v);
+					}
 
 					// Check slot limits
 					if (document.querySelectorAll('.player .formation .unit').length > 4) {
 						buoy.addClass(document.querySelector('.hand'),'noUnit');
 					} else { buoy.removeClass(document.querySelector('.hand'),'noUnit'); }
-
-					document.querySelector('.end').removeAttribute('disabled');
-					buoy.removeClass(document.querySelector('.hand'),'disable'); 
-					swapThree(v);
+					
 					break;
 				case 'unitPos':
 					placeUnit(msg.pos, msg.card, msg.who, msg.id);
@@ -415,6 +427,57 @@ document.addEventListener('DOMContentLoaded', function(){
 	function win(p) { 
 		victoryPts += parseInt(p); 
 		document.querySelector('.player .outpost').textContent = victoryPts;
+	}
+
+	function expandChoice(v) {
+		function clearBtn() {
+			buoy.addClass( document.querySelector('.sticky'), 'un');
+			window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+			retreat.removeEventListener('click', retreatListen);
+			contin.removeEventListener('click', conListen);
+			document.querySelector('.xopt').remove();
+			document.querySelector('.xopt').remove();
+			buoy.removeClass(document.querySelector('.hand'),'noBtn');
+		}
+
+		// Continue
+		buoy.addClass(document.querySelector('.hand'),'noBtn');
+		var contin = document.querySelector('.hand').appendChild( document.createElement('button') );
+		buoy.addClass(contin,'xopt'); buoy.addClass(contin,'continue');
+		contin.textContent = "Continue";
+
+		function conListen() {
+			clearBtn();
+			notify('green', 'Your Turn');
+			document.querySelector('.end').removeAttribute('disabled');
+			buoy.removeClass(document.querySelector('.hand'),'disable'); 
+			swapThree(v);
+		}
+
+		contin.addEventListener('click', conListen);
+
+		// Retreat
+		var retreat = document.querySelector('.hand').appendChild( document.createElement('button') );
+		buoy.addClass(retreat,'xopt'); buoy.addClass(retreat,'retreat');
+		retreat.textContent = "Retreat";
+
+		function retreatListen() {
+			clearBtn();
+			// Only possible to end round on your turn
+			if (myTurn) {
+				var points;
+				var his = document.querySelectorAll('.player .formation .unit').length;
+
+				if (his===4) {
+					points = 1;
+				} else { points = 2; }
+
+				// Discard units (& combos)
+				resetField(points,true);
+			}
+		}
+
+		retreat.addEventListener('click', retreatListen);
 	}
 
 	// Prepend function

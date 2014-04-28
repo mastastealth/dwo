@@ -1214,26 +1214,38 @@ footer {
   opacity: 0.5;
 }
 
+.game .hand.noBtn button:not(.xopt) {
+  opacity: 0;
+  -webkit-transform: translateY(150%);
+  -ms-transform: translateY(150%);
+  transform: translateY(150%);
+}
+
 .game .hand button {
   background: rgba(0, 128, 0, 0.1);
   position: absolute;
   top: -60px;
   left: 10px;
+  -webkit-transition: 0.3s all;
+  transition: 0.3s all;
 }
 
-.game .hand button.shuf {
+.game .hand button.shuf,
+.game .hand button.continue {
   left: -webkit-calc(50% - 110px);
   left: calc(50% - 110px);
 }
 
-.game .hand button.end {
+.game .hand button.end,
+.game .hand button.retreat {
   background: rgba(255, 0, 0, 0.1);
   border-color: darkred;
   left: -webkit-calc(50% + 10px);
   left: calc(50% + 10px);
 }
 
-.game .hand button.end:not([disabled=true]):hover {
+.game .hand button.end:not([disabled=true]):hover,
+.game .hand button.retreat:not([disabled=true]):hover {
   background: #E44141;
   border-color: darkred;
   color: white;
@@ -1378,7 +1390,7 @@ footer {
   padding: 0 5px;
   position: absolute;
   bottom: -15px;
-  right: 0;
+  right: -30px;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   vertical-align: middle;
@@ -1555,7 +1567,7 @@ footer {
 }
 
 .game .opponent .unit:after {
-  left: 0%;
+  left: -30%;
   right: auto;
   -webkit-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
