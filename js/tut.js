@@ -38,6 +38,7 @@ function introSupply() {
 // Explain + Play Supply
 function introSupply2() {
 	sfx_slide.play();
+	addSupply('player');
 	cardToDiscard( document.querySelector('.hand .card') );
 	document.querySelector('.player .sup').textContent = '0/3';
 
@@ -97,7 +98,7 @@ function introUnit2() {
 	document.querySelector('.player .def').textContent = '1';
 
 	bubbleP.innerHTML = "Note that the <span style='color:#E44141'>attack</span> and <span style='color:#4178E4'>defense</span> stats on the top have been updated now! \
-	However, infantry units don't use up any supplies (as you can see in its stats). We are now at 1 <span style='color:#E44141'>ATK</span>/1 <span style='color:#4178E4'>DEF</span> vs our opponent's 0/0...";
+	However, infantry units don't use up any supplies (as you can see in its stats by hovering over its slot). We are now at 1 <span style='color:#E44141'>ATK</span>/1 <span style='color:#4178E4'>DEF</span> vs our opponent's 0/0...";
 
 	bubbleBtn.removeAttribute('disabled');
 	bubbleBtn.setAttribute('onclick', 'introUnit3()') ;
@@ -129,6 +130,7 @@ function opponent() {
 
 // Opponent plays Supply
 function opponent2() {
+	addSupply('opponent');
 	sfx_slide.play();
 	notify('yellow', "<img src='images/cards/supply.png'> Supply was played");
 	document.querySelector('.opponent .sup').textContent = '0/3';
@@ -314,7 +316,9 @@ function swapTime2() {
 function swapTime3(e) {
 	if (e==="s") {
 		document.querySelector('#supply').remove();
+		sfx_slide.play();
 		document.querySelector('.player .sup').textContent = '1/6';
+		addSupply('player');
 
 		bubbleP.textContent = "Good choice. By playing supplies first, you can avoid having to end your turn right now. Playing either unit first means \
 		you would surpass their defense, and only have 1 card left to play. Also, by playing the supply first, you get that free draw which gives the chance for \
@@ -340,7 +344,7 @@ function swapTime3(e) {
 
 // Explain Formations
 function swapTime4(e) {
-	bubbleP.innerHTML = "Whoa! What are these new buttons you ask? When playing your second unit (or beyond) you have to decide where to place your units. \
+	if (document.querySelectorAll('.player .unit').length===1) bubbleP.innerHTML = "Whoa! What are these new buttons you ask? When playing your second unit (or beyond) you have to decide where to place your units. \
 	Did you see that new combo you got when you played your supply? It requires 2 armor units side by side. This is why you must plan your <strong>formations</strong> (the order of your units on the field). \
 	I'll go ahead and make thing simple for you by only allowing to place new units on the top...";
 
@@ -452,6 +456,7 @@ function opponent7() {
 
 	window.setTimeout( function() { 
 		sfx_slide.play();
+		addSupply('opponent');
 		notify('yellow', "<img src='images/cards/supply.png'> Supply was played") ;
 		document.querySelector('.opponent .sup').textContent = "3/6";
 	}, 600 );
@@ -591,7 +596,9 @@ function finalPlay6() {
 	});
 
 	bubbleBtn.removeAttribute('disabled');
-	bubbleP.innerHTML = "Nice job! That wraps up the tutorial. Good luck on the battlefield soldier! Feel free to report any bugs you find (this is an alpha prototype after all) on <a href='https://github.com/mastastealth/dwo/issues'>Github</a> \
+	bubbleP.innerHTML = "Nice job! That ends this round, and wraps up the tutorial. Players swap attack/defense roles every round, till someone \
+	wins 6 points or runs out of supplies. Good luck on the battlefield soldier! Feel free to report any bugs you find (this is an alpha \
+	prototype after all) on <a href='https://github.com/mastastealth/dwo/issues'>Github</a> \
 	or tweet them to <a href='http://twitter.com/brianfranco'>@brianfranco</a>, thanks!";
 	bubbleBtn.textContent = "Finish";
 	bubbleBtn.setAttribute('onclick','wipeGame()');
