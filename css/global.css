@@ -653,16 +653,26 @@ footer {
 }
 
 .game .field aside .history {
-  height: 300px;
-  overflow: auto;
-  margin-top: -150px;
+  height: -webkit-calc(100% - 40px);
+  height: calc(100% - 40px);
+  overflow: hidden;
   position: absolute;
-  top: 50%;
+  top: 40px;
   left: 0;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
   width: 70px;
   z-index: 1;
+}
+
+.game .field aside .history:hover {
+  overflow: auto;
+  -webkit-transform: translateX(0%);
+  -ms-transform: translateX(0%);
+  transform: translateX(0%);
 }
 
 .game .field aside .history:empty {
@@ -682,10 +692,12 @@ footer {
   -webkit-box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.5), inset 0 -2px 5px rgba(0, 0, 0, 0.15);
   box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.5), inset 0 -2px 5px rgba(0, 0, 0, 0.15);
   clear: both;
+  cursor: default;
   height: 40px;
   margin-bottom: 1px;
   max-width: 50px;
   min-width: 50px;
+  overflow: hidden;
   position: relative;
   left: 0 !important;
 }
@@ -697,6 +709,9 @@ footer {
   display: block;
   font-size: 10px;
   line-height: 12px;
+  position: absolute;
+  bottom: 1px;
+  left: 1px;
   text-align: center;
   width: 12px;
 }
@@ -713,6 +728,7 @@ footer {
 
 .game .field aside .history div[data-who=player]:before {
   content: 'P';
+  color: #333;
 }
 
 .game .field aside .history div[data-who=opponent]:before {
@@ -744,6 +760,35 @@ footer {
   -webkit-background-size: 150% auto;
   background-size: 150% auto;
   background-position: -20px -30px;
+}
+
+.game .field aside .history .endt,
+.game .field aside .history .endr {
+  background: #589F79;
+  color: white;
+  font-size: 12px;
+  padding: 8px 5px;
+  text-align: center;
+}
+
+.game .field aside .history .endr.win {
+  background: #01FF70;
+}
+
+.game .field aside .history .endr.loss {
+  background: #E44141;
+}
+
+.game .field aside .history .swap,
+.game .field aside .history .counter {
+  background: #EDCD18;
+  font-size: 12px;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.game .field aside .history .counter {
+  background: #d41e1e;
 }
 
 .game .field .player:not(.myturn),
@@ -1319,7 +1364,7 @@ footer {
   background: rgba(0, 128, 0, 0.1);
   position: absolute;
   top: -60px;
-  left: 10px;
+  left: 20px;
   -webkit-transition: 0.3s all;
   transition: 0.3s all;
 }
@@ -1343,6 +1388,10 @@ footer {
   background: #E44141;
   border-color: darkred;
   color: white;
+}
+
+.game .hand button[disabled=true] {
+  opacity: 0;
 }
 
 .game .hand .card {

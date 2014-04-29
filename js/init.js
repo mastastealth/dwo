@@ -376,6 +376,9 @@ document.addEventListener('DOMContentLoaded', function(){
 					forceEnd = false;
 					buoy.addClass(document.querySelector('.player'),'myturn');
 
+					// Add to history
+					addHistory('endt','opponent');
+
 					// Expansion Check
 					if (document.querySelectorAll('.opponent .formation .unit').length === 4 && attacker === false && expanded === 0) {
 						notify('yellow', 'Attacker has expanded field! You can retreat all units & give up 1 point, or risk playing for 2.',true);
@@ -412,21 +415,29 @@ document.addEventListener('DOMContentLoaded', function(){
 					var v = (msg['var']) ? msg['var'] : false;
 					notify(msg.type, msg.msg, v);
 					break;
+				case 'log':
+					var v = (msg['var']) ? msg['var'] : false;
+					addHistory(msg.type,msg.who,v);
+					break;
 				case 'win' :
 					var a = parseInt(document.querySelector('.player .atk').textContent);
 					var d = parseInt(document.querySelector('.opponent .def').textContent);
-					if (attacker || (!attacker && a > d) ) win(msg.points);
+					if (attacker || (!attacker && a > d) ) win(msg.points,a,d,attacker);
 					resetField(0,false); 
 					break;
 				case 'endgame' :
 					endGame(msg.who);
+					break;
 			}
 		});
 	};
 
-	function win(p) { 
+	function win(p,a,d,atkr) { 
 		victoryPts += parseInt(p); 
 		document.querySelector('.player .outpost').textContent = victoryPts;
+		// Add to history
+		addHistory('endr','player','Won Round');
+		if (!atkr && a > d) { addHistory('counter','player'); }
 	}
 
 	function expandChoice(v) {

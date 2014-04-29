@@ -937,7 +937,7 @@ function specialCombo(card,who,v) {
 		unitCalc('player');
 	}
 
-	console.log('Special Combo! Played by: '+who);
+	//console.log('Special Combo! Played by: '+who);
 	switch (card.type) {
 		// One Star Combos
 		case "support":
@@ -1128,6 +1128,11 @@ function specialCombo(card,who,v) {
 				document.getElementById(card.id).remove();
 				drawCard(playerDeck,3);
 				forceEndCheck(who);
+				conn.send( { 
+					'func':'specialCombo', 
+					'card' : card, 
+					'who' : 'opponent'
+				});
 			}
 			break;
 		// 2 Star Combo
@@ -1190,6 +1195,7 @@ function specialCombo(card,who,v) {
 			break;
 	}
 
+	addHistory('ccc',who,card.type);
 	if (who!='player') notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }
 
@@ -1210,13 +1216,41 @@ function addHistory(v,who,type) {
 	document.querySelector('.history').prependChild(block);
 	buoy.addClass(block,v);
 
-	if (v==='sup') { block.style.backgroundImage = "url('images/cards/supply.png')"; }
-	else if (v==='u') { block.style.backgroundImage = "url('images/units/"+type+".png')" }
-	else if (v==='ccc') { block.style.backgroundImage = "url('images/cards/"+type+".png')" }
-	else { block.style.backgroundImage = "url('images/misc/"+type+".png')" }
+	switch (v) {
+		case 'sup':
+			block.style.backgroundImage = "url('images/cards/supply.png')";
+			break;
+		case 'u':
+			block.style.backgroundImage = "url('images/units/"+type+".png')";
+			break;
+		case 'ccc':
+			block.style.backgroundImage = "url('images/cards/"+type+".png')";
+			break;
+		case 'comm':
+			block.style.backgroundImage = "url('images/misc/"+type+".png')";
+			break;
+		case 'endt':
+			block.textContent = 'End Turn';
+			break;
+		case 'endr':
+			block.textContent = type;
+			var txt = (type==="Won Round") ? "win" : "loss";
+			buoy.addClass(block,txt);
+			break;
+		case 'expand':
+			break;
+		case 'counter':
+			block.textContent = 'Counter Attack';
+			break;
+		case 'swap':
+			block.textContent = 'Swap 3';
+			break;
+	}
 
 	block.setAttribute('data-who',who);
-	if (attacker && who === "player" || !attacker && who === "opponent") { block.setAttribute('data-atk','yes'); } else { block.setAttribute('data-atk','no'); }
+	if (attacker && who === "player" || !attacker && who === "opponent") { 
+		block.setAttribute('data-atk','yes'); 
+	} else { block.setAttribute('data-atk','no'); }
 }
 
 // Places a second+ unit on the field after choosing formation spot
@@ -1477,8 +1511,10 @@ function resetField(points,loser) {
 		conn.send({ 'func':'win', 'points': points });
 
 		if (!attacker || (attacker && a > d) ) {
-			if (attacker && a>d) { notify('red', 'Lost Round AND Counter-attacked! Opponent gets points!'); }
-			else { notify('red', 'Lost Round'); }
+			if (attacker && a>d) { 
+				notify('red', 'Lost Round AND Counter-attacked! Opponent gets points!'); 
+				addHistory('counter','opponent');
+			} else { notify('red', 'Lost Round'); }
 			var currentPts = (document.querySelector('.opponent .outpost').textContent) ? parseInt(document.querySelector('.opponent .outpost').textContent) : 0;
 			document.querySelector('.opponent .outpost').textContent = currentPts + points;
 		}
@@ -1515,6 +1551,7 @@ function resetField(points,loser) {
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn', 'var' : true } );
 		myTurn = false;
+		if (loser) addHistory('endr','player','Lost Round');
 		buoy.removeClass(document.querySelector('.player'),'myturn');
 		buoy.addClass(document.querySelector('.hand'),'disable');
 	}
@@ -1547,6 +1584,7 @@ function swapThree(dontdoit) {
 		if (count === 3 || count === 0) {
 			buoy.addClass( document.querySelector('.sticky'), 'un');
 			window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+			if (count === 3) addHistory('swap','player');
 			forceEnd = 0;
 		} else {
 			notify('yellow', 'Choose 3 cards (or none), then hit done.');
@@ -1572,7 +1610,10 @@ function swapThree(dontdoit) {
 
 		//document.querySelector('.turn').removeAttribute('disabled');
 		document.querySelector('.end').removeAttribute('disabled');
-		if (count===3) conn.send( { 'func':'notify', 'type' : 'yellow', 'msg' : 'Opponent swapped 3 cards' } );
+		if (count===3) {
+			conn.send( { 'func':'notify', 'type' : 'yellow', 'msg' : 'Opponent swapped 3 cards' } );
+			conn.send( { 'func':'log', 'type' : 'swap', 'who' : 'player' })
+		}
 
 		done.removeEventListener('click', finishSwap);
 		done.remove();
@@ -1614,6 +1655,9 @@ function endTurnListener(e) {
 		if (document.querySelectorAll('.hand .card').length<8) {
 			drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
 		} else { drawCard(playerDeck,1); }
+
+		// Add to history
+		addHistory('endt','player');
 
 		// Tell opponent it's his turn
 		conn.send( { 'func':'yourTurn', 'var' : false } );
