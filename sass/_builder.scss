@@ -99,6 +99,7 @@
 			text-shadow: none;
 
 			&:before { content: attr(data-total); }
+			&:after { content: attr(data-max); }
 		}
 	}
 

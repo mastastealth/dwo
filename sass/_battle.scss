@@ -731,6 +731,13 @@
 				url(../images/misc/bar_def.png) no-repeat $def1,
 				url(../images/misc/bar_sup.png) no-repeat $sup1,;
 			}
+			&[data-type="harty"] i { background: url(../images/units/harty.png) no-repeat; }
+			&[data-type="harty"]:before {
+				background: 
+				url(../images/misc/bar_atk.png) no-repeat $atk5,
+				url(../images/misc/bar_def.png) no-repeat $def3,
+				url(../images/misc/bar_sup.png) no-repeat $sup5,;
+			}
 			&[data-type="hbomber"] i { background: url(../images/units/hbomber.png) no-repeat; }
 			&[data-type="hbomber"]:after { content: "+4 vs \e605" ; }
 			&[data-type="hbomber"]:before {
