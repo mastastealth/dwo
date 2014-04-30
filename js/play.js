@@ -978,8 +978,10 @@ function specialCombo(card,who,v) {
 			function retreat(e) {
 				buoy.addClass( document.querySelector('.sticky'), 'un');
 				window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+
 				// Remove unit
 				var unit = e.target.querySelector('.unit').cardProps.id
+				var uCard = e.target.querySelector('.unit').cardProps;
 				e.target.querySelector('.unit').remove();
 
 				// Check if combo is support first, and clear those supplies
@@ -989,6 +991,9 @@ function specialCombo(card,who,v) {
 				}
 				// Clear combo out
 				clearCombo(e.target);
+
+				// Add unit back to hand
+				drawCardConfirmed(uCard,0);
 
 				// Collapse formation
 				e.target.parentNode.appendChild( e.target );
