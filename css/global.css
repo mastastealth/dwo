@@ -1374,7 +1374,8 @@ footer {
 }
 
 .game .hand button.shuf,
-.game .hand button.continue {
+.game .hand button.continue,
+.game .hand button.cancel {
   left: -webkit-calc(50% - 110px);
   left: calc(50% - 110px);
 }

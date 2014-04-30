@@ -335,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 
 	// Quit Button 
+	/*
 	document.querySelector('.game .menu').addEventListener('click', function() {
 		if ( buoy.hasClass(document.querySelector('.game'), 'tut') ) {
 			wipeGame();
@@ -347,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			m.innerHTML = '';
 		}
 	});
+	*/
 
 	validDeck = function(deck) {
 		// If there are 25 supplies

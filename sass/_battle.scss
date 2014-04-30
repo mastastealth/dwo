@@ -537,7 +537,7 @@
 			top: -60px; left: 20px;
 			transition: 0.3s all;
 
-			&.shuf, &.continue { left: calc(50% - 110px); }
+			&.shuf, &.continue, &.cancel { left: calc(50% - 110px); }
 			&.end, &.retreat { 
 				background: transparentize(red,0.9);
 				border-color: darkred;
