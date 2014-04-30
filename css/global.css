@@ -565,7 +565,7 @@ footer {
 }
 
 .builder h3 span:after {
-  content: attr(data-max);
+  content: "/" attr(data-max);
 }
 
 .builder button.active {
