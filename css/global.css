@@ -564,6 +564,10 @@ footer {
   content: attr(data-total);
 }
 
+.builder h3 span:after {
+  content: "/" attr(data-max);
+}
+
 .builder button.active {
   background: green;
   color: white;
@@ -1620,6 +1624,14 @@ footer {
 
 .game .unit[data-type="drone"]:before {
   background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game .unit[data-type="harty"] i {
+  background: url(../images/units/harty.png) no-repeat;
+}
+
+.game .unit[data-type="harty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -166px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
 }
 
 .game .unit[data-type="hbomber"] i {
