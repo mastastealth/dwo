@@ -282,7 +282,7 @@ function playCard(card,who) {
 							'who' : 'opponent' 
 						});
 
-						[].forEach.call(slot.parentNode.children, function(li) {
+						[].forEach.call(slot.parentNode.parentNode.querySelectorAll('li.active'), function(li) {
 							// Kill Listeners
 							li.removeEventListener('click', clickListener);
 							buoy.removeClass(li,'active');
@@ -291,7 +291,7 @@ function playCard(card,who) {
 				}
 
 				function cancelComboListener(e) {
-					[].forEach.call(document.querySelectorAll('.player .formation>li'), function(li) {
+					[].forEach.call(document.querySelectorAll('.player li.active'), function(li) {
 						// Kill Listeners
 						li.removeEventListener('click', clickListener);
 						buoy.removeClass(li,'active');
@@ -474,8 +474,8 @@ function reshuffleCheck() {
 	var unitCount = 0;
 
 	// AUto draw cards
-	if (document.querySelectorAll('.card').length<8) {
-		drawCard(playerDeck,8-document.querySelectorAll('.card').length);
+	if (document.querySelectorAll('.hand .card').length<8) {
+		drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
 	}
 
 	[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
@@ -685,7 +685,6 @@ function unitCard(newUnit,card,who,id) {
 
 	// Image
 	var img = newUnit.appendChild( document.createElement('i') );
-	//img.setAttribute('src','images/units/'+card.type+'.png');
 	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
 
@@ -869,7 +868,7 @@ function comboCard(unit,card,who) {
 		unitCalc('player');
 	}
 
-	if (who === 'player' && card.type!='sniper' && card.type!='tstrike') forceEndCheck(who);
+	if (who === 'player' && card.type!='sniper' && card.type!='tstrike' && card.type!='stealth' && card.type!='bigguns') forceEndCheck(who);
 
 	if (who!='player' && !cardType.combo[card.type].special) notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }
@@ -887,15 +886,22 @@ function specialCombo(card,who,v) {
 		// Add elements
 		var extraSlot = extra.appendChild( document.createElement('li') );
 		var unit = extraSlot.appendChild( document.createElement('div') );
-		var uid = document.querySelector('.'+who+' ul.extra li').length;
+		unit.appendChild( document.createElement('span') );
+		var uid = document.querySelectorAll('.'+who+' ul.extra li').length;
 		unit.cardProps = { 'id' : u+'_extra'+uid, 'type' : u };
 		unit.setAttribute('id',u+'_extra'+uid);
 		buoy.addClass(unit,'unit');
 		unit.setAttribute('data-type', u);
 
-		// Image
-		var img = unit.appendChild( document.createElement('img') );
-		img.setAttribute('src','images/cards/unit_'+u+'.png');
+		var img = unit.appendChild( document.createElement('i') );
+		addUnit(unit,who,u);
+
+		// Attributes
+		traitList = unit.appendChild( document.createElement('ul') );
+		for (var i=0;i<cardType.unit[u].trait.length;i++) {
+			var icon = traitList.appendChild( document.createElement('li') );
+			buoy.addClass(icon,'icon-'+cardType.unit[u].trait[i]);
+		}
 
 		addUnit(unit,who,u);
 		unitCalc('opponent');
@@ -909,7 +915,7 @@ function specialCombo(card,who,v) {
 			buoy.addClass( note, 'un');
 			window.setTimeout( function() { note.remove(); }, 500);
 		});
-		
+
 		// Remove choice
 		[].forEach.call(document.querySelectorAll('aside:not(.'+who+') li.active'), function(slot) {
 			buoy.removeClass(slot,'active');
@@ -1160,7 +1166,7 @@ function specialCombo(card,who,v) {
 			} else {
 				var cards = "";
 
-				[].forEach.call(document.querySelectorAll('.card'), function(card) {
+				[].forEach.call(document.querySelectorAll('.hand .card'), function(card) {
 					var pre = '';
 					if ( cardType.unit[card.type] ) { pre = 'unit_'; }
 					else if ( cardType.co[card.type] ) { pre = 'co_'; }
@@ -1345,9 +1351,6 @@ function clearCombo(el) {
 	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
 	// Double check for a 2nd combo (Barrier)
 	if (el.querySelector('span').firstElementChild) el.querySelector('span').firstElementChild.remove();
-	// Remove extra side units?
-	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
-	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove();
 }
 
 
@@ -1377,6 +1380,10 @@ function addSupply(who) {
 
 // Use at the end of the round to wipe/add scores and reset field
 function resetField(points,loser) {
+	// Remove extra side units?
+	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
+	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove()
+
 	// Reset units, auto save if one unit
 	if (document.querySelectorAll('.player .unit').length === 1) {
 		redeckCard(playerDeck,[document.querySelector('.player .unit').cardProps],false);
@@ -1615,7 +1622,7 @@ function swapThree(dontdoit) {
 			return false;
 		}
 
-		[].forEach.call(document.querySelectorAll('.card'), function(card) {
+		[].forEach.call(document.querySelectorAll('.game .card'), function(card) {
 			card.removeEventListener('click', chooseThree);
 			buoy.removeClass(card, 'choose');
 
@@ -1646,7 +1653,7 @@ function swapThree(dontdoit) {
 		if (noUnit) { buoy.addClass(document.querySelector('.hand'),'noUnit') }
 	}
 
-	[].forEach.call(document.querySelectorAll('.card'), function(card) {
+	[].forEach.call(document.querySelectorAll('.game .card'), function(card) {
 		buoy.addClass(card, 'choose');
 		card.removeEventListener('click', playListener);
 		card.addEventListener('click', chooseThree);
@@ -1761,6 +1768,8 @@ function wipeGame() {
 	document.querySelector('.opponent .sup').textContent = '0';
 	document.querySelector('.opponent .outpost').textContent = '';
 
+	myTurn = null;
+
 	[].forEach.call(document.querySelectorAll('span[data-unit]'), function(span) {
 		span.setAttribute('data-unit', 0);
 	});
@@ -1775,6 +1784,10 @@ function wipeGame() {
 
 	[].forEach.call(document.querySelectorAll('span[data-supuse]'), function(span) {
 		span.setAttribute('data-supuse', 0);
+	});
+
+	[].forEach.call(document.querySelectorAll('.history div'), function(div) {
+		div.remove();
 	});
 
 	// Clear game variables
@@ -1805,4 +1818,7 @@ function wipeGame() {
 	if (document.querySelector('.end')) document.querySelector('.end').remove();
 	if (document.querySelector('.turn')) document.querySelector('.turn').remove();
 	if (document.querySelector('.player button')) document.querySelector('.player button').remove();
+	// Remove extra side units?
+	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
+	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove();
 }

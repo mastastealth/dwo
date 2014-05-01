@@ -194,6 +194,7 @@
 
 		h1 {
 			background: rgba(0,0,0,0.5);
+			height: 40px;
 			line-height: 40px;
 			position: absolute;
 			top: 0; left: 0;
@@ -259,15 +260,35 @@
 			}
 
 			.outpost {
-				background: #2ECC40; border-radius: 3px; 
-				color: #333; line-height: 40px; 
-				height: 40px; width: 40px; 
+				background: #2ECC40; border: 1px white solid; border-radius: 16px; 
+				color: #333; line-height: 28px; 
+				height: 30px; width: 30px; 
 				position: absolute;
-				top: 10px; right: 10px;
+				top: 5px; right: 220px;
+				z-index: 3;
 
 				&:empty { opacity: 0; }
 			}
 		}
+			// Attacker/Defender Gradients
+			.attacker h1 { background: linear-gradient(red,#FAA,red); }
+			aside:not(.attacker) h1 { background: linear-gradient(#4178E4,#AAF,#4178E4); }
+
+			// Attacker/Defender Text
+			aside h1:after {
+				color: white;
+				font-size: 24px;
+				line-height: 40px;
+				position: absolute; top: 0; right: 100px;
+				text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+				text-transform: uppercase;
+				z-index: 2;
+			}
+				aside.attacker h1:after { content: 'Attacker'; }
+				aside:not(.attacker) h1:after { content: 'Defender'; }
+
+				.opponent h1:after { left: 100px; right: auto; }
+
 			// Attacker Defender Stat Tweaks
 			.attacker h1 .atk , aside:not(.attacker) h1 .def { 
 				line-height: 100px; 
@@ -283,7 +304,7 @@
 
 			// Other stat positioning
 			.player .sup { left: 10px; }
-			.opponent .outpost { left: 10px; }
+			.opponent .outpost { left: 220px; }
 
 			// Animation for adding Supplies
 			h1.addSup:before {
@@ -299,38 +320,6 @@
 
 			.player h1.addSup:before { top: 0; left: 5px; }
 			.opponent h1.addSup:before { top: 0; left: auto; right: 60px; }
-
-			// Attacker/Defender Text
-			aside h1:before {
-				color: white;
-				font-size: 24px;
-				line-height: 40px;
-				position: absolute; top: 0; right: 100px;
-				text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-				text-transform: uppercase;
-				z-index: 2;
-			}
-				aside.attacker h1:before { content: 'Attacker'; }
-				aside:not(.attacker) h1:before { content: 'Defender'; }
-
-				.opponent h1:before { left: 100px; right: auto; }
-			
-			// Attacker/Defender Gradients
-			aside h1:after {
-				content: '';
-				height: 40px;
-				position: absolute; top: 0;
-				right: 0;
-				transition: all 0.3s;
-				width: 100%;
-				z-index: 1;
-			}
-
-			.attacker h1:after { background: linear-gradient(red,#FAA,red); }
-				.opponent.attacker h1:after { left: 0; right: auto; }
-
-			aside:not(.attacker) h1:after { background: linear-gradient(#4178E4,#AAF,#4178E4); }
-				aside:not(.attacker) h1:after { left: 0; right: auto; }
 
 		.commander {
 			background-position: center bottom;
@@ -558,7 +547,6 @@
 			width: 150px;
 
 			li { height: 100%; width: 100%; }
-			.unit { height: 180px; }
 		}
 
 		.opponent .extra { left: 0%; }
@@ -740,7 +728,7 @@
 			}
 			&[data-type="apc"] i { background: url(../images/units/apc.png) no-repeat; }
 			&[data-type="apc"]:after { 
-				background: linear-gradient(110deg, #E44141 52%, #DCC63B 52%); 
+				background: linear-gradient(110deg, #E44141 52%, #DCC63B 52%); right: -65px;
 				content: "+1 vs \e606 / +1 Sup" ; text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 			}
 			&[data-type="apc"]:before {
