@@ -832,6 +832,7 @@ function comboCard(unit,card,who) {
 	slot.cardProps = card;
 
 	addHistory('ccc',who,card.type);
+	if (who==='player' && document.querySelector('.hand .cancel')) document.querySelector('.hand .cancel').remove();
 
 	if (cardType.combo[card.type].atk) {
 		//var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
