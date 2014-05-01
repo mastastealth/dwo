@@ -53,8 +53,8 @@
 				color: white;
 				content: '';
 				display: inline-block;
-				font-size: 12px;
-				line-height: 30px;
+				font-size: 11px;
+				line-height: 20px;
 				padding: 0 5px;
 				position: absolute;
 				opacity: 0;
@@ -160,18 +160,20 @@
 			.card img, .unit img { opacity: 0.5; }
 		}
 
+		// Turn Indicators
+
 		.player.myturn, .player:not(.myturn) + .opponent {
 			&:after {
 				animation: statPulse 1s alternate infinite;
 				content: 'Your Turn';
 				opacity: 0.8;
-				top: 50px; right: 20px;
+				top: 50px; right: 100px;
 			}
 		}
 			.player:not(.myturn) + .opponent:after {
 				background: #666;
 				content: "Their Turn";
-				right: auto; left: 20px;
+				right: auto; left: 100px;
 			}
 
 		aside:first-child {
@@ -200,11 +202,25 @@
 			z-index: 99;
 
 			.atk { 
-				background: #E44141; border-radius: 15px; 
-				color: white; line-height: 30px; width: 30px; }
+				background: #E44141; 
+				border-left: 2px solid #333;
+				border-right: 2px solid #333;
+				font-size: 48px;
+				color: white; line-height: 100px; 
+				position: absolute; top: 0;
+				transition: all 0.3s;
+				width: 80px; z-index: 4; }
 			.def { 
-				background: #4178E4; border-radius: 15px; 
-				color: white; line-height: 30px; width: 30px; }
+				background: #4178E4;
+				border-radius: 0 0 16px 16px;
+				border-bottom: 2px solid #333; 
+				border-left: 2px solid #333;
+				border-right: 2px solid #333;
+				font-size: 48px;
+				color: white; line-height: 100px; 
+				position: absolute; top: 35px;
+				transition: all 0.3s;
+				width: 80px; z-index: 3; }
 
 			.sup {
 				background: #EED84F;
@@ -216,6 +232,9 @@
 				top: 10px; right: 10px;
 				text-align: center;
 				width: 50px;
+				z-index: 3;
+
+				// Supply Hexagon Enhancements
 
 				&:before, &:after {
 					border-style: solid;
@@ -249,10 +268,24 @@
 				&:empty { opacity: 0; }
 			}
 		}
+			// Attacker Defender Stat Tweaks
+			.attacker h1 .atk , aside:not(.attacker) h1 .def { 
+				line-height: 100px; 
+				text-shadow: 2px 2px 0 rgba(0,0,0,0.4) 
+			}
+				aside:not(.attacker) h1 .def { top: 70px; }
+			.attacker h1 .def , aside:not(.attacker) h1 .atk { line-height: 70px; opacity: 0.35; }
+				.attacker h1 .def { top: 100px; }
 
+			// Player/Opponent Positioning
+			.opponent h1 .atk, .opponent h1 .def { left: -2px; }
+			.player h1 .atk, .player h1 .def { right: -2px; }
+
+			// Other stat positioning
 			.player .sup { left: 10px; }
 			.opponent .outpost { left: 10px; }
 
+			// Animation for adding Supplies
 			h1.addSup:before {
 				animation: supplyAdd 0.8s ease forwards;
 				background: #333 url(../images/cards/supply.png) no-repeat;
@@ -263,34 +296,41 @@
 				position: fixed;
 				width: 72px;
 			}
+
 			.player h1.addSup:before { top: 0; left: 5px; }
 			.opponent h1.addSup:before { top: 0; left: auto; right: 60px; }
 
-			aside.attacker h1 .atk, 
-			aside:not(.attacker) h1 .def {
-				animation: statPulse 1s alternate infinite;
-				-webkit-animation: none;
-				border-radius: 0;
-				margin: 0 5px;
-				position: relative;
-				transform: scale(1.4);
+			// Attacker/Defender Text
+			aside h1:before {
+				color: white;
+				font-size: 24px;
+				line-height: 40px;
+				position: absolute; top: 0; right: 100px;
+				text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+				text-transform: uppercase;
+				z-index: 2;
+			}
+				aside.attacker h1:before { content: 'Attacker'; }
+				aside:not(.attacker) h1:before { content: 'Defender'; }
 
-				&:after {
-					border-style: solid;
-					content: '';
-					height: 0;
-					position: absolute;
-					left: 0;
-					width: 0;
-					border-width: 5px 15px 0 15px;
-					border-color: #E44141 transparent transparent transparent;
-					bottom: -5px;
-				}
+				.opponent h1:before { left: 100px; right: auto; }
+			
+			// Attacker/Defender Gradients
+			aside h1:after {
+				content: '';
+				height: 40px;
+				position: absolute; top: 0;
+				right: 0;
+				transition: all 0.3s;
+				width: 100%;
+				z-index: 1;
 			}
 
-			aside:not(.attacker) h1 .def:after {
-				border-color: #4178E4 transparent transparent transparent;
-			}
+			.attacker h1:after { background: linear-gradient(red,#FAA,red); }
+				.opponent.attacker h1:after { left: 0; right: auto; }
+
+			aside:not(.attacker) h1:after { background: linear-gradient(#4178E4,#AAF,#4178E4); }
+				aside:not(.attacker) h1:after { left: 0; right: auto; }
 
 		.commander {
 			background-position: center bottom;
@@ -537,7 +577,7 @@
 			top: -60px; left: 20px;
 			transition: 0.3s all;
 
-			&.shuf, &.continue { left: calc(50% - 110px); }
+			&.shuf, &.continue, &.cancel { left: calc(50% - 110px); }
 			&.end, &.retreat { 
 				background: transparentize(red,0.9);
 				border-color: darkred;

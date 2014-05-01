@@ -290,6 +290,19 @@ function playCard(card,who) {
 					}
 				}
 
+				function cancelComboListener(e) {
+					[].forEach.call(document.querySelectorAll('.player .formation>li'), function(li) {
+						// Kill Listeners
+						li.removeEventListener('click', clickListener);
+						buoy.removeClass(li,'active');
+					});
+
+					document.querySelector('.cardContainer').appendChild(cardEl);
+					buoy.removeClass(cardEl,'toDiscard');
+
+					document.querySelector('.hand .cancel').remove();
+				}
+
 				// Special function for barrier combo
 				function barrierCheck(u) {
 					var prevSlot = (u.parentNode.previousElementSibling) ? u.parentNode.previousElementSibling : document.querySelector('body');
@@ -396,7 +409,15 @@ function playCard(card,who) {
 					specialCombo(card,who);
 				}
 
-				if (!comboMatch) notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
+				if (!comboMatch) {
+					notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
+				} else {
+					if (cardType.combo[card.type].special) return false;
+					var cancelBtn = document.querySelector('.hand').appendChild( document.createElement('button') );
+					buoy.addClass(cancelBtn,'cancel');
+					cancelBtn.textContent = "Cancel";
+					cancelBtn.addEventListener('click',cancelComboListener);
+				}
 			}
 		} else if (card.type === "supply") {
 			// If supplies, then just add to current supply count
@@ -637,16 +658,6 @@ function playListener(e) {
 	}
 }
 
-// Discard a card
-function discardCard(card) {
-
-}
-
-// Zoom on card
-function zoomCard() {
-	// Scrolling is weird
-}
-
 function addUnit(u,who,card) {
 	// Set attack
 	u.setAttribute('data-atk', cardType.unit[card].atk );
@@ -821,16 +832,17 @@ function comboCard(unit,card,who) {
 	slot.cardProps = card;
 
 	addHistory('ccc',who,card.type);
+	if (who==='player' && document.querySelector('.hand .cancel')) document.querySelector('.hand .cancel').remove();
 
 	if (cardType.combo[card.type].atk) {
-		var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
+		//var unitAtk = parseInt(document.querySelector('.'+who+' .atk').getAttribute('data-unit') );
 		var currentSlotAtk = (slot.getAttribute('data-atk')) ? parseInt( slot.getAttribute('data-atk') ) : 0;
 		slot.setAttribute('data-atk', currentSlotAtk+cardType.combo[card.type].atk );
 		if (cardType.combo[card.type].atk>0) buoy.addClass(slot,'atk');
 	}
 
 	if (cardType.combo[card.type].def) {
-		var unitDef = parseInt(document.querySelector('.'+who+' .def').getAttribute('data-unit') );
+		//var unitDef = parseInt(document.querySelector('.'+who+' .def').getAttribute('data-unit') );
 		var currentSlotDef = (slot.getAttribute('data-def')) ? parseInt( slot.getAttribute('data-def') ) : 0;
 		slot.setAttribute('data-def', currentSlotDef+cardType.combo[card.type].def );
 		if (cardType.combo[card.type].def>0) buoy.addClass(slot,'def');
@@ -1033,7 +1045,7 @@ function specialCombo(card,who,v) {
 					slot.addEventListener('click', retreat);
 				});
 
-				notify('yellow','Select a unit to retreat! (Combo will be discarded)', true);
+				notify('yellow','Select a unit to retreat! (Combo attached to unit will be discarded)', true);
 			} else if (who!='player' && v) {
 				// Remove unit
 				console.log(v);
@@ -1200,6 +1212,7 @@ function specialCombo(card,who,v) {
 			break;
 	}
 
+	if (who==='player' && document.querySelector('.hand .cancel')) document.querySelector('.hand .cancel').remove();
 	addHistory('ccc',who,card.type);
 	if (who!='player') notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }

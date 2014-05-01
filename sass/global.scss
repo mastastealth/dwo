@@ -143,24 +143,21 @@ button { outline: none; }
 	&.yellow { background: transparentize(#FFDC00,0.2); }
 	&.blue { background: transparentize(#4178E4,0.2); }
 	&.purple { background: transparentize(#8B41E4,0.2); }
-	
 	&.grd, &.air, &.u { background: transparentize(#89D748,0.2); }
+
 	&.sticky { 
 		animation: bubbleSticky 4s ease forwards; 
 		
-
 		&:before { 
 			content: '❗'; color: rgba(0,0,0,0.4); 
 			margin-right: 20px;
-			//position: absolute; 
-			//top: 0; left: 20px;
 		}
 	}
+
 	&.un.sticky { 
 		animation: none; opacity: 0;
 		max-height: 0; transform: translateY(-25%); 
 	}
-	//&.air { background: transparentize(#59C5E4,0.2); }
 
 	img { height: 60px; margin-right: 10px; vertical-align: middle; }
 
