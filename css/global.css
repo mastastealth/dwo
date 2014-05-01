@@ -869,6 +869,7 @@ footer {
 
 .game .field h1 {
   background: rgba(0, 0, 0, 0.5);
+  height: 40px;
   line-height: 40px;
   position: absolute;
   top: 0;
@@ -948,18 +949,57 @@ footer {
 
 .game .field h1 .outpost {
   background: #2ECC40;
-  border-radius: 3px;
+  border: 1px white solid;
+  border-radius: 16px;
   color: #333;
-  line-height: 40px;
-  height: 40px;
-  width: 40px;
+  line-height: 28px;
+  height: 30px;
+  width: 30px;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 220px;
+  z-index: 3;
 }
 
 .game .field h1 .outpost:empty {
   opacity: 0;
+}
+
+.game .field .attacker h1 {
+  background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(#ffaaaa), to(red));
+  background: -webkit-linear-gradient(red, #ffaaaa, red);
+  background: linear-gradient(red, #ffaaaa, red);
+}
+
+.game .field aside:not(.attacker) h1 {
+  background: -webkit-gradient(linear, top left, bottom left, from(#4178e4), color-stop(#aaaaff), to(#4178e4));
+  background: -webkit-linear-gradient(#4178e4, #aaaaff, #4178e4);
+  background: linear-gradient(#4178e4, #aaaaff, #4178e4);
+}
+
+.game .field aside h1:after {
+  color: white;
+  font-size: 24px;
+  line-height: 40px;
+  position: absolute;
+  top: 0;
+  right: 100px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.game .field aside.attacker h1:after {
+  content: 'Attacker';
+}
+
+.game .field aside:not(.attacker) h1:after {
+  content: 'Defender';
+}
+
+.game .field .opponent h1:after {
+  left: 100px;
+  right: auto;
 }
 
 .game .field .attacker h1 .atk,
@@ -997,7 +1037,7 @@ footer {
 }
 
 .game .field .opponent .outpost {
-  left: 10px;
+  left: 220px;
 }
 
 .game .field h1.addSup:before {
@@ -1022,65 +1062,6 @@ footer {
   top: 0;
   left: auto;
   right: 60px;
-}
-
-.game .field aside h1:before {
-  color: white;
-  font-size: 24px;
-  line-height: 40px;
-  position: absolute;
-  top: 0;
-  right: 100px;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
-  text-transform: uppercase;
-  z-index: 2;
-}
-
-.game .field aside.attacker h1:before {
-  content: 'Attacker';
-}
-
-.game .field aside:not(.attacker) h1:before {
-  content: 'Defender';
-}
-
-.game .field .opponent h1:before {
-  left: 100px;
-  right: auto;
-}
-
-.game .field aside h1:after {
-  content: '';
-  height: 40px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  width: 100%;
-  z-index: 1;
-}
-
-.game .field .attacker h1:after {
-  background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(#ffaaaa), to(red));
-  background: -webkit-linear-gradient(red, #ffaaaa, red);
-  background: linear-gradient(red, #ffaaaa, red);
-}
-
-.game .field .opponent.attacker h1:after {
-  left: 0;
-  right: auto;
-}
-
-.game .field aside:not(.attacker) h1:after {
-  background: -webkit-gradient(linear, top left, bottom left, from(#4178e4), color-stop(#aaaaff), to(#4178e4));
-  background: -webkit-linear-gradient(#4178e4, #aaaaff, #4178e4);
-  background: linear-gradient(#4178e4, #aaaaff, #4178e4);
-}
-
-.game .field aside:not(.attacker) h1:after {
-  left: 0;
-  right: auto;
 }
 
 .game .field .commander {
@@ -1415,10 +1396,6 @@ footer {
   width: 100%;
 }
 
-.game .extra .unit {
-  height: 180px;
-}
-
 .game .opponent .extra {
   left: 0%;
 }
@@ -1668,6 +1645,7 @@ footer {
 .game .unit[data-type="apc"]:after {
   background: -webkit-linear-gradient(340deg, #e44141 52%, #dcc63b 52%);
   background: linear-gradient(110deg, #e44141 52%, #dcc63b 52%);
+  right: -65px;
   content: "+1 vs \e606 / +1 Sup";
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
