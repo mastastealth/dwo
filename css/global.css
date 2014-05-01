@@ -868,13 +868,19 @@ footer {
 }
 
 .game .field h1 {
-  background: rgba(0, 0, 0, 0.5);
+  background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(25%, #ffaaaa), color-stop(50%, red), color-stop(50%, #4178e4), color-stop(75%, #aaaaff), to(#4178e4));
+  background: -webkit-linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
+  background: linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
+  -webkit-background-size: 100% 40px;
+  background-size: 100% 40px;
   height: 40px;
   line-height: 40px;
   position: absolute;
   top: 0;
   left: 0;
   text-align: center;
+  -webkit-transition: background-position 0.5s;
+  transition: background-position 0.5s;
   width: 100%;
   z-index: 99;
 }
@@ -966,15 +972,11 @@ footer {
 }
 
 .game .field .attacker h1 {
-  background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(#ffaaaa), to(red));
-  background: -webkit-linear-gradient(red, #ffaaaa, red);
-  background: linear-gradient(red, #ffaaaa, red);
+  background-position: left bottom;
 }
 
 .game .field aside:not(.attacker) h1 {
-  background: -webkit-gradient(linear, top left, bottom left, from(#4178e4), color-stop(#aaaaff), to(#4178e4));
-  background: -webkit-linear-gradient(#4178e4, #aaaaff, #4178e4);
-  background: linear-gradient(#4178e4, #aaaaff, #4178e4);
+  background-position: left top;
 }
 
 .game .field aside h1:after {
