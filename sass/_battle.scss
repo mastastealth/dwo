@@ -19,6 +19,8 @@
 		min-height: 480px;
 	}
 
+	&:not(.tut) .menu { display: none; }
+
 	.field {
 		background: black;
 		height: 70%;

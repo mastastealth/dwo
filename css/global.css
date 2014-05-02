@@ -598,6 +598,10 @@ footer {
   min-height: 480px;
 }
 
+.game:not(.tut) .menu {
+  display: none;
+}
+
 .game .field {
   background: black;
   height: 70%;
