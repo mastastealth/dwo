@@ -74,7 +74,7 @@ button { outline: none; }
 	}
 
 	.modal {
-		background: white;
+		background: rgba(255,255,255,0.8);
 		border-radius: 3px;
 		box-shadow: 0 2px 2px -1px rgba(0,0,0,0.2);
 		max-width: 100%;
@@ -82,6 +82,8 @@ button { outline: none; }
 		text-align: center;
 		transform: translateY(-2000px);
 		transition: all 0.5s ease 0.5s;
+
+		> img { animation: rock 1s ease alternate infinite; }
 	}
 }
 
@@ -220,4 +222,9 @@ button.menu {
 @keyframes bubbleSticky {
 	0% { opacity: 0; max-height: 0; transform: translateY(-15%); }
 	10% { opacity: 1; max-height: 150px; transform: translateY(0%); }
+}
+
+@keyframes rock {
+	0% { transform: rotate(-5deg); }
+	100% { transform: rotate(5deg); }
 }

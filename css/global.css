@@ -2180,7 +2180,7 @@ button {
 }
 
 .overlay .modal {
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 3px;
   -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2);
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2);
@@ -2192,6 +2192,11 @@ button {
   transform: translateY(-2000px);
   -webkit-transition: all 0.5s ease 0.5s;
   transition: all 0.5s ease 0.5s;
+}
+
+.overlay .modal > img {
+  -webkit-animation: rock 1s ease alternate infinite;
+  animation: rock 1s ease alternate infinite;
 }
 
 .fa-spinner {
@@ -2502,5 +2507,31 @@ button.menu:hover {
     -webkit-transform: translateY(0%);
     -ms-transform: translateY(0%);
     transform: translateY(0%);
+  }
+}
+
+@-webkit-keyframes rock {
+  0% {
+    -webkit-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(5deg);
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes rock {
+  0% {
+    -webkit-transform: rotate(-5deg);
+    -ms-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(5deg);
+    -ms-transform: rotate(5deg);
+    transform: rotate(5deg);
   }
 }

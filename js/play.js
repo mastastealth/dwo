@@ -1780,11 +1780,11 @@ function endGame(who,sup) {
 	var x = (sup===1) ? "Ran out of supplies. " : "";
 
 	if (who === 'loser') {
-		m.innerHTML = "<h2>You lost the game. "+x+"</h2> <button disabled>Quit Game</button>"
+		m.innerHTML = "<img src='images/misc/loss.png' style='display:block;margin:0 auto 10px;' /> <h2>"+x+"</h2> <button disabled>Quit Game</button>"
 		// Tell opponent they won
 		conn.send({ 'func': 'endgame', 'who': 'winner' });
 	} else {
-		m.innerHTML = "<h2>You won the game!</h2> <button disabled>Quit Game</button>"
+		m.innerHTML = "<img src='images/misc/win.png' style='display:block;margin:0 auto 10px;' /> <button disabled>Quit Game</button>"
 	}
 
 	window.setTimeout( function () { m.querySelector('button').removeAttribute('disabled') }, 2000);
