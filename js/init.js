@@ -480,15 +480,15 @@ document.addEventListener('DOMContentLoaded', function(){
 			clearBtn();
 			// Only possible to end round on your turn
 			if (myTurn) {
-				var points;
-				var his = document.querySelectorAll('.player .formation .unit').length;
+				var points = 0;
+				var his = document.querySelectorAll('.opponent .formation .unit').length;
 
-				if (his===4) {
+				if (his<=4) {
 					points = 1;
 				} else { points = 2; }
 
 				// Discard units (& combos)
-				resetField(points,true);
+				resetField(points,true,true);
 			}
 		}
 

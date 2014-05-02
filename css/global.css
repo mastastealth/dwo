@@ -868,6 +868,8 @@ footer {
 }
 
 .game .field h1 {
+  -webkit-animation: none;
+  animation: none;
   background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(25%, #ffaaaa), color-stop(50%, red), color-stop(50%, #4178e4), color-stop(75%, #aaaaff), to(#4178e4));
   background: -webkit-linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
   background: linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
