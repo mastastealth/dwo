@@ -868,13 +868,19 @@ footer {
 }
 
 .game .field h1 {
-  background: rgba(0, 0, 0, 0.5);
+  background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(25%, #ffaaaa), color-stop(50%, red), color-stop(50%, #4178e4), color-stop(75%, #aaaaff), to(#4178e4));
+  background: -webkit-linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
+  background: linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
+  -webkit-background-size: 100% 80px;
+  background-size: 100% 80px;
   height: 40px;
   line-height: 40px;
   position: absolute;
   top: 0;
   left: 0;
   text-align: center;
+  -webkit-transition: background-position 0.5s;
+  transition: background-position 0.5s;
   width: 100%;
   z-index: 99;
 }
@@ -966,15 +972,11 @@ footer {
 }
 
 .game .field .attacker h1 {
-  background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(#ffaaaa), to(red));
-  background: -webkit-linear-gradient(red, #ffaaaa, red);
-  background: linear-gradient(red, #ffaaaa, red);
+  background-position: left top;
 }
 
 .game .field aside:not(.attacker) h1 {
-  background: -webkit-gradient(linear, top left, bottom left, from(#4178e4), color-stop(#aaaaff), to(#4178e4));
-  background: -webkit-linear-gradient(#4178e4, #aaaaff, #4178e4);
-  background: linear-gradient(#4178e4, #aaaaff, #4178e4);
+  background-position: left bottom;
 }
 
 .game .field aside h1:after {
@@ -1041,8 +1043,8 @@ footer {
 }
 
 .game .field h1.addSup:before {
-  -webkit-animation: supplyAdd 0.8s ease forwards;
-  animation: supplyAdd 0.8s ease forwards;
+  -webkit-animation: supplyAdd 1.3s ease forwards;
+  animation: supplyAdd 1.3s ease forwards;
   background: #333333 url(../images/cards/supply.png) no-repeat;
   -webkit-background-size: cover;
   background-size: cover;
@@ -1316,20 +1318,17 @@ footer {
 }
 
 .game li button {
-  background: green;
-  border-radius: 20px;
-  color: white;
+  border: 0 none;
   cursor: pointer;
   font-size: 36px;
-  height: 40px;
-  line-height: 35px;
+  height: 50px;
   opacity: 1;
   position: absolute;
   left: 5%;
   text-align: center;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  width: 40px;
+  width: 80px;
   z-index: 5;
 }
 
@@ -1337,26 +1336,36 @@ footer {
   background: #999;
 }
 
-.game li button:before {
-  content: '+';
+.game li button.prev,
+.game li button.next {
+  background: url(../images/misc/btn_add.png);
 }
 
 .game li button.up:before {
-  content: '↑';
+  background: url(../images/misc/btn_shift.png) no-repeat left top;
+  content: '';
 }
 
 .game li button.down:before {
-  content: '↓';
+  background: url(../images/misc/btn_shift.png) no-repeat left bottom;
+  content: '';
 }
 
 .game li button.up,
 .game li button.down {
-  left: -10%;
+  background: none;
+  border: 0 none;
+  left: -25%;
 }
 
 .game li button.up:before,
 .game li button.down:before {
   font-size: 18px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .game li button.prev,
@@ -1411,6 +1420,19 @@ footer {
   opacity: 0.5;
 }
 
+.game .hand.disable .card:before,
+.game .hand.noUnit .card[data-isunit]:before {
+  background: black;
+  content: '';
+  opacity: 0.35;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
 .game .hand.noBtn button:not(.xopt) {
   opacity: 0;
   -webkit-transform: translateY(150%);
@@ -1454,6 +1476,7 @@ footer {
 }
 
 .game .hand .card {
+  position: relative;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   -webkit-user-select: none;
@@ -1469,14 +1492,38 @@ footer {
 }
 
 .game .hand .card.active {
-  -webkit-box-shadow: 0 0 0 2px white;
-  box-shadow: 0 0 0 2px white;
-  opacity: 0.5;
+  -webkit-box-shadow: 0 0 0 3px white;
+  box-shadow: 0 0 0 3px white;
+  opacity: 0.75;
+}
+
+.game .hand .card.active:before {
+  background: yellow;
+  content: '';
+  opacity: 0.3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 .game .hand .card.disable {
-  opacity: 0.5;
+  opacity: 0.45;
   pointer-events: none;
+}
+
+.game .hand .card.disable:before {
+  background: black;
+  content: '';
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 .game .hand .card:hover {
@@ -1959,8 +2006,8 @@ footer {
 @-webkit-keyframes supplyAdd {
   0% {
     opacity: 0;
-    -webkit-transform: translate(0%, 100%);
-    transform: translate(0%, 100%);
+    -webkit-transform: translate(0%, 100%) rotate(0) scale(1);
+    transform: translate(0%, 100%) rotate(0) scale(1);
   }
 
   15%, 80% {
@@ -1969,17 +2016,17 @@ footer {
 
   100% {
     opacity: 0;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
+    -webkit-transform: translate(0%, -50%) rotate(10deg) scale(1.5);
+    transform: translate(0%, -50%) rotate(10deg) scale(1.5);
   }
 }
 
 @keyframes supplyAdd {
   0% {
     opacity: 0;
-    -webkit-transform: translate(0%, 100%);
-    -ms-transform: translate(0%, 100%);
-    transform: translate(0%, 100%);
+    -webkit-transform: translate(0%, 100%) rotate(0) scale(1);
+    -ms-transform: translate(0%, 100%) rotate(0) scale(1);
+    transform: translate(0%, 100%) rotate(0) scale(1);
   }
 
   15%, 80% {
@@ -1988,9 +2035,9 @@ footer {
 
   100% {
     opacity: 0;
-    -webkit-transform: translate(0%, -50%);
-    -ms-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
+    -webkit-transform: translate(0%, -50%) rotate(10deg) scale(1.5);
+    -ms-transform: translate(0%, -50%) rotate(10deg) scale(1.5);
+    transform: translate(0%, -50%) rotate(10deg) scale(1.5);
   }
 }
 
@@ -2185,8 +2232,9 @@ button {
 }
 
 .notifyList {
+  pointer-events: none;
   position: fixed;
-  top: 10px;
+  top: 50px;
   left: 10%;
   width: 80%;
   z-index: 100;
@@ -2201,7 +2249,6 @@ button {
   line-height: 70px;
   max-height: 70px;
   overflow: hidden;
-  pointer-events: none;
   text-align: center;
   -webkit-transition: all 0.4s;
   transition: all 0.4s;
