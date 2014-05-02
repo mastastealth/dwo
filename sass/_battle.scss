@@ -19,6 +19,8 @@
 		min-height: 480px;
 	}
 
+	&:not(.tut) .menu { display: none; }
+
 	.field {
 		background: black;
 		height: 70%;
@@ -193,6 +195,7 @@
 		}
 
 		h1 {
+			animation: none;
 			background: linear-gradient(red 0%,#FAA 25%,red 50%, #4178E4 50%,#AAF 75%,#4178E4 100%);
 			background-size: 100% 80px;
 			height: 40px;
@@ -580,6 +583,20 @@
 				left: calc(50% + 10px); 
 				
 				&:not([disabled=true]):hover { background: #E44141; border-color: darkred; color: white; }
+			}
+
+			&.end:before { content: ''; opacity: 0; transition: opacity 0.3s; }
+			&.end:hover:before {
+				background: darkred;
+				border-radius: 4px;
+				color: white;
+				content: 'This means you have nothing left to play and admit defeat for this round!';
+				font-size: 12px;
+				opacity: 0.8;
+				padding: 5px;
+				position: absolute;
+				top: 5px; left: 110%;
+				width: 240%;
 			}
 
 			&[disabled=true] { opacity: 0; }

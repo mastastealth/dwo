@@ -598,6 +598,10 @@ footer {
   min-height: 480px;
 }
 
+.game:not(.tut) .menu {
+  display: none;
+}
+
 .game .field {
   background: black;
   height: 70%;
@@ -868,6 +872,8 @@ footer {
 }
 
 .game .field h1 {
+  -webkit-animation: none;
+  animation: none;
   background: -webkit-gradient(linear, top left, bottom left, from(red), color-stop(25%, #ffaaaa), color-stop(50%, red), color-stop(50%, #4178e4), color-stop(75%, #aaaaff), to(#4178e4));
   background: -webkit-linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
   background: linear-gradient(red 0%, #ffaaaa 25%, red 50%, #4178e4 50%, #aaaaff 75%, #4178e4 100%);
@@ -1469,6 +1475,27 @@ footer {
   background: #E44141;
   border-color: darkred;
   color: white;
+}
+
+.game .hand button.end:before {
+  content: '';
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+
+.game .hand button.end:hover:before {
+  background: darkred;
+  border-radius: 4px;
+  color: white;
+  content: 'This means you have nothing left to play and admit defeat for this round!';
+  font-size: 12px;
+  opacity: 0.8;
+  padding: 5px;
+  position: absolute;
+  top: 5px;
+  left: 110%;
+  width: 240%;
 }
 
 .game .hand button[disabled=true] {
@@ -2178,7 +2205,7 @@ button {
 }
 
 .overlay .modal {
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 3px;
   -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2);
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2);
@@ -2190,6 +2217,11 @@ button {
   transform: translateY(-2000px);
   -webkit-transition: all 0.5s ease 0.5s;
   transition: all 0.5s ease 0.5s;
+}
+
+.overlay .modal > img {
+  -webkit-animation: rock 1s ease alternate infinite;
+  animation: rock 1s ease alternate infinite;
 }
 
 .fa-spinner {
@@ -2500,5 +2532,31 @@ button.menu:hover {
     -webkit-transform: translateY(0%);
     -ms-transform: translateY(0%);
     transform: translateY(0%);
+  }
+}
+
+@-webkit-keyframes rock {
+  0% {
+    -webkit-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(5deg);
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes rock {
+  0% {
+    -webkit-transform: rotate(-5deg);
+    -ms-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(5deg);
+    -ms-transform: rotate(5deg);
+    transform: rotate(5deg);
   }
 }

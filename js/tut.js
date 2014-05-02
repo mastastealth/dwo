@@ -19,7 +19,7 @@ var bubbleBtn = bubble.appendChild( document.createElement('button') );
 
 window.setTimeout( function() {
 	bubbleP.textContent = "Welcome to Deck Wars Online! This is a web prototype for a digital/physical hopefully-to-be-released TCG. \
-		Let's learn how to play the game! I'm your Commander, Saptiva, and I'll be guiding you through this tutorial. Let's start off with something simple...";
+		Let's learn how to play the game! I'm your General, Saptiva, and I'll be guiding you through this tutorial. Let's start off with something simple...";
 	bubbleBtn.setAttribute('onclick', 'introSupply()') ;
 	bubbleBtn.textContent = "Next";
 }, 1000);
@@ -73,7 +73,7 @@ function introUnit() {
 	buoy.removeClass( document.querySelector('.hand .card'), 'disable' );
 	bubbleP.innerHTML = 'Unit cards are always green. They always have 3 stats: <span style="color:#E44141">Attack Power</span>, <span style="color:#4178E4">Defense</span>, \
 	and <span style="color: #CEB527">supply cost</span>. The icons <em>below</em> these stats \
-	indicate <strong>traits</strong>. Keep this in mind when we come across combo cards. For now, click to play the unit.'
+	indicate <strong>traits</strong>. Keep this in mind when we come across booster cards. For now, click to play the unit.'
 	bubbleBtn.setAttribute('disabled',true);
 	document.querySelector('.hand .card').setAttribute('onclick', 'introUnit2()') ;
 }
@@ -177,15 +177,15 @@ function opponent4() {
 function newturn() {
 	buoy.addClass(document.querySelector('.player'), 'myturn');
 	notify('green', 'Your Turn');
-	bubbleP.innerHTML = "Back to our new combo card. Combos are attached to units to enhance certain stats. You can easily tell which stat they enhance at a glance: \
+	bubbleP.innerHTML = "Back to our new booster card. Boosters are attached to units to enhance certain stats. You can easily tell which stat they enhance at a glance: \
 	Red cards enhance attack, blue cards enhance defense. You might notice the star and icon on the left. Remember about unit <strong>traits</strong>?";
 	bubbleBtn.setAttribute('onclick', 'newturn2()') ;
 }
 
 // Explain Combo Attach/Enhancements
 function newturn2() {
-	bubbleP.textContent = "Well, as you might guess, this combo requires a matching trait from 1 unit (since it only has 1 star). It just so happens that this combo \
-	perfectly matches your current unit, so go ahead and click your combo! You will then have to choose which unit to play it on, by clicking the appropriate slot it's in.";
+	bubbleP.textContent = "Well, as you might guess, this booster requires a matching trait from 1 unit (since it only has 1 star). It just so happens that this booster \
+	perfectly matches your current unit, so go ahead and click your booster! You will then have to choose which unit to play it on, by clicking the appropriate slot it's in.";
 	buoy.removeClass( document.querySelector('.hand .card'), 'disable' );
 	document.querySelector('.hand .card').setAttribute('onclick', 'newturn3()') ;
 	bubbleBtn.setAttribute('disabled',true);
@@ -201,7 +201,7 @@ function newturn3() {
 
 // Draw 3 This time (Sup/Infantry/Some Def 2* Combo)
 function opponent5() {
-	bubbleP.textContent = "Now that you've played the combo, you've once again surpassed your opponent's defense. Once more, we will also auto end our turn \
+	bubbleP.textContent = "Now that you've played the booster, you've once again surpassed your opponent's defense. Once more, we will also auto end our turn \
 	without playing anything else. (However this time, we'll auto draw a couple more cards we'll be using to finish up this round)";
 
 	document.querySelector('.player .atk').textContent = '3';
@@ -330,7 +330,7 @@ function swapTime3(e) {
 		document.querySelector('#tank').setAttribute('onclick', 'swapTime4("tank")') ;
 
 		window.setTimeout( function() {
-			document.querySelector('#shell').setAttribute('onclick', 'notify("red","Combo doesn\'t match any units in play! Check stars for formation/required traits.")') ;
+			document.querySelector('#shell').setAttribute('onclick', 'notify("red","Booster doesn\'t match any units in play! Check stars for formation/required traits.")') ;
 		},110);
 		
 	} else if (e==="a") {
@@ -345,7 +345,7 @@ function swapTime3(e) {
 // Explain Formations
 function swapTime4(e) {
 	if (document.querySelectorAll('.player .unit').length===1) bubbleP.innerHTML = "Whoa! What are these new buttons you ask? When playing your second unit (or beyond) you have to decide where to place your units. \
-	Did you see that new combo you got when you played your supply? It requires 2 armor units side by side. This is why you must plan your <strong>formations</strong> (the order of your units on the field). \
+	Did you see that new booster you got when you played your supply? It requires 2 armor units side by side. This is why you must plan your <strong>formations</strong> (the order of your units on the field). \
 	I'll go ahead and make thing simple for you by only allowing to place new units on the top...";
 
 	[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
@@ -492,8 +492,8 @@ function opponent8() {
 function finalPlay() {
 	buoy.addClass(document.querySelector('.player'), 'myturn');
 	notify('green', 'Your Turn');
-	bubbleP.innerHTML = "No worries though. we can handle it. One last card type to explain in this tutorial is the <strong>commander card</strong>. Commander cards are similar to combos, in that they provide units \
-	with stat boosts, except commander boosts apply across your whole field (they don't attach to just 1 unit). Click my card to activate my bonus!";
+	bubbleP.innerHTML = "No worries though. we can handle it. One last card type to explain in this tutorial is the <strong>General card</strong>. General cards are similar to boosters, in that they provide units \
+	with stat enhancements, except general boosts apply across your whole field (they don't attach to just 1 unit). Click my card to activate my bonus!";
 	
 	bubbleBtn.setAttribute('disabled', true) ;
 	var sap = document.getElementById('saptiva');
@@ -517,9 +517,9 @@ function finalPlay2() {
 
 // Explain one more bit on formation
 function finalPlay3() {
-	bubbleP.innerHTML = "With a <strong>2 star</strong> combo (in this case, we need 2 <strong>armor-type</strong> units side by side, which we do since we planned our formation earlier) you \
+	bubbleP.innerHTML = "With a <strong>2 star</strong> booster (in this case, we need 2 <strong>armor-type</strong> units side by side, which we do since we planned our formation earlier) you \
 	can choose either of the matching 2 units to apply it to. This is important to keep in mind for strategies in the future, particularly once you \
-	customize decks, so you can purposely leave a specific unit open to other combos.";
+	customize decks, so you can purposely leave a specific unit open to other boosters.";
 	buoy.addClass( document.getElementById('tank').parentNode, 'active');
 	buoy.addClass( document.getElementById('aa').parentNode, 'active');
 	document.getElementById('tank').parentNode.setAttribute('onclick','finalPlay4("tank")');
@@ -571,11 +571,11 @@ function finalPlay5() {
 		el.remove();
 	});
 
-	notify('yellow',"Choose <strong>1</strong> of your combos to retreat into your deck", true);
+	notify('yellow',"Choose <strong>1</strong> of your boosters to retreat into your deck", true);
 
 	bubbleP.innerHTML = "NOPE! Guess he had nothing left to play (or he's plotting your demise next round). Good job! One final thing for this tutorial: \
-	As the winner, you automatically get to <strong>keep all your units</strong> (they are placed back into your draw pile). You also get to <strong>choose</strong> 1 combo to save! \
-	Meanwhile, the loser <strong>discards all his combos</strong> & can only save <strong>one unit</strong>. Both players however, <strong>discard all their used supplies & any used commanders.</strong>";
+	As the winner, you automatically get to <strong>keep all your units</strong> (they are placed back into your draw pile). You also get to <strong>choose</strong> 1 booster to save! \
+	Meanwhile, the loser <strong>discards all his boosters</strong> & can only save <strong>one unit</strong>. Both players however, <strong>discard all their used supplies & any used generals.</strong>";
 	
 	bubbleBtn.setAttribute('disabled', true);
 	[].forEach.call(document.querySelectorAll('.player .combo'), function(el) {

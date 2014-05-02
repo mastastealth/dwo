@@ -37,7 +37,7 @@ var cardType = {
 		'oz' : { 'bonus' : [1,'arm','atk'] }
 	},		
 	'combo' : {
-		'at' : { 'atk' : 3, 'sup' : 1, 'canuse' : ['inf'] },
+		'at' : { 'vs' : 'arm', 'atk' : 3, 'sup' : 1, 'canuse' : ['inf'] },
 		'sniper' : { 'special' : true, 'sup': 2, 'canuse' : ['inf'] },
 		'medic' : { 'def' : 1, 'sup' : 0, 'canuse' : ['inf'] },
 		'reactive' : { 'def' : 2, 'sup' : 2, 'canuse' : ['arm']},
@@ -129,11 +129,11 @@ function playInit(connection, deck, atkr,p) {
 		// Only possible to end round on your turn
 		if (myTurn) {
 			var points;
-			var mine = document.querySelectorAll('.player .formation .unit').length;
+			var his = document.querySelectorAll('.opponent .formation .unit').length;
 
-			if ( mine <= 3 ) {
+			if ( his <= 3 ) {
 				points = 1;
-			} else if (mine===4) {
+			} else if (his===4) {
 				points = 2;
 			} else { points = 3; }
 
@@ -258,7 +258,7 @@ function playCard(card,who) {
 
 				if (who === 'player') forceEndCheck(who);
 
-				if (who != 'player') notify('purple', "<img src='images/cards/co_"+card.type+".png'> Commander was played");
+				if (who != 'player') notify('purple', "<img src='images/cards/co_"+card.type+".png'> General was played");
 			}
 		}
 		// Add combo to unit
@@ -394,7 +394,7 @@ function playCard(card,who) {
 									});
 
 									if (!document.querySelector('.'+who+' li.active')) {
-										notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
+										notify('red',"Booster doesn't match any units in play! Check stars for formation/required traits.");
 										return false;
 									}
 
@@ -410,7 +410,7 @@ function playCard(card,who) {
 				}
 
 				if (!comboMatch) {
-					notify('red',"Combo doesn't match any units in play! Check stars for formation/required traits.");
+					notify('red',"Booster doesn't match any units in play! Check stars for formation/required traits.");
 				} else {
 					if (cardType.combo[card.type].special) return false;
 					var cancelBtn = document.querySelector('.hand').appendChild( document.createElement('button') );
@@ -765,7 +765,7 @@ function comboCard(unit,card,who) {
 
 	if (who === 'player' && card.type!='sniper' && card.type!='tstrike' && card.type!='stealth' && card.type!='bigguns') forceEndCheck(who);
 
-	if (who!='player' && !cardType.combo[card.type].special) notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
+	if (who!='player' && !cardType.combo[card.type].special) notify('red', "<img src='images/cards/"+card.type+".png'> Booster was played");
 }
 
 function specialCombo(card,who,v) {
@@ -953,7 +953,7 @@ function specialCombo(card,who,v) {
 					slot.addEventListener('click', retreat);
 				});
 
-				notify('yellow','Select a unit to retreat! (Combo attached to unit will be discarded)', true);
+				notify('yellow','Select a unit to retreat! (Booster attached to unit will be discarded)', true);
 			} else if (who!='player' && v) {
 				// Remove unit
 				console.log(v);
@@ -1228,13 +1228,14 @@ function unitCalc(who) {
 		var comm = document.querySelector('.'+who+' .commander');
 
 		for (var i=0;i<unitTraits.length;i++) {
-			if ( unitTraits[i].indexOf( comm.bonus[1] ) != -1 ) {
+			if ( unitTraits[i].indexOf( comm.bonus[1] ) != -1 || comm.bonus[1] === "any" ) {
 				if ( comm.bonus[2] === 'atk') commAtkBonus += comm.bonus[0]
 				if ( comm.bonus[2] === 'def') commDefBonus += comm.bonus[0]
 
-				if (comm.bonus2 && unitTraits[i].indexOf( comm.bonus2[1] ) != -1) {
+				if (comm.bonus2 && unitTraits[i].indexOf( comm.bonus2[1] ) != -1 || comm.bonus2[1] === "any") {
 					if ( comm.bonus2[2] === 'atk') commAtkBonus += comm.bonus2[0]
 					if ( comm.bonus2[2] === 'def') commDefBonus += comm.bonus2[0]
+					if ( comm.bonus[2] === 'sup') currentSupUse += comm.bonus2[0]
 				}
 			} 
 		}
@@ -1402,14 +1403,23 @@ function cardToDiscard(card) {
 }
 
 function addSupply(who) {
-	buoy.addClass(document.querySelector('.'+who+' > h1'),'addSup');
-	window.setTimeout( function() { buoy.removeClass(document.querySelector('.'+who+' > h1'),'addSup'); }, 1300);
+	var h1 = document.querySelector('.'+who+' > h1');
+	h1.offsetWidth = h1.offsetWidth; 
+
+	window.requestAnimationFrame( function() {
+		buoy.addClass(h1,'addSup');
+	}); 
+
+	window.setTimeout( function() { 
+		buoy.removeClass(h1,'addSup');
+		h1.offsetWidth = h1.offsetWidth; 
+	}, 1300);
 }
 
 // -------------------
 
 // Use at the end of the round to wipe/add scores and reset field
-function resetField(points,loser) {
+function resetField(points,loser,retreat) {
 	// Remove extra side units?
 	if (document.querySelector('.player ul.extra')) document.querySelector('.player ul.extra').remove();
 	if (document.querySelector('.opponent ul.extra')) document.querySelector('.opponent ul.extra').remove()
@@ -1465,7 +1475,7 @@ function resetField(points,loser) {
 		}
 
 		// Loser gets to save one
-		if (loser) {
+		if (loser && !retreat) {
 			buoy.addClass( document.querySelector('.hand'), 'disable');
 			if (document.querySelectorAll('.player .unit').length > 1) notify('yellow',"Choose <strong>1</strong> of your units to retreat into your deck", true);
 
@@ -1481,7 +1491,7 @@ function resetField(points,loser) {
 			});
 		} 
 		// Winner saves all
-		else { 
+		else if (!loser || retreat) { 
 			var saveUnits = [];
 
 			[].forEach.call(document.querySelectorAll('.player .unit'), function(el) {
@@ -1771,11 +1781,11 @@ function endGame(who,sup) {
 	var x = (sup===1) ? "Ran out of supplies. " : "";
 
 	if (who === 'loser') {
-		m.innerHTML = "<h2>You lost the game. "+x+"</h2> <button disabled>Quit Game</button>"
+		m.innerHTML = "<img src='images/misc/loss.png' style='display:block;margin:0 auto 10px;' /> <h2>"+x+"</h2> <button disabled>Quit Game</button>"
 		// Tell opponent they won
 		conn.send({ 'func': 'endgame', 'who': 'winner' });
 	} else {
-		m.innerHTML = "<h2>You won the game!</h2> <button disabled>Quit Game</button>"
+		m.innerHTML = "<img src='images/misc/win.png' style='display:block;margin:0 auto 10px;' /> <button disabled>Quit Game</button>"
 	}
 
 	window.setTimeout( function () { m.querySelector('button').removeAttribute('disabled') }, 2000);
