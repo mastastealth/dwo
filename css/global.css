@@ -1043,8 +1043,8 @@ footer {
 }
 
 .game .field h1.addSup:before {
-  -webkit-animation: supplyAdd 0.8s ease forwards;
-  animation: supplyAdd 0.8s ease forwards;
+  -webkit-animation: supplyAdd 1.3s ease forwards;
+  animation: supplyAdd 1.3s ease forwards;
   background: #333333 url(../images/cards/supply.png) no-repeat;
   -webkit-background-size: cover;
   background-size: cover;
@@ -2006,8 +2006,8 @@ footer {
 @-webkit-keyframes supplyAdd {
   0% {
     opacity: 0;
-    -webkit-transform: translate(0%, 100%);
-    transform: translate(0%, 100%);
+    -webkit-transform: translate(0%, 100%) rotate(0) scale(1);
+    transform: translate(0%, 100%) rotate(0) scale(1);
   }
 
   15%, 80% {
@@ -2016,17 +2016,17 @@ footer {
 
   100% {
     opacity: 0;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
+    -webkit-transform: translate(0%, -50%) rotate(10deg) scale(1.5);
+    transform: translate(0%, -50%) rotate(10deg) scale(1.5);
   }
 }
 
 @keyframes supplyAdd {
   0% {
     opacity: 0;
-    -webkit-transform: translate(0%, 100%);
-    -ms-transform: translate(0%, 100%);
-    transform: translate(0%, 100%);
+    -webkit-transform: translate(0%, 100%) rotate(0) scale(1);
+    -ms-transform: translate(0%, 100%) rotate(0) scale(1);
+    transform: translate(0%, 100%) rotate(0) scale(1);
   }
 
   15%, 80% {
@@ -2035,9 +2035,9 @@ footer {
 
   100% {
     opacity: 0;
-    -webkit-transform: translate(0%, -50%);
-    -ms-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
+    -webkit-transform: translate(0%, -50%) rotate(10deg) scale(1.5);
+    -ms-transform: translate(0%, -50%) rotate(10deg) scale(1.5);
+    transform: translate(0%, -50%) rotate(10deg) scale(1.5);
   }
 }
 

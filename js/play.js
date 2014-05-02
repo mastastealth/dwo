@@ -37,10 +37,10 @@ var cardType = {
 		'oz' : { 'bonus' : [1,'arm','atk'] }
 	},		
 	'combo' : {
-		'at' : { 'atk' : 2, 'sup' : 1, 'canuse' : ['inf'] },
+		'at' : { 'atk' : 3, 'sup' : 1, 'canuse' : ['inf'] },
 		'sniper' : { 'special' : true, 'sup': 2, 'canuse' : ['inf'] },
 		'medic' : { 'def' : 1, 'sup' : 0, 'canuse' : ['inf'] },
-		'reactive' : { 'def' : 2, 'sup' : 1, 'canuse' : ['arm']},
+		'reactive' : { 'def' : 2, 'sup' : 2, 'canuse' : ['arm']},
 		'stinger' : { 'vs' : 'air', 'atk' : 3, 'sup' : 1, 'canuse' : ['inf']  },
 		'support' : { 'special' : true, 'sup' : 0, 'canuse' : ['inf'] },
 		'retreat' : { 'special' : true, 'any' : true, 'sup' : 0 },
@@ -49,8 +49,8 @@ var cardType = {
 		'frontline' : { 'atk' : 2, 'def' : -1, 'sup' : 0, 'canuse' : ['grd','grd'] },
 		'intel' : { 'sup': 3, 'canuse' : ['inf','air'], 'special' : true },
 		'fallback' : { 'def' : 2, 'atk' : -1, 'sup' : 0, 'canuse' : ['grd','grd'] },
-		'cstrike' : { 'def' : 0, 'atk' : 3, 'sup' : 1, 'canuse' : ['grd','air'] },
-		'shell' : { 'def' : 0, 'atk' : 2, 'sup' : 1, 'canuse' : ['arm','arm'] },
+		'cstrike' : { 'def' : 0, 'atk' : 3, 'sup' : 2, 'canuse' : ['arm','air'] },
+		'shell' : { 'def' : 0, 'atk' : 2, 'sup' : 2, 'canuse' : ['arm','arm'] },
 		'coverage' : { 'def' : 3, 'atk' : 0, 'sup' : 1, 'vs': 'as', 'canuse' : ['grd','air'] },
 		'wingman' : { 'def' : 2, 'atk' : 0, 'sup' : 0, 'vs': 'air', 'canuse' : ['air','air'] },
 		'stealth' : { 'special' : true, 'sup' : 1, 'canuse' : ['inf','lr'] },
@@ -58,7 +58,7 @@ var cardType = {
 		'squad' : { 'special' : true, 'sup' : 0, 'canuse' : ['inf','inf','inf']},
 		'patrol' : { 'atk' : 0, 'def' : 4, 'sup' : 2, 'canuse' : ['air','grd','air']},
 		'acover' : { 'special' : true, 'sup' : 0, 'canuse' : ['air','as','air']},
-		'column' : { 'atk' : 2, 'def' : 2, 'sup' : 1, 'canuse' : ['arm','arm','arm']},
+		'column' : { 'atk' : 2, 'def' : 2, 'sup' : 2, 'canuse' : ['arm','arm','arm']},
 		'bigguns' : { 'special' : true, 'sup' : 2, 'canuse' : ['inf','arm','lr']},
 		'evasion' : { 'atk' : 0, 'def' : 3,'sup' : 1, 'canuse' : ['air','air','air']},
 		'tstrike' : { 'special' : true, 'sup' : 1, 'canuse' : ['inf','lr','air']}
@@ -1393,7 +1393,7 @@ function cardToDiscard(card) {
 
 function addSupply(who) {
 	buoy.addClass(document.querySelector('.'+who+' > h1'),'addSup');
-	window.setTimeout( function() { buoy.removeClass(document.querySelector('.'+who+' > h1'),'addSup'); }, 800);
+	window.setTimeout( function() { buoy.removeClass(document.querySelector('.'+who+' > h1'),'addSup'); }, 1300);
 }
 
 // -------------------

@@ -310,7 +310,7 @@
 
 			// Animation for adding Supplies
 			h1.addSup:before {
-				animation: supplyAdd 0.8s ease forwards;
+				animation: supplyAdd 1.3s ease forwards;
 				background: #333 url(../images/cards/supply.png) no-repeat;
 				background-size: cover;
 				content: '';
@@ -885,9 +885,9 @@
 }
 
 @keyframes supplyAdd {
-	0% { opacity: 0; transform: translate(0%,100%); }
+	0% { opacity: 0; transform: translate(0%,100%) rotate(0) scale(1); }
 	15%, 80% { opacity: 1; }
-	100% { opacity: 0; transform: translate(0%,-50%); }
+	100% { opacity: 0; transform: translate(0%,-50%) rotate(10deg) scale(1.5); }
 }
 
 @keyframes unitRumble {
