@@ -175,16 +175,15 @@ function playCard(card,who) {
 				}
 
 				// only choose if actually the player AND allowed to expand
-				if (who === 'player'){
-					// This is meant to limit defender to attacker's count
-					// var theirUnitCount = document.querySelectorAll('.opponent .unit').length;
-					// if (unitCount >= 3 && unitCount >= theirUnitCount) return false;
-					
+				if (who === 'player'){					
 					// Get first and last positioned units
 					var firstUnit = document.querySelectorAll('.'+who+' .formation .unit')[0];
 					var lastUnit = document.querySelectorAll('.'+who+' .formation .unit')[document.querySelectorAll('.'+who+' .formation .unit').length-1];
 					var addPrev;
 					var addNext;
+
+					// Notify player
+					notify('u', 'Choose to place new unit at the top or bottom of the formation', true); 
 
 					// If they exist or whatevs then add button
 					if (firstUnit.parentNode.previousElementSibling) {
@@ -222,6 +221,11 @@ function playCard(card,who) {
 
 								[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
 									buoy.removeClass(el, 'disable');
+								});
+
+								[].forEach.call(document.querySelectorAll('.sticky'), function(msg) {
+									buoy.addClass( msg, 'un');
+									window.setTimeout( function() { msg.remove(); }, 500);
 								});
 
 								// Smart shift
@@ -1186,6 +1190,7 @@ function unitCalc(who) {
 				}
 			});
 
+			if (thisBonus > 0 && !buoy.hasClass(el,'bonus') ) buoy.addClass(el,'bonus');
 			bonusTotal += thisBonus;
 		}
 
@@ -1848,6 +1853,10 @@ function wipeGame() {
 
 	[].forEach.call(document.querySelectorAll('span[data-supadd]'), function(span) {
 		span.setAttribute('data-supadd', 0);
+	});
+
+	[].forEach.call(document.querySelectorAll('span[data-supplayed]'), function(span) {
+		span.setAttribute('data-supplayed', 0);
 	});
 
 	[].forEach.call(document.querySelectorAll('.history div'), function(div) {
