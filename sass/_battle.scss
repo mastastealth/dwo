@@ -349,7 +349,7 @@
 			}
 	}
 
-	&:not(.tut) .hand, &.tut.showDeck .hand {
+	.hand {
 		padding-left: 160px;
 
 		&:before {
@@ -412,8 +412,7 @@
 		justify-content: center;
 		position: relative;
 		margin: 0 auto;
-		min-width: 180px;
-		width: 30%;
+		width: 220px;
 		z-index: 1;
 
 		&:hover > li { 
@@ -552,7 +551,7 @@
 			position: relative;
 			top: -24px; left: -40px;
 		}
-			.player.attacker li.atk:not(:hover):before { left: 8px; }
+			.player.attacker li.atk:not(:hover):before { left: 0; }
 
 		aside:not(.attacker) li.def:not(:hover):before { 
 			content: '+' attr(data-def); 
@@ -560,9 +559,10 @@
 			font-size: 24px;
 			font-weight: bold;
 			position: relative;
-			top: 10px; left: -20px;
+			top: 10px; left: -25px;
 			text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
 		}
+			//.player:not(.attacker) li.def:not(:hover):before { left: 4px; }
 
 		.extra {
 			height: 10%;
@@ -620,6 +620,8 @@
 			}
 
 			&[disabled=true] { opacity: 0; }
+
+			&.flash { background: green; color: white; font-weight: bold; transform: scale(1.2); }
 		}
 
 		.card {
