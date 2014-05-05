@@ -69,7 +69,6 @@ function endTutTurnListener() {
 			break;
 		case 11:
 			window.setTimeout( function() { oppPlay5(); }, 1000);
-			resetField(1,false,false);
 			break;
 	}
 }
@@ -241,6 +240,7 @@ function intro5() {
 }
 
 function oppPlay5() {
+	resetField(1,false,false);
 	bubbleP.innerHTML = "<span>Your opponent has surrendered! You win this round and 1 point for surpassing his defense. After \
 	every round players swap the attacker/defender role and the game continues until someone reaches 6 points \
 	(or runs out of supplies)!</span> <aside><img src='images/misc/tut8.png'></aside>";
