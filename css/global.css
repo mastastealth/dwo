@@ -361,8 +361,11 @@ body {
 }
 
 body {
-  background: #92ce9a url(../images/bg/bg_table.png);
+  background: #92ce9a url(../images/bg/bg_main.jpg);
+  -webkit-background-size: cover;
+  background-size: cover;
   font-family: Calibri, Tahoma, sans-serif;
+  min-width: 750px;
   overflow: auto;
 }
 
@@ -378,28 +381,61 @@ a {
   min-width: 120px;
 }
 
-.logo,
+.logo {
+  position: absolute;
+  top: 0px;
+  left: 20px;
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9);
+  z-index: 0;
+}
+
 .row {
-  margin-bottom: 20px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 70%;
+}
+
+.row > button {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -moz-box-flex: 1;
+  -ms-flex: 1;
+  flex-grow: 1;
+  margin: 0 5px;
 }
 
 #tlkio {
   background: white;
   -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.3);
-  margin: 0 auto 20px;
-  max-width: 800px;
-  height: 480px;
-  width: 80%;
+  height: 80%;
+  position: absolute;
+  top: 10%;
+  right: 0;
+  width: 30%;
 }
 
 button {
-  background: rgba(61, 153, 112, 0.4);
+  background: rgba(61, 153, 112, 0.7);
   border: 1px solid darkgreen;
   border-radius: 4px;
+  color: white;
+  font-weight: bold;
   height: 50px;
   padding: 0 10px;
   text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
@@ -417,7 +453,10 @@ button[disabled] {
 
 footer {
   font-size: 12px;
-  margin-bottom: 20px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
 }
 
 .builder {
@@ -434,6 +473,7 @@ footer {
   transition: all 1s ease;
   width: -webkit-calc(100% - 50px);
   width: calc(100% - 50px);
+  z-index: 1;
 }
 
 .builder.active {
@@ -591,6 +631,7 @@ footer {
   transition: all 1s ease;
   width: -webkit-calc(100% - 50px);
   width: calc(100% - 50px);
+  z-index: 1;
 }
 
 .game.active {
@@ -1017,12 +1058,13 @@ footer {
 }
 
 .game .field aside:not(.attacker) h1 .def {
-  top: 70px;
+  top: 40px;
 }
 
 .game .field .attacker h1 .def,
 .game .field aside:not(.attacker) h1 .atk {
-  line-height: 70px;
+  font-size: 24px;
+  line-height: 40px;
   opacity: 0.35;
 }
 
@@ -1100,13 +1142,11 @@ footer {
   transform: rotateY(180deg);
 }
 
-.game:not(.tut) .hand,
-.game.tut.showDeck .hand {
+.game .hand {
   padding-left: 160px;
 }
 
-.game:not(.tut) .hand:before,
-.game.tut.showDeck .hand:before {
+.game .hand:before {
   background: url(../images/cards/back.png) no-repeat;
   -webkit-background-size: cover;
   background-size: cover;
@@ -1123,8 +1163,7 @@ footer {
   width: 140px;
 }
 
-.game:not(.tut) .hand:after,
-.game.tut.showDeck .hand:after {
+.game .hand:after {
   background: #C5EBA3;
   border-radius: 10px;
   color: black;
@@ -1138,8 +1177,7 @@ footer {
   left: 115px;
 }
 
-.game:not(.tut) .hand.low.er.est:before,
-.game.tut.showDeck .hand.low.er.est:before {
+.game .hand.low.er.est:before {
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   -webkit-transform: translateY(9px);
@@ -1147,8 +1185,7 @@ footer {
   transform: translateY(9px);
 }
 
-.game:not(.tut) .hand.low.er:before,
-.game.tut.showDeck .hand.low.er:before {
+.game .hand.low.er:before {
   -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 3px rgba(0, 0, 0, 0.2);
   -webkit-transform: translateY(6px);
@@ -1156,8 +1193,7 @@ footer {
   transform: translateY(6px);
 }
 
-.game:not(.tut) .hand.low:before,
-.game.tut.showDeck .hand.low:before {
+.game .hand.low:before {
   -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 0 rgba(0, 0, 0, 0.2), 0 9px 3px rgba(0, 0, 0, 0.2);
   -webkit-transform: translateY(3px);
@@ -1189,8 +1225,7 @@ footer {
   justify-content: center;
   position: relative;
   margin: 0 auto;
-  min-width: 180px;
-  width: 30%;
+  width: 220px;
   z-index: 1;
 }
 
@@ -1398,6 +1433,31 @@ footer {
   left: -100px;
 }
 
+.game .attacker li.atk:not(:hover):before {
+  content: "+" attr(data-atk);
+  color: #E44141;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+  top: -24px;
+  left: -40px;
+}
+
+.game .player.attacker li.atk:not(:hover):before {
+  left: 0;
+}
+
+.game aside:not(.attacker) li.def:not(:hover):before {
+  content: "+" attr(data-def);
+  color: #4178E4;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+  top: 10px;
+  left: -25px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
 .game .extra {
   height: 10%;
   position: absolute;
@@ -1416,6 +1476,9 @@ footer {
 }
 
 .game .hand {
+  background: #92ce9a url(../images/bg/bg_table.png);
+  -webkit-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
   height: 30%;
   position: relative;
   z-index: 2;
@@ -1502,6 +1565,15 @@ footer {
   opacity: 0;
 }
 
+.game .hand button.flash {
+  background: green;
+  color: white;
+  font-weight: bold;
+  -webkit-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  transform: scale(1.2);
+}
+
 .game .hand .card {
   position: relative;
   -webkit-transition: all 0.3s;
@@ -1554,9 +1626,9 @@ footer {
 }
 
 .game .hand .card:hover {
-  -webkit-transform: scale(1.2) translateY(12px);
-  -ms-transform: scale(1.2) translateY(12px);
-  transform: scale(1.2) translateY(12px);
+  -webkit-transform: scale(1.1) translateY(-12px);
+  -ms-transform: scale(1.1) translateY(-12px);
+  transform: scale(1.1) translateY(-12px);
   z-index: 1;
 }
 
@@ -1580,7 +1652,7 @@ footer {
 
 .game .hand .cardContainer {
   height: 100%;
-  line-height: 200px;
+  line-height: 240px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -1676,7 +1748,7 @@ footer {
   content: '';
   display: block;
   height: 170px;
-  opacity: 0;
+  opacity: 1;
   position: absolute;
   top: 0;
   left: -40px;
@@ -1696,20 +1768,12 @@ footer {
   content: "+2 vs \e603";
 }
 
-.game .unit[data-type="a2g"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
-}
-
 .game .unit[data-type="aa"] i {
   background: url(../images/units/aa.png) no-repeat;
 }
 
 .game .unit[data-type="aa"]:after {
   content: "+2 vs \e604";
-}
-
-.game .unit[data-type="aa"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
 }
 
 .game .unit[data-type="apc"] i {
@@ -1724,16 +1788,8 @@ footer {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-.game .unit[data-type="apc"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
-}
-
 .game .unit[data-type="arty"] i {
   background: url(../images/units/arty.png) no-repeat;
-}
-
-.game .unit[data-type="arty"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat -80px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
 }
 
 .game .unit[data-type="bomber"] i {
@@ -1744,24 +1800,12 @@ footer {
   content: "+3 vs \e603";
 }
 
-.game .unit[data-type="bomber"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -160px 124px;
-}
-
 .game .unit[data-type="drone"] i {
   background: url(../images/units/drone.png) no-repeat;
 }
 
-.game .unit[data-type="drone"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
-}
-
 .game .unit[data-type="harty"] i {
   background: url(../images/units/harty.png) no-repeat;
-}
-
-.game .unit[data-type="harty"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat -166px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
 }
 
 .game .unit[data-type="hbomber"] i {
@@ -1772,32 +1816,16 @@ footer {
   content: "+4 vs \e605";
 }
 
-.game .unit[data-type="hbomber"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
-}
-
 .game .unit[data-type="helo"] i {
   background: url(../images/units/helo.png) no-repeat;
-}
-
-.game .unit[data-type="helo"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
 }
 
 .game .unit[data-type="htank"] i {
   background: url(../images/units/htank.png) no-repeat;
 }
 
-.game .unit[data-type="htank"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat -123px 0, url(../images/misc/bar_def.png) no-repeat -214px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
-}
-
 .game .unit[data-type="infantry"] i {
   background: url(../images/units/infantry.png) no-repeat;
-}
-
-.game .unit[data-type="infantry"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
 }
 
 .game .unit[data-type="jet"] i {
@@ -1808,10 +1836,6 @@ footer {
   content: "+3 vs \e604";
 }
 
-.game .unit[data-type="jet"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
-}
-
 .game .unit[data-type="recon"] i {
   background: url(../images/units/recon.png) no-repeat;
 }
@@ -1820,16 +1844,8 @@ footer {
   content: "+2 vs \e606";
 }
 
-.game .unit[data-type="recon"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
-}
-
 .game .unit[data-type="tank"] i {
   background: url(../images/units/tank.png) no-repeat;
-}
-
-.game .unit[data-type="tank"]:before {
-  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
 }
 
 .game .player .unit {
@@ -1862,6 +1878,188 @@ footer {
 .game .opponent .unit ul {
   width: 110%;
   text-align: right;
+}
+
+.game .opponent.attacker li:not(:hover) .unit.bonus:after {
+  -webkit-transform: translate(180%, -350%) rotateY(180deg);
+  -ms-transform: translate(180%, -350%) rotateY(180deg);
+  transform: translate(180%, -350%) rotateY(180deg);
+  opacity: 0.9;
+}
+
+.game .player.attacker li:not(:hover) .unit.bonus:after {
+  -webkit-transform: translate(-130%, -350%);
+  -ms-transform: translate(-130%, -350%);
+  transform: translate(-130%, -350%);
+  opacity: 0.9;
+}
+
+.game aside li:hover .unit[data-type="a2g"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game aside li:hover .unit[data-type="aa"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game aside li:hover .unit[data-type="apc"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
+}
+
+.game aside li:hover .unit[data-type="arty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -80px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game aside li:hover .unit[data-type="bomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -160px 124px;
+}
+
+.game aside li:hover .unit[data-type="drone"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game aside li:hover .unit[data-type="harty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -166px 0, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game aside li:hover .unit[data-type="hbomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game aside li:hover .unit[data-type="helo"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
+}
+
+.game aside li:hover .unit[data-type="htank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -123px 0, url(../images/misc/bar_def.png) no-repeat -214px 70px, url(../images/misc/bar_sup.png) no-repeat -213px 124px;
+}
+
+.game aside li:hover .unit[data-type="infantry"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat -268px 124px;
+}
+
+.game aside li:hover .unit[data-type="jet"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat -107px 124px;
+}
+
+.game aside li:hover .unit[data-type="recon"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 0px 124px;
+}
+
+.game aside li:hover .unit[data-type="tank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat -53px 124px;
+}
+
+.game .attacker .unit[data-type="a2g"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0;
+}
+
+.game .attacker .unit[data-type="aa"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="apc"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="arty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -80px 0;
+}
+
+.game .attacker .unit[data-type="bomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="drone"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="harty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -166px 0;
+}
+
+.game .attacker .unit[data-type="hbomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="helo"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0;
+}
+
+.game .attacker .unit[data-type="htank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -123px 0;
+}
+
+.game .attacker .unit[data-type="infantry"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="jet"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="recon"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 6px 0;
+}
+
+.game .attacker .unit[data-type="tank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat -37px 0;
+}
+
+.game aside:not(.attacker) .unit[data-type="a2g"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="aa"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="apc"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="arty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="bomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="drone"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="harty"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -106px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="hbomber"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="helo"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="htank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -214px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="infantry"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat 0px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="jet"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -159px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="recon"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
+}
+
+.game aside:not(.attacker) .unit[data-type="tank"]:before {
+  background: url(../images/misc/bar_atk.png) no-repeat 50px top, url(../images/misc/bar_def.png) no-repeat -53px 70px, url(../images/misc/bar_sup.png) no-repeat 60px 124px;
 }
 
 @-webkit-keyframes playerUnit {
@@ -2348,24 +2546,65 @@ button {
   -webkit-animation: none;
   animation: none;
   background: rgba(255, 255, 255, 0.85);
-  font-size: 18px;
+  -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+  font-size: 22px;
   line-height: 160%;
-  max-height: 200px;
+  margin-left: -400px;
+  max-height: 260px;
   min-height: 40px;
-  padding: 10px 90px 10px 10px;
+  padding: 10px;
   pointer-events: all;
   position: fixed;
-  left: 10%;
-  width: 80%;
-  bottom: 32%;
+  left: 50%;
+  width: 800px;
+  bottom: 40%;
   top: auto;
+  -webkit-transition: -webkit-transform 0.5s, opacity 0.5s;
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.notify.bubble.hide {
+  opacity: 0;
+  -webkit-transform: translateY(-300%);
+  -ms-transform: translateY(-300%);
+  transform: translateY(-300%);
+}
+
+.notify.bubble p {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.notify.bubble aside {
+  -webkit-flex-shrink: 0;
+  -ms-flex: 0 0;
+  flex-shrink: 0;
+  margin-left: 10px;
+  width: 300px;
+}
+
+.notify.bubble aside img {
+  height: auto;
+  margin-right: 0;
 }
 
 .notify.bubble button {
+  display: block;
+  font-size: 16px;
   height: 40px;
-  position: absolute;
-  top: 45%;
-  right: 10px;
+  margin: 0 auto;
 }
 
 .notify.bubble button:not([disabled]):hover {
@@ -2376,12 +2615,10 @@ button.menu {
   background: #CCC;
   border: 1px solid #999;
   height: 30px;
+  opacity: 0.75;
   position: absolute;
-  top: 5px;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  transform: translateX(-50%);
+  bottom: 10px;
+  left: 47px;
   z-index: 100;
 }
 
@@ -2389,6 +2626,7 @@ button.menu:hover {
   background: #E44141;
   border-color: darkred;
   color: white;
+  opacity: 1;
 }
 
 @-webkit-keyframes spin {

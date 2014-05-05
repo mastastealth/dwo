@@ -9,6 +9,7 @@
 	padding: 0 20px;
 	transition: all 1s ease;
 	width: calc(100% - 50px);
+	z-index: 1;
 
 	&.active {
 		max-height: 100%;

@@ -34,7 +34,8 @@ var cardType = {
 		'advocate' : { 'bonus' : [2,'any','def'], 'bonus2' : [-2,'any','sup']},
 		'poppy' : { 'bonus' : [1,'air','def'] },
 		'mo' : { 'bonus' : [1,'grd','def'] },
-		'oz' : { 'bonus' : [1,'arm','atk'] }
+		'oz' : { 'bonus' : [1,'arm','atk'] },
+		'tankgirl' : { 'bonus' : [1,'any','atk'] }
 	},		
 	'combo' : {
 		'at' : { 'vs' : 'arm', 'atk' : 3, 'sup' : 1, 'canuse' : ['inf'] },
@@ -145,6 +146,7 @@ function playInit(connection, deck, atkr,p) {
 
 // Play a card
 function playCard(card,who) {
+	console.log(card);
 	if (who === 'player') var cardEl = document.getElementById(card.id);
 
 	if ( properCards === md5(cardType) ) {
@@ -175,16 +177,15 @@ function playCard(card,who) {
 				}
 
 				// only choose if actually the player AND allowed to expand
-				if (who === 'player'){
-					// This is meant to limit defender to attacker's count
-					// var theirUnitCount = document.querySelectorAll('.opponent .unit').length;
-					// if (unitCount >= 3 && unitCount >= theirUnitCount) return false;
-					
+				if (who === 'player'){					
 					// Get first and last positioned units
 					var firstUnit = document.querySelectorAll('.'+who+' .formation .unit')[0];
 					var lastUnit = document.querySelectorAll('.'+who+' .formation .unit')[document.querySelectorAll('.'+who+' .formation .unit').length-1];
 					var addPrev;
 					var addNext;
+
+					// Notify player
+					notify('u', 'Choose to place new unit at the top or bottom of the formation', true); 
 
 					// If they exist or whatevs then add button
 					if (firstUnit.parentNode.previousElementSibling) {
@@ -211,8 +212,8 @@ function playCard(card,who) {
 								//if (buoy.hasClass(el,'next')) newUnit = el.parentNode.nextElementSibling.appendChild( document.createElement('div') );
 								unitCard(newUnit,card,who,card.id);
 
-								if (buoy.hasClass(el,'prev')) conn.send( { 'func':'unitPos', 'pos' : 'prev', 'card' : card, 'who' : 'opponent', 'id' : card.id } );
-								if (buoy.hasClass(el,'next')) conn.send( { 'func':'unitPos', 'pos' : 'next', 'card' : card, 'who' : 'opponent', 'id' : card.id } );
+								if (buoy.hasClass(el,'prev') && conn) conn.send( { 'func':'unitPos', 'pos' : 'prev', 'card' : card, 'who' : 'opponent', 'id' : card.id } );
+								if (buoy.hasClass(el,'next') && conn) conn.send( { 'func':'unitPos', 'pos' : 'next', 'card' : card, 'who' : 'opponent', 'id' : card.id } );
 
 								// Cleanup
 								if (addPrev) addPrev.parentNode.removeChild(addPrev);
@@ -222,6 +223,11 @@ function playCard(card,who) {
 
 								[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
 									buoy.removeClass(el, 'disable');
+								});
+
+								[].forEach.call(document.querySelectorAll('.sticky'), function(msg) {
+									buoy.addClass( msg, 'un');
+									window.setTimeout( function() { msg.remove(); }, 500);
 								});
 
 								// Smart shift
@@ -275,7 +281,7 @@ function playCard(card,who) {
 						//console.log('ID: '+slot.lastElementChild.getAttribute('id'));
 						comboCard(slot.querySelector('.unit').getAttribute('id'),card,who);
 
-						conn.send( { 
+						if (conn) conn.send( { 
 							'func':'comboPos', 
 							'pos' : slot.querySelector('.unit').getAttribute('id'), 
 							'card' : card, 
@@ -424,7 +430,8 @@ function playCard(card,who) {
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').getAttribute('data-supplayed'));
 			document.querySelector('.'+who+' .sup').setAttribute('data-supplayed', currentSup+3);
 			if (who === 'player') {
-				drawCard(playerDeck,1);
+				if (!tutDeck) drawCard(playerDeck,1);
+				if (tutDeck) drawCardConfirmed(tutDeck.pop(),100);
 				cardToDiscard(cardEl);
 			}
 
@@ -469,6 +476,7 @@ function shuffle(array) {
 }
 
 function reshuffleCheck() {
+	if (tutDeck) return false;
 	var cards = [];
 	var supCount = 0;
 	var unitCount = 0;
@@ -605,7 +613,7 @@ function drawCardConfirmed(card,time) {
 			} else if (playerDeck.length>16 && playerDeck.length<33 && !buoy.hasClass(hand,'er')) {
 				buoy.addClass(hand,'er')
 			} else if (playerDeck.length<17 && !buoy.hasClass(hand,'est') ) { buoy.addClass(hand,'est') }
-		}
+		} else if (tutDeck) { hand.setAttribute('data-count',tutDeck.length); }
 
 		newcard.cardProps = card;
 		newcard.setAttribute('id', card.id);
@@ -618,6 +626,7 @@ function drawCardConfirmed(card,time) {
 
 function playListener(e) {
 	var card = e.target.cardProps;
+	if ( buoy.hasClass( document.querySelector('.hand') ,'disable') ) return false;
 
 	function canAfford(card) {
 		var totalSup = parseInt(document.querySelector('.player .sup').getAttribute('data-sup') );
@@ -640,16 +649,24 @@ function playListener(e) {
 		}
 	}
 
-	if (myTurn && canAfford(e.target) ) {
-		conn.send({ 
-			'func'  : 'testCard', 
-			'card'  : card,
-			'who'   : 'origin',
-			'action': 'play'
-		});
-	} else if (!myTurn && !buoy.hasClass(document.querySelector('.game'),'tut')) {
-		notify('red', 'Not Your Turn');
+	if (myTurn) {
+		if ( canAfford(e.target) ) {
+			if (conn) {
+				conn.send({ 
+					'func'  : 'testCard', 
+					'card'  : card,
+					'who'   : 'origin',
+					'action': 'play'
+				});
+			} else if (tutDeck) {
+				console.log('Local Play');
+				playCard(card,'player');
+			}
+		}
+	} else {
+		if (!buoy.hasClass(document.querySelector('.game'),'tut')) notify('red', 'Not Your Turn');
 	}
+	
 }
 
 function addUnit(u,who,card) {
@@ -1186,6 +1203,7 @@ function unitCalc(who) {
 				}
 			});
 
+			if (thisBonus > 0 && !buoy.hasClass(el,'bonus') ) buoy.addClass(el,'bonus');
 			bonusTotal += thisBonus;
 		}
 
@@ -1243,10 +1261,12 @@ function unitCalc(who) {
 				if ( comm.bonus[2] === 'atk') commAtkBonus += comm.bonus[0]
 				if ( comm.bonus[2] === 'def') commDefBonus += comm.bonus[0]
 
-				if (comm.bonus2 && unitTraits[i].indexOf( comm.bonus2[1] ) != -1 || comm.bonus2[1] === "any") {
-					if ( comm.bonus2[2] === 'atk') commAtkBonus += comm.bonus2[0]
-					if ( comm.bonus2[2] === 'def') commDefBonus += comm.bonus2[0]
-					if ( comm.bonus2[2] === 'sup') supBonus += comm.bonus2[0]
+				if (comm.bonus2) {
+					if (unitTraits[i].indexOf( comm.bonus2[1] ) != -1 || comm.bonus2[1] === "any") {
+						if ( comm.bonus2[2] === 'atk') commAtkBonus += comm.bonus2[0]
+						if ( comm.bonus2[2] === 'def') commDefBonus += comm.bonus2[0]
+						if ( comm.bonus2[2] === 'sup') supBonus += comm.bonus2[0]
+					}
 				}
 			} 
 		}
@@ -1517,7 +1537,8 @@ function resetField(points,loser,retreat) {
 				saveUnits.push(el.cardProps);
 			});
 
-			redeckCard(playerDeck,saveUnits,false);
+			if (!tutDeck) redeckCard(playerDeck,saveUnits,false);
+			if (tutDeck) redeckCard(tutDeck,saveUnits,false);
 
 			window.setTimeout( function() {
 				unitCalc('player');
@@ -1530,7 +1551,7 @@ function resetField(points,loser,retreat) {
 			//console.log('2+ Units, 1 Combo');
 
 			var onlyCombo = document.querySelector('.player .combo');
-			redeckCard(playerDeck,[onlyCombo.cardProps],false);
+			if (!tutDeck) redeckCard(playerDeck,[onlyCombo.cardProps],false);
 
 			clearCombo(onlyCombo);
 
@@ -1620,8 +1641,8 @@ function resetField(points,loser,retreat) {
 
 	// Auto draw cards
 	if (document.querySelectorAll('.hand .card').length<8) {
-		drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
-	} else { drawCard(playerDeck,1); }
+		if (!tutDeck) drawCard(playerDeck,8-document.querySelectorAll('.hand .card').length);
+	} else { if (!tutDeck) drawCard(playerDeck,1); }
 
 	// Check hand
 	reshuffleCheck();
@@ -1636,11 +1657,11 @@ function resetField(points,loser,retreat) {
 		buoy.addClass(document.querySelector('.opponent'), 'attacker');
 		attacker = false;
 		notify('yellow', "Opponent's Turn as Attacker");
-		document.querySelector('.turn').setAttribute('disabled','true');
-		document.querySelector('.end').setAttribute('disabled','true');
+		if ( document.querySelector('.turn') ) document.querySelector('.turn').setAttribute('disabled','true');
+		if ( document.querySelector('.end') ) document.querySelector('.end').setAttribute('disabled','true');
 
 		// Tell opponent it's his turn
-		conn.send( { 'func':'yourTurn', 'var' : true } );
+		if (conn) conn.send( { 'func':'yourTurn', 'var' : true } );
 		myTurn = false;
 		if (loser) addHistory('endr','player','Lost Round');
 		buoy.removeClass(document.querySelector('.player'),'myturn');
@@ -1786,7 +1807,7 @@ function forceEndCheck(who) {
 			}
 			//console.log('Force End now at: '+forceEnd);
 			if (forceEnd===1) {
-				document.querySelector('.end').setAttribute('disabled','true');
+				if (document.querySelector('.end')) document.querySelector('.end').setAttribute('disabled','true');
 			} else if (forceEnd>1) { 
 				endTurnListener(); 
 			} 
@@ -1848,6 +1869,10 @@ function wipeGame() {
 
 	[].forEach.call(document.querySelectorAll('span[data-supadd]'), function(span) {
 		span.setAttribute('data-supadd', 0);
+	});
+
+	[].forEach.call(document.querySelectorAll('span[data-supplayed]'), function(span) {
+		span.setAttribute('data-supplayed', 0);
 	});
 
 	[].forEach.call(document.querySelectorAll('.history div'), function(div) {

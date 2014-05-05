@@ -5,601 +5,281 @@ buoy.addClass(document.querySelector('.player'), 'attacker');
 buoy.addClass(document.querySelector('.player'), 'myturn');
 buoy.removeClass(document.querySelector('.hand'), 'disable');
 
-// Add Saptiva to field
-var comm = document.querySelector('.player').appendChild( document.createElement('div') );
-buoy.addClass(comm,'commander');
-comm.style.backgroundImage = 'url(images/misc/saptiva.png)';
+var opponentDeck = [
+	{'0' : '0'}
+];
+
+// Listed bottom to top
+var tutDeck = [
+	{'type': 'tankgirl', 'id' : 'tankgirl', 'hash' : 0, 'co' : 1 },
+	{'type': 'stinger', 'id' : 'stinger', 'hash' : 0, 'combo' : 1 },
+	{'type': 'htank', 'id' : 'htank2', 'hash' : 0, 'unit' : 1 },
+	{'type': 'supply', 'id' : 'sup2', 'hash' : 0, 'supply' : 1 },
+	{'type': 'supply', 'id' : 'sup2', 'hash' : 0, 'supply' : 1 },
+	{'type': 'htank', 'id' : 'htank', 'hash' : 0, 'unit' : 1 },
+	{'type': 'supply', 'id' : 'sup2', 'hash' : 0, 'supply' : 1 },
+	{'type': 'shell', 'id' : 'c1', 'hash' : 0, 'combo' : 1 },
+	{'type': 'aa', 'id' : 'aa', 'hash' : 0, 'unit' : 1 },
+	{'type': 'supply', 'id' : 'sup1', 'hash' : 0, 'supply' : 1 },
+	{'type': 'tank', 'id' : 'tank', 'hash' : 0, 'unit' : 1 } // This is drawn FIRST
+];
+
+// Set up a fake game state
+myTurn = true;
+properCards = md5(cardType);
+attacker = true;
+document.querySelector('.hand').setAttribute('data-count',tutDeck.length);
+var tutStep = 0;
+
+// End Turn
+var endTurn = document.querySelector('.hand').appendChild( document.createElement('button') );
+endTurn.innerHTML = "End Turn";
+buoy.addClass(endTurn,'turn');
+endTurn.setAttribute('disabled','true');
+
+endTurn.addEventListener('click', endTutTurnListener);
+
+function endTutTurnListener() {
+	buoy.addClass( document.querySelector('.sticky'), 'un');
+	window.setTimeout( function() { document.querySelector('.un.sticky').remove(); }, 500);
+
+	myTurn = false;
+	buoy.removeClass( document.querySelector('.player'), 'myturn');
+	endTurn.setAttribute('disabled','true');
+
+	// Add to history
+	addHistory('endt','player');
+
+	buoy.addClass(document.querySelector('.hand'),'disable');
+	notify('red', 'Ended Turn');
+	forceEnd = 0;
+
+	switch (tutStep) {
+		case 2:
+			oppPlay1();
+			break;
+		case 6:
+			oppPlay2();
+			break;
+		case 7:
+			oppPlay3();
+			break;
+		case 9:
+			oppPlay4();
+			break;
+		case 11:
+			window.setTimeout( function() { oppPlay5(); }, 1000);
+			resetField(1,false,false);
+			break;
+	}
+}
 
 // Create Bubble + Intro Text
 var bubble = document.querySelector('.game').appendChild( document.createElement('div') );
 buoy.addClass(bubble,'bubble');
+buoy.addClass(bubble,'hide');
 buoy.addClass(bubble,'notify');
 var bubbleP = bubble.appendChild( document.createElement('p') );
 var bubbleBtn = bubble.appendChild( document.createElement('button') );
 
 window.setTimeout( function() {
-	bubbleP.textContent = "Welcome to Deck Wars Online! This is a web prototype for a digital/physical hopefully-to-be-released TCG. \
-		Let's learn how to play the game! I'm your General, Saptiva, and I'll be guiding you through this tutorial. Let's start off with something simple...";
-	bubbleBtn.setAttribute('onclick', 'introSupply()') ;
-	bubbleBtn.textContent = "Next";
-}, 1000);
+	bubbleP.innerHTML = "<span>Welcome to Deck Wars Online (web prototype)! \
+	Battle with units & surpass your enemy's <span style='color:#4178E4'>defense</span> to win points! \
+	Click cards in your hand to play them.</span> <aside><img src='images/misc/tut1.png'></aside>";
+	bubbleBtn.setAttribute('onclick', 'intro()') ;
+	bubbleBtn.textContent = "Continue";
 
-// Draw Supply Card
-function introSupply() {
-	drawCardConfirmed( {'type': 'supply', 'id' : 0, 'hash' : 0, 'supply' : 1 } );
-	bubbleP.innerHTML = "Here we have a <strong>supply</strong> card. Supplies are the single resource for Deck Wars, and most other cards require supplies before \
-	you're able to play them. Go ahead and click the supply card to play it.";
-	bubbleBtn.setAttribute('disabled',true);
-	window.setTimeout( function() {
-		document.querySelector('.hand .card').setAttribute('onclick', 'introSupply2()') ;
-	},110);
-}
+	buoy.removeClass(bubble,'hide');
+	buoy.addClass( document.querySelector('.hand'), 'disable' );
+},1000);
 
-// Explain + Play Supply
-function introSupply2() {
-	sfx_slide.play();
-	addSupply('player');
-	cardToDiscard( document.querySelector('.hand .card') );
-	document.querySelector('.player .sup').textContent = '0/3';
+document.querySelector('.hand').addEventListener('click', tutClickCheck );
 
-	// Draw Infantry
-	drawCardConfirmed( {'type': 'infantry', 'id' : 'inf1', 'unit' : 1 },100 );
-	window.setTimeout( function() {
-		buoy.addClass( document.querySelector('.hand .card'), 'disable' );
-	},600);
+function tutClickCheck(e) {
+	if (!buoy.hasClass(e.target,'card')) return false;
+	switch (tutStep) {
+		case 1:
+			if (document.querySelector('h1 .sup').getAttribute('data-sup') === "3") {
+				bubbleP.innerHTML = "<span><span style='color: #CEB527'>Supplies</span> are needed to fuel your army. You only get <strong>25</strong> supply cards in a deck, \
+				so use them wisely!</span> <aside><img src='images/misc/tut2.png'></aside>";
+				bubbleBtn.setAttribute('onclick', 'intro2()') ;
+				buoy.removeClass(bubble,'hide');
+				buoy.addClass( document.querySelector('.hand'), 'disable' );
 
-	bubbleP.innerHTML = "Whenever you play a supply card, you automatically draw a new card from your deck. Although this <em>sounds</em> like an easy way to draw infinite cards, \
-	one thing to remember is <strong>supplies are limited</strong>. Each player only has <strong>25</strong> of them, so you have to play your cards carefully. <strong>If you run out of supplies, you lose!</strong>";
-	bubbleBtn.removeAttribute('disabled',true);
-	bubbleBtn.setAttribute('onclick', 'introSupply2pt5()') ;
-}
-
-function introSupply2pt5() {
-	buoy.addClass(document.querySelector('.game'), 'showDeck');
-	bubbleP.textContent = "By the way, in a normal game you'll see this deck on the bottom left of your screen, showing you a (proper) count of how many cards you \
-	have left in your deck. We'll just hide that for now though, as it won't be necessary for this tutorial."
-	bubbleBtn.setAttribute('onclick', 'introSupply3()') ;
-}
-
-function introSupply3() {
-	buoy.removeClass(document.querySelector('.game'), 'showDeck');
-	bubbleP.innerHTML = "Anyway, note that your supplies have been added to the <strong>top left corner</strong> (the left half of the screen is your side, the right is your opponent). \
-	You are using <strong>0 of 3</strong> supplies. Now, look at the <strong>unit card</strong> for a moment...";
-	bubbleBtn.setAttribute('onclick', 'introUnit()') ;
-}
-
-// Explain Infantry (units)
-function introUnit() {
-	buoy.removeClass( document.querySelector('.hand .card'), 'disable' );
-	bubbleP.innerHTML = 'Unit cards are always green. They always have 3 stats: <span style="color:#E44141">Attack Power</span>, <span style="color:#4178E4">Defense</span>, \
-	and <span style="color: #CEB527">supply cost</span>. The icons <em>below</em> these stats \
-	indicate <strong>traits</strong>. Keep this in mind when we come across booster cards. For now, click to play the unit.'
-	bubbleBtn.setAttribute('disabled',true);
-	document.querySelector('.hand .card').setAttribute('onclick', 'introUnit2()') ;
-}
-
-// Play Infantry
-function introUnit2() {
-	cardToDiscard( document.querySelector('.hand .card') );
-
-	sfx_slide.play();
-	var newUnit = document.querySelector('.player li:nth-child(3)').appendChild( document.createElement('div') );
-	newUnit.setAttribute('data-type','infantry');
-	buoy.addClass( newUnit, 'unit' );
-	newUnit.appendChild( document.createElement('i') );
-
-	traitList = newUnit.appendChild( document.createElement('ul') );
-	for (var i=0;i<cardType.unit['infantry'].trait.length;i++) {
-		var icon = traitList.appendChild( document.createElement('li') );
-		buoy.addClass(icon,'icon-'+cardType.unit['infantry'].trait[i]);
-	}
-
-	document.querySelector('.player .atk').textContent = '1';
-	document.querySelector('.player .def').textContent = '1';
-
-	bubbleP.innerHTML = "Note that the <span style='color:#E44141'>attack</span> and <span style='color:#4178E4'>defense</span> stats on the top have been updated now! \
-	However, infantry units don't use up any supplies (as you can see in its stats by hovering over its slot). We are now at 1 <span style='color:#E44141'>ATK</span>/1 <span style='color:#4178E4'>DEF</span> vs our opponent's 0/0...";
-
-	bubbleBtn.removeAttribute('disabled');
-	bubbleBtn.setAttribute('onclick', 'introUnit3()') ;
-}
-
-// Explain Field (Stats, Goal of Round)
-function introUnit3() {
-	bubbleP.innerHTML = "So, notice that the <span style='color:#E44141'>attack</span> stat on top is highlighted. This indicates whether you are the <strong>attacker or defender</strong> for <em>this</em> round. As the \
-	attacker, your goal is to <strong>surpass</strong> your opponent's <span style='color:#4178E4'>defense</span> with <em>your</em> <span style='color:#E44141'>attack</span> this round. \
-	The moment you do, your turn is over. However, right before it ends, you have the <strong>option</strong> of playing 1 more card. We won't do that for now, so go ahead end your turn.";
-	bubbleBtn.textContent = 'End Turn';
-	bubbleBtn.setAttribute('onclick', 'opponent()') ;
-}
-
-// Explain End of Turn Draw
-function opponent() {
-	notify('red', 'Ended Turn');
-	buoy.removeClass(document.querySelector('.player'), 'myturn');
-	drawCardConfirmed( {'type': 'at', 'id' : 'combo1', 'combo' : 1 } );
-	window.setTimeout( function() {
-		buoy.addClass( document.querySelector('.hand .card'), 'disable' );
-	},110);
-
-	bubbleP.textContent = "At the end of your turn, you will always auto draw a certain amount of cards; in a normal game, your hand will always \
-		have at least 8 cards when you end your turn. We'll check out our new card after our opponent plays though. (Note how your left half has faded, to indicate it's no longer your turn)"
-	bubbleBtn.textContent = 'Next';
-	bubbleBtn.setAttribute('onclick', 'opponent2()') ;
-}
-
-// Opponent plays Supply
-function opponent2() {
-	addSupply('opponent');
-	sfx_slide.play();
-	notify('yellow', "<img src='images/cards/supply.png'> Supply was played");
-	document.querySelector('.opponent .sup').textContent = '0/3';
-	bubbleP.innerHTML = "Whenever your opponent plays a card, you'll receive a notification on top showing that card. You'll receive notifications for other things as \
-	well (as you may have noticed already). Some notifications will <strong>stick</strong> on top until you perform the action it's asking you to do, so pay attention!";
-	bubbleBtn.setAttribute('onclick', 'opponent3()') ;
-}
-
-// Play Recon
-function opponent3() {
-	sfx_slide.play();
-
-	var newUnit = document.querySelector('.opponent li:nth-child(3)').appendChild( document.createElement('div') );
-	newUnit.setAttribute('data-type','recon');
-	buoy.addClass( newUnit, 'unit' );
-	newUnit.appendChild( document.createElement('i') );
-
-	traitList = newUnit.appendChild( document.createElement('ul') );
-	for (var i=0;i<cardType.unit['recon'].trait.length;i++) {
-		var icon = traitList.appendChild( document.createElement('li') );
-		buoy.addClass(icon,'icon-'+cardType.unit['recon'].trait[i]);
-	}
-
-	notify('u', "<img src='images/cards/unit_recon.png'> Unit was played");
-	document.querySelector('.opponent .atk').textContent = '3';
-	document.querySelector('.opponent .def').textContent = '2';
-	document.querySelector('.opponent .sup').textContent = '1/3';
-
-	// Explain Unit Bonus
-	bubbleP.innerHTML = "If you hover over your opponent's unit, you will notice some extra text along the bottom. This unit has a <strong>bonus</strong>. What this means is \
-	that when the unit the bonus is against (in this case, a <strong>foot</strong> denotes an infantry-type unit) is <em>present on the opponsing field</em>, the bonus is activated. In this case, his \
-	attack has been raised from 1 to 3."
-	bubbleBtn.setAttribute('onclick', 'opponent4()') ;
-}
-
-// End Opponent Turn
-function opponent4() {
-	bubbleP.innerHTML = "However, as the <strong>defender</strong>, your opponent's goal is to surpass OR <strong>match</strong> (attackers must always <strong>surpass</strong>) your \
-	attack with <em>his</em> defense. He has done this, and will choose not to play another card, so get ready for your turn!";
-	bubbleBtn.setAttribute('onclick', 'newturn()') ;
-}
-
-// Play Combo
-function newturn() {
-	buoy.addClass(document.querySelector('.player'), 'myturn');
-	notify('green', 'Your Turn');
-	bubbleP.innerHTML = "Back to our new booster card. Boosters are attached to units to enhance certain stats. You can easily tell which stat they enhance at a glance: \
-	Red cards enhance attack, blue cards enhance defense. You might notice the star and icon on the left. Remember about unit <strong>traits</strong>?";
-	bubbleBtn.setAttribute('onclick', 'newturn2()') ;
-}
-
-// Explain Combo Attach/Enhancements
-function newturn2() {
-	bubbleP.textContent = "Well, as you might guess, this booster requires a matching trait from 1 unit (since it only has 1 star). It just so happens that this booster \
-	perfectly matches your current unit, so go ahead and click your booster! You will then have to choose which unit to play it on, by clicking the appropriate slot it's in.";
-	buoy.removeClass( document.querySelector('.hand .card'), 'disable' );
-	document.querySelector('.hand .card').setAttribute('onclick', 'newturn3()') ;
-	bubbleBtn.setAttribute('disabled',true);
-}
-
-// End Turn
-function newturn3() {
-	document.querySelector('.hand .card').remove();
-	var slot = document.querySelector('.player li:nth-child(3)');
-	buoy.addClass( slot, 'active' );
-	slot.setAttribute('onclick', 'opponent5()');
-}
-
-// Draw 3 This time (Sup/Infantry/Some Def 2* Combo)
-function opponent5() {
-	bubbleP.textContent = "Now that you've played the booster, you've once again surpassed your opponent's defense. Once more, we will also auto end our turn \
-	without playing anything else. (However this time, we'll auto draw a couple more cards we'll be using to finish up this round)";
-
-	document.querySelector('.player .atk').textContent = '3';
-	buoy.removeClass(document.querySelector('.player'), 'myturn');
-	notify('red', 'Ended Turn');
-	
-	bubbleBtn.removeAttribute('disabled');
-	
-	var slot = document.querySelector('.player li.active');
-	buoy.addClass( slot, 'combo' );
-	buoy.addClass( slot, 'atk' );
-
-	window.requestAnimationFrame( function() {
-		var img = document.createElement("img");
-		img.setAttribute('src','images/cards/at.png');
-		slot.querySelector('.combo span').appendChild(img);
-		buoy.removeClass( slot, 'active' );
-		slot.removeAttribute('onclick');
-		document.querySelector('.player .sup').textContent = '1/3';
-		bubbleBtn.setAttribute('onclick', 'opponent6()');
-
-		drawCardConfirmed( {'type': 'supply', 'id' : 'supply', 'supply' : 1 } );
-		drawCardConfirmed( {'type': 'coverage', 'id' : 'coverage', 'unit' : 1 } );
-		drawCardConfirmed( {'type': 'infantry', 'id' : 'infantry2', 'combo' : 1 } );
-
-		window.setTimeout( function() {
-			[].forEach.call(document.querySelectorAll('.card'), function(card) {
-				buoy.addClass(card, 'disable');
-			});
-		},110);
-		
-	});
-}
-
-// Opponent plays Helo
-function opponent6() {
-	var newUnit = document.querySelector('.opponent li:nth-child(2)').appendChild( document.createElement('div') );
-	newUnit.setAttribute('data-type','helo');
-	buoy.addClass( newUnit, 'unit' );
-	newUnit.appendChild( document.createElement('i') );
-
-	traitList = newUnit.appendChild( document.createElement('ul') );
-	for (var i=0;i<cardType.unit['helo'].trait.length;i++) {
-		var icon = traitList.appendChild( document.createElement('li') );
-		buoy.addClass(icon,'icon-'+cardType.unit['helo'].trait[i]);
-	}
-
-	notify('u', "<img src='images/cards/unit_helo.png'> Unit was played");
-	document.querySelector('.opponent .atk').textContent = '5';
-	document.querySelector('.opponent .def').textContent = '4';
-	document.querySelector('.opponent .sup').textContent = '3/3';
-
-	// Explain Unit Bonus
-	bubbleP.innerHTML = "Your opponent has played a helicopter. Just a reminder, but check out the new <strong>traits</strong> on this one. Also, you can see \
-	your opponent has now reached his current supply limit, he'll have to play a 2nd one on his next turn to continue playing units. Keeping your opponent's supply \
-	usage in mind will help you come up with better strategies."
-	bubbleBtn.setAttribute('onclick', 'swapTime()') ;
-}
-
-// Enable Swap 3
-function swapTime() {
-	[].forEach.call(document.querySelectorAll('.card'), function(card) {
-		buoy.removeClass(card, 'disable');
-		buoy.addClass(card, 'choose');
-	});
-
-	buoy.addClass(document.querySelector('.player'), 'myturn');
-	notify('green', 'Your Turn');
-	notify('yellow', 'Choose 3 cards to swap out and hit done.', 1);
-	// Explain Swap 3
-	bubbleP.textContent = "All right, one more mechanic you'll encounter in a real match is that at the start of your turn you are given the chance to \
-	swap out 3 cards for new ones. This can either help you out win this round or be used to set up a hand for the next! You can of course opt to keep your current \
-	hand. In this case though, select all 3 cards and then hit Done.";
-	bubbleBtn.textContent = "Done";
-	bubbleBtn.setAttribute('onclick', 'swapTime2()') ;
-
-	document.querySelector('#supply').setAttribute('onclick', 'buoy.toggleClass(this,"active")') ;
-	document.querySelector('#coverage').setAttribute('onclick', 'buoy.toggleClass(this,"active")') ;
-	document.querySelector('#infantry2').setAttribute('onclick', 'buoy.toggleClass(this,"active")') ;
-}
-
-// Make User Swap All 3
-function swapTime2() {
-	if (document.querySelectorAll('.hand .card.active').length===3) {
-		document.querySelector('.sticky').remove();
-		if (document.querySelector('.notify:not(.bubble)')) document.querySelector('.notify:not(.bubble)').remove();
-		[].forEach.call(document.querySelectorAll('.hand .card'), function(card) {
-			card.remove();
-		});
-
-		// Draw AA/Supply/Tank
-		drawCardConfirmed( {'type': 'aa', 'id' : 'aa', 'unit' : 1 } );
-		drawCardConfirmed( {'type': 'supply', 'id' : 'supply', 'supply' : 1 } );
-		drawCardConfirmed( {'type': 'tank', 'id' : 'tank', 'combo' : 1 } );
-
-		bubbleP.textContent = "Sweet, we got some new cards, and these are actually useful! Thanks to the opponent's helo, your AA unit's bonus will activate \
-		when played. However, look at your cards carefully. We want to play ALL 3 this turn for maximum power. Keeping your attack and supply count in mind, can you figure out the correct order?";
-
-		window.setTimeout( function() {
-			document.querySelector('#supply').setAttribute('onclick', 'swapTime3("s")') ;
-			document.querySelector('#aa').setAttribute('onclick', 'swapTime3("a")') ;
-			document.querySelector('#tank').setAttribute('onclick', 'swapTime3("t")') ;
-		},110);
-		
-		bubbleBtn.setAttribute('disabled', true) ;
-	} else {
-		notify('yellow', 'Choose 3 cards to swap out and hit done.');
-	}
-}
-
-// Play Sup + AA
-function swapTime3(e) {
-	if (e==="s") {
-		document.querySelector('#supply').remove();
-		sfx_slide.play();
-		document.querySelector('.player .sup').textContent = '1/6';
-		addSupply('player');
-
-		bubbleP.textContent = "Good choice. By playing supplies first, you can avoid having to end your turn right now. Playing either unit first means \
-		you would surpass their defense, and only have 1 card left to play. Also, by playing the supply first, you get that free draw which gives the chance for \
-		an even better card to join your hand!"
-
-		drawCardConfirmed( {'type': 'shell', 'id' : 'shell', 'combo' : 1 } );
-
-		document.querySelector('#aa').setAttribute('onclick', 'swapTime4("aa")') ;
-		document.querySelector('#tank').setAttribute('onclick', 'swapTime4("tank")') ;
-
-		window.setTimeout( function() {
-			document.querySelector('#shell').setAttribute('onclick', 'notify("red","Booster doesn\'t match any units in play! Check stars for formation/required traits.")') ;
-		},110);
-		
-	} else if (e==="a") {
-		bubbleP.textContent = "Nope! Look carefully. The AA costs 1 supply to play. If you play this now, your attack will go up to 6 (thanks to bonus), which means you'll \
-		have to end your turn. You can't play the tank as your final card since you lack supplies, so you'd be left playing the supplies and waiting your next turn to play the tank! Choose again.";
-	} else if (e==="t") {
-		bubbleP.textContent = "Nope! Look carefully. A tank costs 2 supplies to play. If you play this now, your attack will go up to 5, which means you'll \
-		have to end your turn. You can't play the AA as your final card since you lack supplies, so you'd be left playing the supplies and waiting your next turn to play AA! Choose again.";
-	}
-}
-
-// Explain Formations
-function swapTime4(e) {
-	if (document.querySelectorAll('.player .unit').length===1) bubbleP.innerHTML = "Whoa! What are these new buttons you ask? When playing your second unit (or beyond) you have to decide where to place your units. \
-	Did you see that new booster you got when you played your supply? It requires 2 armor units side by side. This is why you must plan your <strong>formations</strong> (the order of your units on the field). \
-	I'll go ahead and make thing simple for you by only allowing to place new units on the top...";
-
-	[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
-		buoy.addClass(el, 'disable');
-	});
-
-	// Get first and last positioned units
-	var firstUnit = document.querySelectorAll('.player .formation .unit')[0];
-	var lastUnit = document.querySelectorAll('.player .formation .unit')[document.querySelectorAll('.player .formation .unit').length-1];
-	var addPrev;
-	var addNext;
-
-	// If they exist or whatevs then add button
-	if (firstUnit.parentNode.previousElementSibling) {
-		addPrev = firstUnit.parentNode.previousElementSibling.appendChild( document.createElement('button') );
-		buoy.addClass(addPrev, 'prev');
-		buoy.addClass(firstUnit.parentNode, 'active');
-	}
-	if (lastUnit.parentNode.nextElementSibling) {
-		addNext = lastUnit.parentNode.nextElementSibling.appendChild( document.createElement('button') );
-		buoy.addClass(addNext, 'next');
-		addNext.setAttribute('disabled',true);
-		buoy.addClass(lastUnit.parentNode, 'active');
-	}
-	
-	// Add listener for each button
-	[].forEach.call(document.querySelectorAll('.player li button'), function(el) {
-		el.addEventListener('click', function() {
-			// If the slot is empty
-			if (el.children.length === 0) {
-				buoy.removeClass(firstUnit.parentNode, 'active');
-				buoy.removeClass(lastUnit.parentNode, 'active');
-
-				// Add unit to correct slot
-				cardToDiscard( document.getElementById(e) );
-				var newUnit = el.parentNode.appendChild( document.createElement('div') );
-				newUnit.setAttribute('data-type',e);
-				newUnit.setAttribute('id',e);
-				buoy.addClass( newUnit, 'unit' );
-				newUnit.appendChild( document.createElement('i') );
-
-				traitList = newUnit.appendChild( document.createElement('ul') );
-				for (var i=0;i<cardType.unit[e].trait.length;i++) {
-					var icon = traitList.appendChild( document.createElement('li') );
-					buoy.addClass(icon,'icon-'+cardType.unit[e].trait[i]);
-				}
-
-				sfx_slide.play();
-
-				if (e==="tank") {
-					document.querySelector('.player .atk').textContent = parseInt(document.querySelector('.player .atk').textContent)+2;
-					document.querySelector('.player .def').textContent = parseInt(document.querySelector('.player .def').textContent)+2;
-					document.querySelector('.player .sup').textContent = parseInt(document.querySelector('.player .sup').textContent)+2+"/6";
-				} else {
-					document.querySelector('.player .atk').textContent = parseInt(document.querySelector('.player .atk').textContent)+3;
-					document.querySelector('.player .def').textContent = parseInt(document.querySelector('.player .def').textContent)+2;
-					document.querySelector('.player .sup').textContent = parseInt(document.querySelector('.player .sup').textContent)+1+"/6";
-				}
-
-				// Cleanup
-				addPrev.parentNode.removeChild(addPrev);
-				addNext.parentNode.removeChild(addNext);
-				addPrev = null;
-				addNext = null;
-
-				[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
-					buoy.removeClass(el, 'disable');
-				});
-
-				// Smart shift
-				smartShift('player');
-
-				// Play 1 More / End Turn
-				if (document.querySelectorAll('.player .unit').length===2) {
-					notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)');
-					bubbleP.textContent = "All right, one more card to play and our turn will automatically end. The standard formation size is 3 units, only the attacker \
-					can opt to expand the field to play a 4th or (max) 5th unit, but this comes with some risks...(go ahead and play your last unit)";
-				}
-				if (document.querySelectorAll('.player .unit').length===3) {
-					buoy.removeClass(document.querySelector('.player'), 'myturn');
-					notify('red', 'Ended Turn');
-					opponent7();
-				}
+				window.setTimeout( function() { buoy.addClass( document.getElementById('aa'), 'disable' ); },110 );
 			}
-		});
-	});
-}
-
-// Draw 3 (Sap/Frontline)
-function opponent7() {
-	drawCardConfirmed( {'type': 'saptiva', 'id' : 'saptiva', 'co' : 1 } );
-
-	window.setTimeout( function() {
-		[].forEach.call(document.querySelectorAll('.hand .card'), function(el) {
-			buoy.addClass(el, 'disable');
-		});
-	},110);
-	
-
-	bubbleBtn.setAttribute('onclick', 'opponent8()') ;
-	bubbleBtn.removeAttribute('disabled') ;
-	bubbleBtn.textContent = 'Next';
-
-	// Explain Slot Limit
-	bubbleP.textContent = "What risks come with an extra unit? For starters, it means using up more previous supplies. Maybe you have a weak \
-	hand & are better off losing this 1 point? Also, for every extra unit on the field, the strongest attacker will win an extra point too (So 4 units means 2 points). \
-	Lastly, by staying with 3 units we also know our opponent can only play 1 more unit, limiting his options.";
-
-	window.setTimeout( function() { 
-		sfx_slide.play();
-		addSupply('opponent');
-		notify('yellow', "<img src='images/cards/supply.png'> Supply was played") ;
-		document.querySelector('.opponent .sup').textContent = "3/6";
-	}, 600 );
-}
-
-// Opp. plays A2G
-function opponent8() {
-	bubbleP.innerHTML = "Your opponent still has you in a bind though! Not only has he matched your attack, he is also surpassing YOUR defense with HIS attack. Normally \
-	only the attacker will win points for winning, but if the defender pulls of this trick (a <strong>counterattack</strong>), he will win the point at the end of this round! (and had \
-		you expanded the field, then he'll win the bonus points too)";
-
-	bubbleBtn.setAttribute('onclick', 'finalPlay()') ;
-
-	var newUnit = document.querySelector('.opponent li:nth-child(4)').appendChild( document.createElement('div') );
-	newUnit.setAttribute('data-type','a2g');
-	buoy.addClass( newUnit, 'unit' );
-	newUnit.appendChild( document.createElement('i') );
-
-	traitList = newUnit.appendChild( document.createElement('ul') );
-	for (var i=0;i<cardType.unit['a2g'].trait.length;i++) {
-		var icon = traitList.appendChild( document.createElement('li') );
-		buoy.addClass(icon,'icon-'+cardType.unit['a2g'].trait[i]);
+			break;
+		case 2:
+			window.setTimeout( function() { buoy.addClass(document.querySelector('.turn'),'flash'); },300);
+			window.setTimeout( function() { buoy.removeClass(document.querySelector('.turn'),'flash'); },600);
+			break;
+		case 5:
+			if (e.target.getAttribute('data-type') === 'aa') {
+				bubbleP.innerHTML = "<span>Some cards have bonus stats against others! You can hover over an enemy unit at any time to check \
+				it's traits (the row of icons along the bottom) & see if it matches the bonus on your card.</span> <aside><img src='images/misc/tut4.png'></aside>";
+				bubbleBtn.setAttribute('onclick','killInfo()') ;
+				buoy.removeClass(bubble,'hide');
+				buoy.addClass( document.querySelector('.hand'), 'disable' );
+				tutStep = 6;
+			}
+			break;
+		case 7:
+			if (document.querySelector('h1 .sup').getAttribute('data-sup') === "6" && e.target.getAttribute('data-type') === 'shell') {
+				bubbleP.innerHTML = "<span>Boosters require specific formations to be played. Read the stars \
+				on the card to know what units you need, in what order. Units that meet requirements are highlighted to \
+				attach the booster to.</span> <aside><img src='images/misc/tut5.png'></aside>";
+				bubbleBtn.setAttribute('onclick','killInfo()') ;
+				buoy.removeClass(bubble,'hide');
+				buoy.addClass( document.querySelector('.hand'), 'disable' );
+			}
+			break;
+		case 8:
+			if (document.querySelector('h1 .sup').getAttribute('data-sup') === "12") tutStep = 9;
+			break;
+		case 10:
+			if (e.target.getAttribute('data-type') === 'tankgirl') {
+				bubbleP.innerHTML = "<span>Generals are like global booster cards. You can only have 1 during a round, but they'll \
+				enhance all matching cards on the field! Onward to victory!</span> <aside><img src='images/misc/tut7.png'></aside>";
+				bubbleBtn.setAttribute('onclick','killInfo()') ;
+				buoy.removeClass(bubble,'hide');
+				buoy.addClass( document.querySelector('.hand'), 'disable' );
+				tutStep = 11;
+			}
+			break;
 	}
-	
-
-	notify('u', "<img src='images/cards/unit_a2g.png'> Unit was played");
-	document.querySelector('.opponent .atk').textContent = '9';
-	document.querySelector('.opponent .def').textContent = '8';
-	document.querySelector('.opponent .sup').textContent = '6/6';
 }
 
-// Play Sap + Explain Commanders
-function finalPlay() {
-	buoy.addClass(document.querySelector('.player'), 'myturn');
+function tutOppEndTurn() {
+	myTurn = true;
+	buoy.addClass( document.querySelector('.player'), 'myturn');
+
+	// Add to history
+	addHistory('endt','opponent');
+	buoy.removeClass(document.querySelector('.hand'),'disable');
 	notify('green', 'Your Turn');
-	bubbleP.innerHTML = "No worries though. we can handle it. One last card type to explain in this tutorial is the <strong>General card</strong>. General cards are similar to boosters, in that they provide units \
-	with stat enhancements, except general boosts apply across your whole field (they don't attach to just 1 unit). Click my card to activate my bonus!";
-	
-	bubbleBtn.setAttribute('disabled', true) ;
-	var sap = document.getElementById('saptiva');
-	buoy.removeClass(sap, 'disable');
-	sap.setAttribute('onclick','finalPlay2()');
 }
 
-// Play 1 more, End Turn
-function finalPlay2() {
-	sfx_slide.play();
-	document.getElementById('saptiva').remove();
-	notify('red', 'You surpassed their defense! Play 1 more card & your turn will end (or end it now)');
-	document.querySelector('.player .atk').textContent = '9';
-	document.querySelector('.player .def').textContent = '6';
-	bubbleP.textContent = "With only 1 infantry on the field, the boost is small, but it's just enough to put you in the lead again. \
-	To really scare your opponent go ahead and play your final card.";
-
-	buoy.removeClass(document.getElementById('shell'), 'disable');
-	document.getElementById('shell').setAttribute('onclick','finalPlay3()');
+// Disable intructions
+function killInfo() {
+	buoy.addClass(bubble,'hide');
+	buoy.removeClass( document.querySelector('.hand'),'disable');
 }
 
-// Explain one more bit on formation
-function finalPlay3() {
-	bubbleP.innerHTML = "With a <strong>2 star</strong> booster (in this case, we need 2 <strong>armor-type</strong> units side by side, which we do since we planned our formation earlier) you \
-	can choose either of the matching 2 units to apply it to. This is important to keep in mind for strategies in the future, particularly once you \
-	customize decks, so you can purposely leave a specific unit open to other boosters.";
-	buoy.addClass( document.getElementById('tank').parentNode, 'active');
-	buoy.addClass( document.getElementById('aa').parentNode, 'active');
-	document.getElementById('tank').parentNode.setAttribute('onclick','finalPlay4("tank")');
-	document.getElementById('aa').parentNode.setAttribute('onclick','finalPlay4("aa")');
+// Draw Supply Card (or *try* to play Tank)
+function intro() {
+	killInfo();
+	drawCardConfirmed(tutDeck.pop(),100);
+	drawCardConfirmed(tutDeck.pop(),200);
+	tutStep = 1;
 }
 
-// Win
-function finalPlay4(e) {
-	buoy.removeClass(document.querySelector('.player'), 'myturn');
-	notify('red', 'Ended Turn');
-	document.querySelector('.player .atk').textContent = '11';
-	document.querySelector('.player .sup').textContent = '6/6';
 
-	[].forEach.call(document.querySelectorAll('li.active'), function(el) {
-		buoy.removeClass(el, 'active');
-		el.removeAttribute('onclick');
-	});
-
-	sfx_slide.play();
-	window.requestAnimationFrame( function() {
-		var slot = document.getElementById(e).parentNode;
-		buoy.addClass(slot, 'combo');
-		buoy.addClass(slot, 'atk');
-		slot.appendChild( document.createElement('span') );
-		var img = document.createElement("img");
-		img.setAttribute('src','images/cards/shell.png');
-		slot.querySelector('span').appendChild(img);
-		document.getElementById('shell').remove();
-	});
-
-	bubbleBtn.removeAttribute('disabled');
-	bubbleBtn.setAttribute('onclick','finalPlay5()');
-	bubbleP.textContent = "POW! With that, your attack is much higher (and more difficult) for your opponent to match. Will he manage to pull off some miracle in the end!?";
+// Finish Turn (play Tank)
+function intro2() {
+	killInfo();
+	tutStep = 2;
 }
 
-// Explain redeck of 1 Combo (and for loser redeck of 1 unit)
-function finalPlay5() {
-	notify('green', 'You win round');
+// Opponent Plays
+function oppPlay1() {
+	tutStep = 3;
+	drawCardConfirmed(tutDeck.pop(),100);
 
-	document.querySelector('.player .def').textContent = '0';
-	document.querySelector('.player .atk').textContent = '0';
-	document.querySelector('.player .sup').textContent = '0';
-
-	document.querySelector('.opponent .def').textContent = '0';
-	document.querySelector('.opponent .atk').textContent = '0';
-	document.querySelector('.opponent .sup').textContent = '0';
-
-	[].forEach.call(document.querySelectorAll('.unit'), function(el) {
-		el.remove();
-	});
-
-	notify('yellow',"Choose <strong>1</strong> of your boosters to retreat into your deck", true);
-
-	bubbleP.innerHTML = "NOPE! Guess he had nothing left to play (or he's plotting your demise next round). Good job! One final thing for this tutorial: \
-	As the winner, you automatically get to <strong>keep all your units</strong> (they are placed back into your draw pile). You also get to <strong>choose</strong> 1 booster to save! \
-	Meanwhile, the loser <strong>discards all his boosters</strong> & can only save <strong>one unit</strong>. Both players however, <strong>discard all their used supplies & any used generals.</strong>";
-	
-	bubbleBtn.setAttribute('disabled', true);
-	[].forEach.call(document.querySelectorAll('.player .combo'), function(el) {
-		el.setAttribute('onclick','finalPlay6()');
-		buoy.addClass(el,'active')
-	});
+	window.setTimeout( function() { playCard({'type': 'supply', 'id' : 'esup1', 'hash' : 0, 'supply' : 1 },'opponent'); }, 1200);
+	window.setTimeout( function() { playCard({'type': 'helo', 'id' : 'eu1', 'hash' : 0, 'unit' : 1 },'opponent'); }, 3000);
+	window.setTimeout( function() { tutOppEndTurn(); }, 3600);
+	window.setTimeout( function() { intro3(); }, 4500);
 }
 
-// End
-function finalPlay6() {
-	buoy.addClass( document.querySelector('.sticky'), 'un');
-	[].forEach.call(document.querySelectorAll('.player li'), function(el) {
-		if (buoy.hasClass(el,'combo')) buoy.removeClass(el,'combo');
-		if (buoy.hasClass(el,'active')) buoy.removeClass(el,'active');
-		if (buoy.hasClass(el,'atk')) buoy.removeClass(el,'atk');
-		if (el.querySelector('span img')) el.querySelector('span img').remove();
-		el.removeAttribute('onclick');
-	});
+// Explains roles
+function intro3() {
+	tutStep = 5;
+	bubbleP.innerHTML = "<span><span style='color:#4178E4'>Defenders</span> only need to match their opponent's <span style='color:#E44141'>attack</span> to block their victory. \
+	Make sure to attack harder!</span> <aside><img src='images/misc/tut3.png'></aside>";
+	bubbleBtn.setAttribute('onclick', 'killInfo()') ;
+	buoy.removeClass(bubble,'hide');
+	buoy.addClass( document.querySelector('.hand'), 'disable' );
+	buoy.removeClass( document.getElementById('aa'), 'disable' );
+}
 
-	bubbleBtn.removeAttribute('disabled');
-	bubbleP.innerHTML = "Nice job! That ends this round, and wraps up the tutorial. Players swap attack/defense roles every round, till someone \
-	wins 6 points or runs out of supplies. Good luck on the battlefield soldier! Feel free to report any bugs you find (this is an alpha \
+// Enemy plays A2G
+function oppPlay2() {
+	tutStep = 7;
+	drawCardConfirmed(tutDeck.pop(),100);
+
+	window.setTimeout( function() { playCard({'type': 'supply', 'id' : 'esup2', 'hash' : 0, 'supply' : 1 },'opponent'); }, 1200);
+	window.setTimeout( function() { placeUnit('next',{'type': 'a2g', 'id' : 'eu2', 'hash' : 0, 'unit' : 1 },'opponent','eu2'); }, 3000);
+	window.setTimeout( function() { tutOppEndTurn(); }, 4500);
+}
+
+// Enemy plays Wingman
+function oppPlay3() {
+	tutStep = 8;
+	drawCardConfirmed(tutDeck.pop(),100);
+	window.setTimeout( function() { comboCard('eu2',{'type': 'wingman', 'id' : 'eu2', 'hash' : 0, 'unit' : 1 },'opponent'); }, 1500);
+	window.setTimeout( function() { tutOppEndTurn(); }, 3500);
+}
+
+// Enemy plays Wingman
+function oppPlay4() {
+	tutStep = 10;
+	drawCardConfirmed(tutDeck.pop(),100);
+	drawCardConfirmed(tutDeck.pop(),200);
+	window.setTimeout( function() { playCard({'type': 'supply', 'id' : 'esup3', 'hash' : 0, 'supply' : 1 },'opponent'); }, 1000);
+	window.setTimeout( function() { playCard({'type': 'supply', 'id' : 'esup4', 'hash' : 0, 'supply' : 1 },'opponent'); }, 1900);
+	window.setTimeout( function() { placeUnit('next',{'type': 'harty', 'id' : 'esup2', 'eu3' : 0, 'unit' : 1 },'opponent'); }, 4000);
+	window.setTimeout( function() { tutOppEndTurn(); }, 6000);
+	window.setTimeout( function() { intro5(); }, 7500);
+}
+
+function intro5() {
+	bubbleP.innerHTML = "<span>Defenders can't play anymore units (max is 3) <em>unless</em> the attacker expands the field \
+	with a 4th (or 5th) unit. Now's your chance to finish him!</span> <aside><img src='images/misc/tut6.png'></aside>";
+	bubbleBtn.setAttribute('onclick', 'killInfo()') ;
+	buoy.removeClass(bubble,'hide');
+	buoy.addClass( document.querySelector('.hand'), 'disable' );
+}
+
+function oppPlay5() {
+	bubbleP.innerHTML = "<span>Your opponent has surrendered! You win this round and 1 point for surpassing his defense. After \
+	every round players swap the attacker/defender role and the game continues until someone reaches 6 points \
+	(or runs out of supplies)!</span> <aside><img src='images/misc/tut8.png'></aside>";
+	bubbleBtn.setAttribute('onclick','outro()') ;
+	buoy.removeClass(bubble,'hide');
+	buoy.addClass( document.querySelector('.hand'), 'disable' );
+	tutStep = 12;
+}
+
+function outro() {
+	bubbleP.innerHTML = "<span>And now you know the basics. You're now ready \
+	to battle against your friends. Feel free to report any bugs you find (this is a \
 	prototype after all) on <a href='https://github.com/mastastealth/dwo/issues'>Github</a> \
-	or tweet them to <a href='http://twitter.com/brianfranco'>@brianfranco</a>, thanks!";
+	or tweet them to <a href='http://twitter.com/brianfranco'>@brianfranco</a>, thanks and enjoy!</span> \
+	<aside><img src='images/misc/tut9.png'></aside>";
 	bubbleBtn.textContent = "Finish";
-	bubbleBtn.setAttribute('onclick','wipeGame()');
+	buoy.removeClass(bubble,'hide');
+	bubbleBtn.setAttribute('onclick','finishTut()') ;
+}
+
+function finishTut() {
+	document.querySelector('.hand').removeEventListener('click', tutClickCheck );
+	myTurn = false; attacker = false;
+	wipeGame();
+
+	// Clear all this stuff
+	endTutTurnListener = null;
+	tutClickCheck = null;
+	tutOppEndTurn = null;
+	killInfo = null;
+	intro = null;
+	intro2 = null;
+	intro3 = null;
+	intro4 = null;
+	intro5 = null;
+	oppPlay = null;
+	oppPlay2 = null;
+	oppPlay3 = null;
+	oppPlay4 = null;
+	oppPlay5 = null;
+	outro = null;
 }

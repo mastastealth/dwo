@@ -166,21 +166,42 @@ button { outline: none; }
 	&.bubble {
 		animation: none;
 		background: rgba(255,255,255,0.85);
-		font-size: 18px;
+		box-shadow: 0 0 0 1000px rgba(0,0,0,0.5);
+		font-size: 22px;
 		line-height: 160%;
-		max-height: 200px;
+		margin-left: -400px;
+		max-height: 260px;
 		min-height: 40px;
-		padding: 10px 90px 10px 10px;
+		padding: 10px;
 		pointer-events: all;
 		position: fixed;
-		left: 10%;
-		width: 80%;
-		bottom: 32%; top: auto;
+		left: 50%;
+		width: 800px;
+		bottom: 40%; top: auto;
+		transition: transform 0.5s, opacity 0.5s;
+
+		&.hide {
+			opacity: 0;
+			transform: translateY(-300%);
+		}
+
+		p { 
+			display: flex; 
+			align-content: center; 
+			align-items: center;
+		}
+
+		aside { 
+			flex-shrink: 0;
+			margin-left: 10px; width: 300px; 
+			img { height: auto; margin-right: 0; }
+		}
 
 		button {
+			display: block;
+			font-size: 16px;
 			height: 40px;
-			position: absolute;
-			top: 45%; right: 10px;
+			margin: 0 auto;
 
 			&:not([disabled]):hover { background: green; }
 		}
@@ -191,12 +212,12 @@ button.menu {
 	background: #CCC;
 	border: 1px solid #999;
 	height: 30px;
+	opacity: 0.75;
 	position: absolute;
-	top: 5px; left: 50%;
-	transform: translateX(-50%);
+	bottom: 10px; left: 47px;
 	z-index: 100;
 
-	&:hover { background: #E44141; border-color: darkred; color: white; }
+	&:hover { background: #E44141; border-color: darkred; color: white; opacity: 1; }
 }
 
 @keyframes spin {
