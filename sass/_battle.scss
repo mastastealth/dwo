@@ -13,6 +13,7 @@
 	overflow: hidden;
 	transition: all 1s ease;
 	width: calc(100% - 50px);
+	z-index: 1;
 
 	&.active {
 		max-height: 100%;
@@ -576,6 +577,8 @@
 		.opponent .extra { left: 0%; }
 
 	.hand {
+		background: #92CE9A url(../images/bg/bg_table.png);
+		box-shadow: inset 0 2px 2px rgba(0,0,0,0.2);
 		height: 30%;
 		position: relative;
 		z-index: 2;
@@ -645,7 +648,7 @@
 					position: absolute; top: 0; left: 0; 
 					height: 100%; width: 100%; z-index: 1; }
 			}
-			&:hover { transform: scale(1.2) translateY(12px); z-index: 1; }
+			&:hover { transform: scale(1.1) translateY(-12px); z-index: 1; }
 
 			&.new { 
 				opacity: 0;
@@ -662,7 +665,7 @@
 
 		.cardContainer {
 			height: 100%;
-			line-height: 200px;
+			line-height: 240px;
 			overflow-x: auto;
 			overflow-y: hidden;
 			white-space: nowrap;

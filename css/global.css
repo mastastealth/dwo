@@ -361,8 +361,11 @@ body {
 }
 
 body {
-  background: #92ce9a url(../images/bg/bg_table.png);
+  background: #92ce9a url(../images/bg/bg_main.jpg);
+  -webkit-background-size: cover;
+  background-size: cover;
   font-family: Calibri, Tahoma, sans-serif;
+  min-width: 750px;
   overflow: auto;
 }
 
@@ -378,28 +381,61 @@ a {
   min-width: 120px;
 }
 
-.logo,
+.logo {
+  position: absolute;
+  top: 0px;
+  left: 20px;
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9);
+  z-index: 0;
+}
+
 .row {
-  margin-bottom: 20px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 70%;
+}
+
+.row > button {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -moz-box-flex: 1;
+  -ms-flex: 1;
+  flex-grow: 1;
+  margin: 0 5px;
 }
 
 #tlkio {
   background: white;
   -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.3);
-  margin: 0 auto 20px;
-  max-width: 800px;
-  height: 480px;
-  width: 80%;
+  height: 80%;
+  position: absolute;
+  top: 10%;
+  right: 0;
+  width: 30%;
 }
 
 button {
-  background: rgba(61, 153, 112, 0.4);
+  background: rgba(61, 153, 112, 0.7);
   border: 1px solid darkgreen;
   border-radius: 4px;
+  color: white;
+  font-weight: bold;
   height: 50px;
   padding: 0 10px;
   text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
@@ -417,7 +453,10 @@ button[disabled] {
 
 footer {
   font-size: 12px;
-  margin-bottom: 20px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
 }
 
 .builder {
@@ -434,6 +473,7 @@ footer {
   transition: all 1s ease;
   width: -webkit-calc(100% - 50px);
   width: calc(100% - 50px);
+  z-index: 1;
 }
 
 .builder.active {
@@ -591,6 +631,7 @@ footer {
   transition: all 1s ease;
   width: -webkit-calc(100% - 50px);
   width: calc(100% - 50px);
+  z-index: 1;
 }
 
 .game.active {
@@ -1435,6 +1476,9 @@ footer {
 }
 
 .game .hand {
+  background: #92ce9a url(../images/bg/bg_table.png);
+  -webkit-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
   height: 30%;
   position: relative;
   z-index: 2;
@@ -1582,9 +1626,9 @@ footer {
 }
 
 .game .hand .card:hover {
-  -webkit-transform: scale(1.2) translateY(12px);
-  -ms-transform: scale(1.2) translateY(12px);
-  transform: scale(1.2) translateY(12px);
+  -webkit-transform: scale(1.1) translateY(-12px);
+  -ms-transform: scale(1.1) translateY(-12px);
+  transform: scale(1.1) translateY(-12px);
   z-index: 1;
 }
 
@@ -1608,7 +1652,7 @@ footer {
 
 .game .hand .cardContainer {
   height: 100%;
-  line-height: 200px;
+  line-height: 240px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
