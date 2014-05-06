@@ -13,7 +13,7 @@
 	overflow: hidden;
 	transition: all 1s ease;
 	width: calc(100% - 50px);
-	z-index: 1;
+	z-index: 2;
 
 	&.active {
 		max-height: 100%;
@@ -64,6 +64,9 @@
 				text-align: center;
 				transition: opacity 0.3s;
 			}
+
+			&.rumble { animation: shake 1s infinite; }
+			&.rumbleHard { animation: shake2 0.7s infinite; }
 
 			li:first-child:nth-last-child(5),
 			li:last-child:nth-child(5),
@@ -594,12 +597,14 @@
 		&.noBtn button:not(.xopt) { opacity: 0; transform: translateY(150%); }
 
 		button {
-			background: transparentize(green,0.9);
+			background: transparentize(green,0.6);
 			position: absolute;
 			top: -60px; left: 20px;
 			transition: 0.3s all;
 
-			&.shuf, &.continue, &.cancel { left: calc(50% - 110px); }
+			&:hover { opacity: 0.8; transform: scale(1.1); }
+
+			&.shuf, &.continue, &.cancel { left: 100px; }
 			&.end, &.retreat { 
 				background: transparentize(red,0.9);
 				border-color: darkred;
@@ -1040,4 +1045,16 @@
 @keyframes unitRumble {
 	from { background-position: 0 0; }
 	to { background-position: 0 150%; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotate(-2deg); }
+  20%, 40%, 60%, 80% { transform: translateX(5px) rotate(2deg); }
 }
