@@ -24,9 +24,11 @@ a { color: darkgreen; }
 .row {
 	display: flex;
 	justify-content: space-around;
+	padding: 5px 0;
 	position: absolute;
-	bottom: 10%; left: 0;
+	top: 10px; right: 0;
 	width: 70%;
+	z-index: 1;
 
 	> button { flex-grow: 1; margin: 0 5px; }
 }
@@ -34,10 +36,10 @@ a { color: darkgreen; }
 #tlkio {
 	background: white;
 	box-shadow: 0 2px 2px -1px rgba(0,0,0,0.3);
-	height: 80%;
+	height: 82%;
 	position: absolute;
-	top: 10%; right: 0;
-	width: 30%;
+	bottom: 5%; right: 0;
+	width: 35%;
 }
 
 button {

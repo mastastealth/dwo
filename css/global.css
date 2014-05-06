@@ -400,10 +400,12 @@ a {
   -webkit-justify-content: space-around;
   -ms-flex-pack: distribute;
   justify-content: space-around;
+  padding: 5px 0;
   position: absolute;
-  bottom: 10%;
-  left: 0;
+  top: 10px;
+  right: 0;
   width: 70%;
+  z-index: 1;
 }
 
 .row > button {
@@ -419,11 +421,11 @@ a {
   background: white;
   -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.3);
-  height: 80%;
+  height: 82%;
   position: absolute;
-  top: 10%;
+  bottom: 5%;
   right: 0;
-  width: 30%;
+  width: 35%;
 }
 
 button {
@@ -473,7 +475,7 @@ footer {
   transition: all 1s ease;
   width: -webkit-calc(100% - 50px);
   width: calc(100% - 50px);
-  z-index: 1;
+  z-index: 2;
 }
 
 .builder.active {
@@ -631,7 +633,7 @@ footer {
   transition: all 1s ease;
   width: -webkit-calc(100% - 50px);
   width: calc(100% - 50px);
-  z-index: 1;
+  z-index: 2;
 }
 
 .game.active {
@@ -692,6 +694,16 @@ footer {
   text-align: center;
   -webkit-transition: opacity 0.3s;
   transition: opacity 0.3s;
+}
+
+.game .field aside.rumble {
+  -webkit-animation: shake 1s infinite;
+  animation: shake 1s infinite;
+}
+
+.game .field aside.rumbleHard {
+  -webkit-animation: shake2 0.7s infinite;
+  animation: shake2 0.7s infinite;
 }
 
 .game .field aside li:first-child:nth-last-child(5),
@@ -1510,7 +1522,7 @@ footer {
 }
 
 .game .hand button {
-  background: rgba(0, 128, 0, 0.1);
+  background: rgba(0, 128, 0, 0.4);
   position: absolute;
   top: -60px;
   left: 20px;
@@ -1518,11 +1530,17 @@ footer {
   transition: 0.3s all;
 }
 
+.game .hand button:hover {
+  opacity: 0.8;
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
 .game .hand button.shuf,
 .game .hand button.continue,
 .game .hand button.cancel {
-  left: -webkit-calc(50% - 110px);
-  left: calc(50% - 110px);
+  left: 100px;
 }
 
 .game .hand button.end,
@@ -2286,6 +2304,63 @@ footer {
   }
 }
 
+@-webkit-keyframes shake {
+  0%, 100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px);
+  }
+
+  20%, 40%, 60%, 80% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    -webkit-transform: translateX(-5px);
+    -ms-transform: translateX(-5px);
+    transform: translateX(-5px);
+  }
+
+  20%, 40%, 60%, 80% {
+    -webkit-transform: translateX(5px);
+    -ms-transform: translateX(5px);
+    transform: translateX(5px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    -webkit-transform: translateX(0) rotate(0deg);
+    -ms-transform: translateX(0) rotate(0deg);
+    transform: translateX(0) rotate(0deg);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    -webkit-transform: translateX(-5px) rotate(-2deg);
+    -ms-transform: translateX(-5px) rotate(-2deg);
+    transform: translateX(-5px) rotate(-2deg);
+  }
+
+  20%, 40%, 60%, 80% {
+    -webkit-transform: translateX(5px) rotate(2deg);
+    -ms-transform: translateX(5px) rotate(2deg);
+    transform: translateX(5px) rotate(2deg);
+  }
+}
+
 body,
 html {
   height: 100%;
@@ -2327,7 +2402,7 @@ button {
   -webkit-transition: -webkit-transform 0.4s;
   transition: transform 0.4s;
   width: 400px;
-  z-index: 1;
+  z-index: 2;
 }
 
 .game.active ~ .home > #tlkio.active,
@@ -2464,9 +2539,9 @@ button {
 .notifyList {
   pointer-events: none;
   position: fixed;
-  top: 50px;
-  left: 10%;
-  width: 80%;
+  bottom: 31.5%;
+  left: 15%;
+  width: 70%;
   z-index: 100;
 }
 
@@ -2474,11 +2549,12 @@ button {
   -webkit-animation: bubble 4s ease forwards;
   animation: bubble 4s ease forwards;
   background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  font-size: 24px;
-  line-height: 70px;
-  max-height: 70px;
+  font-size: 20px;
+  line-height: 160%;
   overflow: hidden;
+  padding: 14px 0;
   text-align: center;
   -webkit-transition: all 0.4s;
   transition: all 0.4s;
@@ -2490,29 +2566,29 @@ button {
 }
 
 .notify.green {
-  background: rgba(1, 255, 112, 0.8);
+  background: rgba(1, 255, 112, 0.9);
 }
 
 .notify.red {
-  background: rgba(228, 65, 65, 0.8);
+  background: rgba(228, 65, 65, 0.9);
 }
 
 .notify.yellow {
-  background: rgba(255, 220, 0, 0.8);
+  background: rgba(255, 220, 0, 0.9);
 }
 
 .notify.blue {
-  background: rgba(65, 120, 228, 0.8);
+  background: rgba(65, 120, 228, 0.9);
 }
 
 .notify.purple {
-  background: rgba(139, 65, 228, 0.8);
+  background: rgba(139, 65, 228, 0.9);
 }
 
 .notify.grd,
 .notify.air,
 .notify.u {
-  background: rgba(137, 215, 72, 0.8);
+  background: rgba(137, 215, 72, 0.9);
 }
 
 .notify.sticky {
@@ -2562,6 +2638,7 @@ button {
   top: auto;
   -webkit-transition: -webkit-transform 0.5s, opacity 0.5s;
   transition: transform 0.5s, opacity 0.5s;
+  z-index: 101;
 }
 
 .notify.bubble.hide {

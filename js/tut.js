@@ -99,7 +99,8 @@ function tutClickCheck(e) {
 	switch (tutStep) {
 		case 1:
 			if (document.querySelector('h1 .sup').getAttribute('data-sup') === "3") {
-				bubbleP.innerHTML = "<span><span style='color: #CEB527'>Supplies</span> are needed to fuel your army. You only get <strong>25</strong> supply cards in a deck, \
+				bubbleP.innerHTML = "<span><span style='color: #CEB527'>Supplies</span> are needed to fuel your army. \
+				You only get <strong>25</strong> supply cards in a deck, \
 				so use them wisely!</span> <aside><img src='images/misc/tut2.png'></aside>";
 				bubbleBtn.setAttribute('onclick', 'intro2()') ;
 				buoy.removeClass(bubble,'hide');
@@ -109,8 +110,10 @@ function tutClickCheck(e) {
 			}
 			break;
 		case 2:
-			window.setTimeout( function() { buoy.addClass(document.querySelector('.turn'),'flash'); },300);
-			window.setTimeout( function() { buoy.removeClass(document.querySelector('.turn'),'flash'); },600);
+			bubbleP.innerHTML = "<span>Whenever an attacker's <span style='color:#E44141'>attack</span> <em>surpasses</em> a defender's <span style='color:#4178E4'>defense</span>, they'll get \
+			one last chance to play a card (if they can afford it) before the turn ends and the defender begins his.</span> <aside><img src='images/misc/tut2.png'></aside>";
+				bubbleBtn.setAttribute('onclick', 'killInfo()') ;
+				buoy.removeClass(bubble,'hide');
 			break;
 		case 5:
 			if (e.target.getAttribute('data-type') === 'aa') {
@@ -193,7 +196,8 @@ function oppPlay1() {
 // Explains roles
 function intro3() {
 	tutStep = 5;
-	bubbleP.innerHTML = "<span><span style='color:#4178E4'>Defenders</span> only need to match their opponent's <span style='color:#E44141'>attack</span> to block their victory. \
+	bubbleP.innerHTML = "<span>Similarly, when a <span style='color:#4178E4'>defender</span> surpasses <strong>or</strong> \
+	<em>matches</em> their opponent's <span style='color:#E44141'>attack</span>, they too will end their turn. \
 	Make sure to attack harder!</span> <aside><img src='images/misc/tut3.png'></aside>";
 	bubbleBtn.setAttribute('onclick', 'killInfo()') ;
 	buoy.removeClass(bubble,'hide');

@@ -30,7 +30,7 @@ button { outline: none; }
 	transform: translateX(-50px);
 	transition: transform 0.4s;
 	width: 400px;
-	z-index: 1;
+	z-index: 2;
 
 	&.active { 
 		transform: translateX(-100%);
@@ -121,31 +121,32 @@ button { outline: none; }
 .notifyList {
 	pointer-events: none;
 	position: fixed;
-	top: 50px; left: 10%;
-	width: 80%;
+	bottom: 31.5%; left: 15%;
+	width: 70%;
 	z-index: 100;
 }
 
 .notify {
 	animation: bubble 4s ease forwards;
 	background: rgba(255,255,255,0.7);
+	border: 1px solid rgba(0,0,0,0.2);
 	border-radius: 10px;
-	font-size: 24px;
-	line-height: 70px;
-	max-height: 70px;
+	font-size: 20px;
+	line-height: 160%;
 	overflow: hidden;
+	padding: 14px 0;
 	text-align: center;
 	transition: all 0.4s;
 	z-index: 99;
 
 	&:not(:last-child) { margin-bottom: 10px; }
 
-	&.green { background: transparentize(#01FF70,0.2); }
-	&.red { background: transparentize(#E44141,0.2); }
-	&.yellow { background: transparentize(#FFDC00,0.2); }
-	&.blue { background: transparentize(#4178E4,0.2); }
-	&.purple { background: transparentize(#8B41E4,0.2); }
-	&.grd, &.air, &.u { background: transparentize(#89D748,0.2); }
+	&.green { background: transparentize(#01FF70,0.1); }
+	&.red { background: transparentize(#E44141,0.1); }
+	&.yellow { background: transparentize(#FFDC00,0.1); }
+	&.blue { background: transparentize(#4178E4,0.1); }
+	&.purple { background: transparentize(#8B41E4,0.1); }
+	&.grd, &.air, &.u { background: transparentize(#89D748,0.1); }
 
 	&.sticky { 
 		animation: bubbleSticky 4s ease forwards; 
@@ -179,6 +180,7 @@ button { outline: none; }
 		width: 800px;
 		bottom: 40%; top: auto;
 		transition: transform 0.5s, opacity 0.5s;
+		z-index: 101;
 
 		&.hide {
 			opacity: 0;
