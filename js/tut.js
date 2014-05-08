@@ -105,7 +105,7 @@ function endTutTurnListener() {
 			oppPlay(9);
 			break;
 		case 16:
-			oppPlay(10);
+			window.setTimeout( function() { oppPlay(10); }, 1800);
 			break;
 	}
 }
