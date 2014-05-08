@@ -22,7 +22,12 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-
+.icon-sound:before {
+	content: "\e607";
+}
+.icon-mute:before {
+	content: "\e608";
+}
 .icon-aa:before {
 	content: "\e600";
 }
