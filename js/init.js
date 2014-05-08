@@ -5,6 +5,28 @@ document.addEventListener('DOMContentLoaded', function(){
 	var game = document.querySelector('.game');
 	var m = document.querySelector('.overlay .modal');
 
+	var music = new Howl({
+		autoplay: true,
+		loop: true,
+		urls: ['sfx/5Armies.mp3'], 
+		volume: 0,
+		onload: function() {
+			music.fade(0,0.1,1500);
+		} 
+	});
+
+	// Mute Button
+	var mute = document.querySelector('.mute');
+	mute.addEventListener('click', function(e) {
+		if ( buoy.hasClass(mute,'active') ) {
+			buoy.removeClass(mute,'active');
+			music.play();
+		} else { 
+			buoy.addClass(mute,'active');
+			music.pause();
+		}
+	});
+
 	// Tlk.io Tab
 	var tlkBtn = document.getElementById('tlkio').appendChild( document.createElement('span') );
 	tlkBtn.addEventListener('click', function(e) {
