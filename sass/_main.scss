@@ -42,6 +42,31 @@ a { color: darkgreen; }
 	width: 35%;
 }
 
+.mute {
+	background: rgba(0,0,0,0.3);
+	border: 0 none;
+	border-radius: 10px;
+	font-weight: normal;
+	min-height: 20px;
+	min-width: 20px;
+	position: fixed;
+	bottom: 10px; left: 10px;
+	z-index: 9;
+
+	&:hover { background: rgba(0,0,0,0.6) !important; }
+	&:before { content: '\1F50A' ; }
+	&.active:after { 
+		background: white;
+		content: '';
+		position: absolute;
+		top: 14px; left: 16px;
+		height: 24px;
+		transform: rotate(45deg);
+		width: 2px;
+	}
+}
+	.tut .mute { left: 5px; }
+
 button {
 	background: transparentize(#3D9970,0.3);
 	border: 1px solid darkgreen;

@@ -428,6 +428,44 @@ a {
   width: 35%;
 }
 
+.mute {
+  background: rgba(0, 0, 0, 0.3);
+  border: 0 none;
+  border-radius: 10px;
+  font-weight: normal;
+  min-height: 20px;
+  min-width: 20px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 9;
+}
+
+.mute:hover {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+.mute:before {
+  content: "\1F50A";
+}
+
+.mute.active:after {
+  background: white;
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  height: 24px;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  width: 2px;
+}
+
+.tut .mute {
+  left: 5px;
+}
+
 button {
   background: rgba(61, 153, 112, 0.7);
   border: 1px solid darkgreen;
@@ -654,7 +692,7 @@ footer {
 .game .field button {
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  left: 100px;
 }
 
 .game .field aside {
@@ -1423,7 +1461,7 @@ footer {
 
 .game li button.prev,
 .game li button.down {
-  top: 50px;
+  top: 10px;
 }
 
 .game li button.next,

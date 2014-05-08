@@ -555,7 +555,7 @@ function drawCard(deck,n,origin) {
 		else { wannaplay = deck.pop(); }
 
 		// Check against opponent to make sure it's legit
-		if (origin != 'origin') {
+		if (origin != 'origin' && conn) {
 			conn.send({ 
 				'func'  : 'testCard', 
 				'card'  : wannaplay,
@@ -570,6 +570,7 @@ function drawCard(deck,n,origin) {
 // Redeck Card
 function redeckCard(deck,cards,redraw) {
 	var count = 0;
+
 	for (var i=0;i<cards.length;i++) {
 		deck.push( cards[i] );
 		//console.log('Redecking: ',cards[i]);
@@ -581,9 +582,10 @@ function redeckCard(deck,cards,redraw) {
 
 		// Last card, do something
 		if (i===cards.length-1) {
-			deck = shuffle(deck);
+			if (!tutDeck) deck = shuffle(deck);
 			if (redraw && cards.length<8) { drawCard(playerDeck,cards.length) }
 			else if (redraw && cards.length>=8) { drawCard(playerDeck,8); sfx_shuffle.play(); }
+			else if (tutDeck) { drawCardConfirmed(tutDeck.pop(),100); }
 		}
 	}
 }
@@ -947,6 +949,8 @@ function specialCombo(card,who,v) {
 					slot.removeEventListener('click', retreat);
 				});
 
+				if (tutDeck && buoy.hasClass(document.querySelector('.hand'),'disable')) buoy.removeClass(document.querySelector('.hand'),'disable');
+
 				// Check slot limits
 				if (document.querySelectorAll('.player .formation .unit').length < 5) {
 					if (buoy.hasClass(document.querySelector('.hand'),'noUnit')) buoy.removeClass(document.querySelector('.hand'),'noUnit'); 
@@ -957,12 +961,20 @@ function specialCombo(card,who,v) {
 				unitCalc('opponent');
 				forceEndCheck(who);
 
-				conn.send( { 
+				if (conn) conn.send( { 
 					'func':'specialCombo', 
 					'card' : card, 
 					'who' : 'opponent', 
 					'var' : unit
 				});
+			}
+
+			if (document.querySelectorAll('.player .unit').length === 0) {
+				notify('red','No units on field to play this on!');
+				window.setTimeout( function() { 
+					buoy.removeClass(document.querySelector('.hand'),'disable'); 
+				}, 500);
+				return false;
 			}
 
 			if (who==='player') {
@@ -1087,9 +1099,19 @@ function specialCombo(card,who,v) {
 		case "reinforce":
 			if (who==='player') {
 				document.getElementById(card.id).remove();
-				drawCard(playerDeck,3);
+
+				if (!tutDeck) { drawCard(playerDeck,3); } else {
+					window.setTimeout( function() { 
+						buoy.removeClass(document.querySelector('.hand'),'disable'); 
+					}, 1000);
+					
+					drawCardConfirmed(tutDeck.pop(),100);
+					drawCardConfirmed(tutDeck.pop(),200);
+					drawCardConfirmed(tutDeck.pop(),300);
+				}
+
 				forceEndCheck(who);
-				conn.send( { 
+				if (conn) conn.send( { 
 					'func':'specialCombo', 
 					'card' : card, 
 					'who' : 'opponent'
@@ -1675,8 +1697,8 @@ function resetField(points,loser,retreat) {
 
 // Swap 3 cards at the beginning of your turn
 function swapThree(dontdoit) {
-	document.querySelector('.turn').setAttribute('disabled','true');
-	document.querySelector('.end').setAttribute('disabled','true');
+	if (document.querySelector('.turn')) document.querySelector('.turn').setAttribute('disabled','true');
+	if (document.querySelector('.end')) document.querySelector('.end').setAttribute('disabled','true');
 	forceEnd = false;
 
 	if (dontdoit) return false;
@@ -1714,8 +1736,9 @@ function swapThree(dontdoit) {
 			// Swap cards
 			if (count === 3 || count === 0) {
 				if ( buoy.hasClass(card, 'active') ) {
-					redeckCard(playerDeck, [card.cardProps], true);
-					card.remove();
+					if (!tutDeck) redeckCard(playerDeck, [card.cardProps], true);
+					if (tutDeck) simpleRedeck(tutDeck, [card.cardProps], true);
+					cardToDiscard(card);
 				} else {
 					card.addEventListener('click', playListener);
 				}
@@ -1725,8 +1748,8 @@ function swapThree(dontdoit) {
 		});	
 
 		//document.querySelector('.turn').removeAttribute('disabled');
-		document.querySelector('.end').removeAttribute('disabled');
-		if (count===3) {
+		if (document.querySelector('.end')) document.querySelector('.end').removeAttribute('disabled');
+		if (count===3 && conn) {
 			conn.send( { 'func':'notify', 'type' : 'yellow', 'msg' : 'Opponent swapped 3 cards' } );
 			conn.send( { 'func':'log', 'type' : 'swap', 'who' : 'player' })
 		}
@@ -1817,7 +1840,8 @@ function forceEndCheck(who) {
 			if (forceEnd===1) {
 				if (document.querySelector('.end')) document.querySelector('.end').setAttribute('disabled','true');
 			} else if (forceEnd>1) { 
-				endTurnListener(); 
+				if (!tutDeck) endTurnListener(); 
+				if (tutDeck) endTutTurnListener();
 			} 
 		}
 	}, 350);
