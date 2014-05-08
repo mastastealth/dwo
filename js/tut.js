@@ -285,7 +285,7 @@ function oppPlay(n) {
 			resetField(1,false,false);
 			tutWin(1);
 			bubbleP.innerHTML = "<span>Your opponent has surrendered! You win this round and 1 point for surpassing his defense. After \
-			every round players swap the attacker/defender role and the game continues until someone reaches 6 points \
+			every round, players swap the attacker/defender role and the game continues until someone reaches 6 points \
 			(or runs out of supplies)!</span> <aside><img src='images/misc/tut8.png'></aside>";
 			bubbleBtn.setAttribute('onclick','outro()') ;
 			buoy.removeClass(bubble,'hide');
@@ -405,7 +405,6 @@ function defTut(n) {
 			drawCardConfirmed(tutDeck.pop(),300);
 			drawCardConfirmed(tutDeck.pop(),400);
 			drawCardConfirmed(tutDeck.pop(),500);
-			drawCardConfirmed(tutDeck.pop(),600);
 			killInfo();
 
 			window.setTimeout( function() { playCard({'type': 'supply', 'id' : 'esup5', 'hash' : 0, 'supply' : 1 },'opponent'); }, 1200);
