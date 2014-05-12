@@ -332,6 +332,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-sound:before {
+  content: "\e607";
+}
+
+.icon-mute:before {
+  content: "\e608";
+}
+
 .icon-aa:before {
   content: "\e600";
 }
@@ -446,20 +454,12 @@ a {
 }
 
 .mute:before {
-  content: "\1F50A";
+  content: "\e607";
+  font-family: 'icomoon';
 }
 
-.mute.active:after {
-  background: white;
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: 16px;
-  height: 24px;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-  width: 2px;
+.mute.active:before {
+  content: "\e608";
 }
 
 .tut .mute {

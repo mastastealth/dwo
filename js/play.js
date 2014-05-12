@@ -6,10 +6,24 @@ var myTurn;
 var attacker;
 var expanded = 0;
 var forceEnd = 0;
+var tutDeck;
+
+var music = new Howl({
+	autoplay: true,
+	loop: true,
+	urls: ['sfx/5Armies.mp3'], 
+	volume: 0,
+	onload: function() {
+		music.fade(0,0.1,1500);
+	} 
+});
 
 var sfx_deal = new Howl({ urls: ['sfx/deal.mp3'], volume: 0.35 });
 var sfx_slide = new Howl({ urls: ['sfx/slide.mp3'], volume: 0.35 });
 var sfx_shuffle = new Howl({ urls: ['sfx/shuffle.mp3'], volume: 0.35 });
+var sfx_explode = new Howl({ urls: ['sfx/explosion.mp3'], volume: 0.35 });
+var sfx_explode2 = new Howl({ urls: ['sfx/distant_explosion.mp3'], volume: 0.75 });
+sfx_explode.pos3d()[0] = 2;
 
 // Define all the cards
 var cardType = {
@@ -74,6 +88,7 @@ function playInit(connection, deck, atkr,p) {
 	// Attacker/Defender
 	peer = p;
 	var attacker = atkr;
+	tutDeck = false;
 
 	if (attacker) {
 		buoy.addClass(document.querySelector('.player'), 'attacker');
@@ -431,8 +446,8 @@ function playCard(card,who) {
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').getAttribute('data-supplayed'));
 			document.querySelector('.'+who+' .sup').setAttribute('data-supplayed', currentSup+3);
 			if (who === 'player') {
-				if (!tutDeck) drawCard(playerDeck,1);
-				if (tutDeck) drawCardConfirmed(tutDeck.pop(),100);
+				if (!tutDeck) { drawCard(playerDeck,1); }
+				else { drawCardConfirmed(tutDeck.pop(),100); }
 				cardToDiscard(cardEl);
 			}
 
@@ -706,6 +721,7 @@ function unitCard(newUnit,card,who,id) {
 	var img = newUnit.appendChild( document.createElement('i') );
 	sfx_slide.play();
 	addUnit(newUnit,who,card.type);
+	sfx_explode.play();
 	buoy.addClass(document.querySelector('aside:not(.'+who+')'), 'rumble');
 
 	// Add to history
@@ -1819,6 +1835,7 @@ function forceEndCheck(who) {
 					forceEnd += 1;
 					if (forceEnd===1) { 
 						notify('red', 'Enemy defense surpassed! Play 1 more card & your turn will end (or end it now)', true);
+						window.setTimeout( function() { sfx_explode2.play(); }, 400 );
 						buoy.addClass(document.querySelector('aside:not(.'+who+')'), 'rumbleHard');
 						window.setTimeout( function() { buoy.removeClass(document.querySelector('aside:not(.'+who+')'), 'rumbleHard'); },600);
 						document.querySelector('.turn').removeAttribute('disabled');
@@ -1830,6 +1847,7 @@ function forceEndCheck(who) {
 					forceEnd += 1;
 					if (forceEnd===1) { 
 						notify('blue', 'Enemy attack matched/surpassed! Play 1 more card & your turn will end (or end it now)', true);
+						window.setTimeout( function() { sfx_explode2.play(); }, 400 );
 						buoy.addClass(document.querySelector('aside:not(.'+who+')'), 'rumbleHard');
 						window.setTimeout( function() { buoy.removeClass(document.querySelector('aside:not(.'+who+')'), 'rumbleHard'); },600);
 						document.querySelector('.turn').removeAttribute('disabled');

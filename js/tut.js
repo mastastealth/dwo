@@ -285,7 +285,7 @@ function oppPlay(n) {
 			resetField(1,false,false);
 			tutWin(1);
 			bubbleP.innerHTML = "<span>Your opponent has surrendered! You win this round and 1 point for surpassing his defense. After \
-			every round players swap the attacker/defender role and the game continues until someone reaches 6 points \
+			every round, players swap the attacker/defender role and the game continues until someone reaches 6 points \
 			(or runs out of supplies)!</span> <aside><img src='images/misc/tut8.png'></aside>";
 			bubbleBtn.setAttribute('onclick','outro()') ;
 			buoy.removeClass(bubble,'hide');
@@ -366,7 +366,7 @@ function intro3() {
 }
 
 function intro5() {
-	bubbleP.innerHTML = "<span>Defenders can't play anymore units (max is 3) <em>unless</em> the attacker expands the field \
+	bubbleP.innerHTML = "<span>Defenders can't play any more units (max is 3) <em>unless</em> the attacker expands the field \
 	with a 4th (or 5th) unit. Now's your chance to finish him!</span> <aside><img src='images/misc/tut6.png'></aside>";
 	bubbleBtn.setAttribute('onclick', 'killInfo()') ;
 	buoy.removeClass(bubble,'hide');
@@ -405,7 +405,6 @@ function defTut(n) {
 			drawCardConfirmed(tutDeck.pop(),300);
 			drawCardConfirmed(tutDeck.pop(),400);
 			drawCardConfirmed(tutDeck.pop(),500);
-			drawCardConfirmed(tutDeck.pop(),600);
 			killInfo();
 
 			window.setTimeout( function() { playCard({'type': 'supply', 'id' : 'esup5', 'hash' : 0, 'supply' : 1 },'opponent'); }, 1200);
@@ -414,9 +413,9 @@ function defTut(n) {
 			break;
 		case 2:
 			swapThree();
-			bubbleP.innerHTML = "<span>Normally at the start of your turn, you'll get the \
-			chance to swap out 3 cards. You currently have 3 red (attack enhancing) booster cards \
-			that you won't really need this round as defender...</span> \
+			bubbleP.innerHTML = "<span>Normally you'll get the \
+			chance to swap out 3 cards at the start of your turn. You currently have 3 red (attack enhancing) booster cards \
+			that you won't need this round as defender, so swap those out.</span> \
 			<aside><img src='images/misc/tut11.png'></aside>";
 			bubbleBtn.style.display = 'block';
 			if (bubbleBtn2) bubbleBtn2.remove();
@@ -426,7 +425,7 @@ function defTut(n) {
 			break;
 		case 3:
 			swapThree();
-			bubbleP.innerHTML = "<span>The 2 bright blue cards are special, <em>action</em> boosters. \
+			bubbleP.innerHTML = "<span>The bright blue cards are special, <em>action</em> boosters. \
 			These are slightly different from regular boosters in that they are played to allow an action and are discarded immediately. \
 			Retreat any units you've played that will block the Patrol booster.</span> \
 			<aside><img src='images/misc/tut12.png'></aside>";
@@ -459,7 +458,7 @@ function defTut(n) {
 				if (bubbleBtn2) bubbleBtn2.remove();
 			});
 
-			bubbleP.innerHTML = "<span>If you played your cards right, you should be able to use the Patrol booster now! If not, \
+			bubbleP.innerHTML = "<span>You should be able to (if you haven't already) use the Patrol booster now! If not, \
 			you still might have a chance, but you better keep that new <strong>End Round</strong> button handy. When you run out of plays, you use \
 			this button to admit defeat for that round.</span> \
 			<aside><img src='images/misc/tut14.png'></aside>";
