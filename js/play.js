@@ -6,6 +6,7 @@ var myTurn;
 var attacker;
 var expanded = 0;
 var forceEnd = 0;
+var tutDeck;
 
 var music = new Howl({
 	autoplay: true,
@@ -87,6 +88,7 @@ function playInit(connection, deck, atkr,p) {
 	// Attacker/Defender
 	peer = p;
 	var attacker = atkr;
+	tutDeck = false;
 
 	if (attacker) {
 		buoy.addClass(document.querySelector('.player'), 'attacker');
@@ -444,8 +446,8 @@ function playCard(card,who) {
 			currentSup = parseInt(document.querySelector('.'+who+' .sup').getAttribute('data-supplayed'));
 			document.querySelector('.'+who+' .sup').setAttribute('data-supplayed', currentSup+3);
 			if (who === 'player') {
-				if (!tutDeck) drawCard(playerDeck,1);
-				if (tutDeck) drawCardConfirmed(tutDeck.pop(),100);
+				if (!tutDeck) { drawCard(playerDeck,1); }
+				else { drawCardConfirmed(tutDeck.pop(),100); }
 				cardToDiscard(cardEl);
 			}
 
