@@ -890,6 +890,10 @@ footer {
   background: #d41e1e;
 }
 
+.game .field aside > button {
+  z-index: 1;
+}
+
 .game .field .player:not(.myturn),
 .game .field .player.myturn + .opponent {
   background: rgba(210, 180, 140, 0.75);
@@ -1446,7 +1450,7 @@ footer {
 .game li button.down {
   background: none;
   border: 0 none;
-  left: -25%;
+  left: 100%;
 }
 
 .game li button.up:before,
@@ -1459,13 +1463,19 @@ footer {
   width: 100%;
 }
 
-.game li button.prev,
+.game li button.up {
+  top: -40px;
+}
+
 .game li button.down {
+  top: 40px;
+}
+
+.game li button.prev {
   top: 10px;
 }
 
-.game li button.next,
-.game li button.up {
+.game li button.next {
   top: 0px;
 }
 
@@ -1578,7 +1588,7 @@ footer {
 .game .hand button.shuf,
 .game .hand button.continue,
 .game .hand button.cancel {
-  left: 100px;
+  left: 120px;
 }
 
 .game .hand button.end,

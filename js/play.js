@@ -320,7 +320,7 @@ function playCard(card,who) {
 
 					document.querySelector('.cardContainer').appendChild(cardEl);
 					buoy.removeClass(cardEl,'toDiscard');
-
+					buoy.removeClass(document.querySelector('.hand'),'disable');
 					document.querySelector('.hand .cancel').remove();
 				}
 
@@ -864,7 +864,7 @@ function specialCombo(card,who,v) {
 		// Recalc
 		unitCalc('player');
 		unitCalc('opponent');
-		gapShift(e.target);
+		if ( e.target.querySelector('.unit').killUnit ) gapShift(e.target);
 		//if (forceEnd!=1) 
 		forceEndCheck(who);
 
@@ -965,7 +965,7 @@ function specialCombo(card,who,v) {
 					slot.removeEventListener('click', retreat);
 				});
 
-				if (tutDeck && buoy.hasClass(document.querySelector('.hand'),'disable')) buoy.removeClass(document.querySelector('.hand'),'disable');
+				if ( document.querySelector('.hand.disable') ) buoy.removeClass(document.querySelector('.hand'),'disable');
 
 				// Check slot limits
 				if (document.querySelectorAll('.player .formation .unit').length < 5) {
@@ -996,7 +996,7 @@ function specialCombo(card,who,v) {
 			if (who==='player') {
 				document.getElementById(card.id).remove();
 
-				// Make all cards active
+				// Make all units active
 				[].forEach.call(document.querySelectorAll('.'+who+' .unit'), function(unit) {
 					var slot = unit.parentNode;
 					buoy.addClass(slot,'active');
@@ -1074,6 +1074,7 @@ function specialCombo(card,who,v) {
 					document.querySelector('.turn').removeAttribute('disabled');
 					if (who==='player') {
 						conn.send( { 'func':'specialCombo', 'card' : card, 'who' : 'opponent', 'var' : moves } );
+						buoy.removeClass(document.querySelector('.hand'),'disable'); 
 						forceEndCheck(who);
 					}
 				}
@@ -1117,14 +1118,14 @@ function specialCombo(card,who,v) {
 				document.getElementById(card.id).remove();
 
 				if (!tutDeck) { drawCard(playerDeck,3); } else {
-					window.setTimeout( function() { 
-						buoy.removeClass(document.querySelector('.hand'),'disable'); 
-					}, 1000);
-					
 					drawCardConfirmed(tutDeck.pop(),100);
 					drawCardConfirmed(tutDeck.pop(),200);
 					drawCardConfirmed(tutDeck.pop(),300);
 				}
+
+				window.setTimeout( function() { 
+					buoy.removeClass(document.querySelector('.hand'),'disable'); 
+				}, 1000);
 
 				forceEndCheck(who);
 				if (conn) conn.send( { 
@@ -1197,6 +1198,7 @@ function specialCombo(card,who,v) {
 	}
 
 	if (who==='player' && document.querySelector('.hand .cancel')) document.querySelector('.hand .cancel').remove();
+	if (who==='player' && document.querySelector('.hand.disable')) buoy.removeClass(document.querySelector('.hand'),'disable');
 	if (card.type != 'sniper' && card.type != 'tstrike') addHistory('ccc',who,card.type);
 	if (who!='player') notify('red', "<img src='images/cards/"+card.type+".png'> Combo was played");
 }
